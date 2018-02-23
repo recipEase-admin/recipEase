@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
                                 Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
-                                Intent i = new Intent(MainActivity.this, BrowseRecipesActivity.class);
+                                Intent i = new Intent(MainActivity.this, HomeActivity.class);
 //                            i.putExtra("Email", firebaseAuth.getCurrentUser().getEmail());
                                 startActivity(i);
                             } else {
@@ -73,41 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnRegister_Click(View v) {
-
-        if( etUsername.getText().toString().equals("") || etPassword.getText().toString().equals("") ) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage("Error, invalid login information");
-                    alertDialogBuilder.setPositiveButton("Try Again",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                }
-                            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        }
-        else {
-
-            final ProgressDialog progressDialog = ProgressDialog.show(MainActivity.this, "Please wait...", "Proccessing...", true);
-
-            (firebaseAuth.createUserWithEmailAndPassword(etUsername.getText().toString(), etPassword.getText().toString()))
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            progressDialog.dismiss();
-
-                            if (task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Registration successful", Toast.LENGTH_LONG).show();
-                                Intent i = new Intent(MainActivity.this, BrowseRecipesActivity.class);
-                                startActivity(i);
-                            }
-                            else
-                            {
-                                Log.e("ERROR", task.getException().toString());
-                                Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-        }
+        Intent i = new Intent(MainActivity.this, RegisterActivity.class);
+        startActivity(i);
     }
 }

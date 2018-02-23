@@ -6,20 +6,37 @@ package com.recipease.project;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class BrowseRecipesActivity extends AppCompatActivity {
+
+    private FirebaseDatabase database;
+    private DatabaseReference database_reference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
 
-        DatabaseConnection databaseConnection = new DatabaseConnection();
+        //Used to connect to the firebase database
+        database = FirebaseDatabase.getInstance();
+        //References the root of the database
+        database_reference = database.getReference();
 
         ArrayList<Recipe> recipeList = new ArrayList<>();
         RecipeAdapter recipeAdapter = new RecipeAdapter(this, recipeList);
@@ -27,9 +44,7 @@ public class BrowseRecipesActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.lvRecipes);
         listView.setAdapter(recipeAdapter);
 
-        databaseConnection.getAllRecipes(recipeAdapter, recipeList);
-        //Query example
-        //databaseConnection.queryRecipes("title", "Best", recipeAdapter, recipeList);
+        getAllRecipes(recipeAdapter, recipeList);
 
         //Bring data of selected recipe to the RecipeDetailsActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -56,6 +71,31 @@ public class BrowseRecipesActivity extends AppCompatActivity {
         intent.putExtra("IMAGE URL", imageURL);
         intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
         intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);
+    }
+
+    //Returns a list of all recipes
+    public void getAllRecipes(final ArrayAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
+        // Read recipes in from the database and convert them to an ArrayList of Recipe objects
+        database_reference.child("recipes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot all_recipes) {
+                //Loop through each separate recipe
+                for (DataSnapshot single_recipe : all_recipes.getChildren()) {
+                    //Create a new recipe object
+                    Recipe recipe = single_recipe.getValue(Recipe.class);
+                    //populateRecipe(new_recipe, single_recipe);
+                    //Adds this new recipe to the recipe arraylist
+                    recipeList.add(recipe);
+                }
+                //Asynchronous so have to use this to notify adapter when finished
+                recipeAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+        return;
     }
 }
 
