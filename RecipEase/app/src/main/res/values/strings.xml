@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">RecipEase</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_browse_recipes">BrowseRecipesActivity</string>
+    <string name="results">Results</string>
+
+    <string name="title">Title</string>
+    <string name="recipeID">Recipe ID</string>
+    <string name="cookTime">Cook Time</string>
+    <string name="cookingIngredients">Ingredients</string>
+    <string name="cookingInstructions">Instructions</string>
+</resources>
