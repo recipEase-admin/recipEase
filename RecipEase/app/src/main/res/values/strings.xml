@@ -9,4 +9,6 @@
     <string name="cookTime">Cook Time</string>
     <string name="cookingIngredients">Ingredients</string>
     <string name="cookingInstructions">Instructions</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
 </resources>
