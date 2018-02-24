@@ -22,14 +22,15 @@
         app:layout_constraintTop_toBottomOf="@+id/findRecipes" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/ingredient_selector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="60dp"
-        android:text="Button"
+        android:text="Ingredient Selector"
+        android:onClick="goToIngredientSelector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button3"
         app:layout_constraintHorizontal_bias="0.38"
