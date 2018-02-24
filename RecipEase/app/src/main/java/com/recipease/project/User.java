@@ -10,28 +10,23 @@ public class User {
 //----------------------------------------------------------------------------
     // Fields //
     private String email, displayName, bio;
-    private int userID;
+    private String uid;
 
 //----------------------------------------------------------------------------
     // Public Methods //
-    public User( String emailAddress ) {
-        System.out.println("Hello Android Class");
+    public User( String email, String bio, String displayName, String uid ) {
+        this.email = email;
+        this.bio = bio;
+        this.displayName = displayName;
+        this.uid = uid;
     }
 
-    public User( int userID ) {
-        if( userExists( userID ) ) {
-            this.userID = userID;
-        }
-        else {
-            // Throw error, user does no exist
-        }
-
+    public String getUid() {
+        return this.uid;
     }
 
-    private boolean userExists( int userID ) {
-        // Check if user is in database
-        boolean userInDatabase = true;
-        return userInDatabase;
+    public void setUid( String uid ) {
+        this.uid = uid;
     }
 
     public String getBio() {
@@ -54,14 +49,4 @@ public class User {
         return this.email;
     }
 
-    public void deleteAccount() {
-
-    }
-
-    public static void main(String [] args) {
-        User user = new User("robillard123@gmail.com");
-    }
-
-//----------------------------------------------------------------------------
-    // Private Methods //
 }
