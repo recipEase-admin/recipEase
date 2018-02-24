@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RecipEase.iml" filepath="$PROJECT_DIR$/RecipEase.iml" />
+      <module fileurl="file://C:\Users\pdiddy\Documents\GitHub\recipEase\RecipEase\RecipEase.iml" filepath="C:\Users\pdiddy\Documents\GitHub\recipEase\RecipEase\RecipEase.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\pdiddy\Documents\GitHub\recipEase\RecipEase\app\app.iml" filepath="C:\Users\pdiddy\Documents\GitHub\recipEase\RecipEase\app\app.iml" />
     </modules>
   </component>
 </project>
