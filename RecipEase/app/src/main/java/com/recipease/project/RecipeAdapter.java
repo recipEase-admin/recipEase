@@ -1,54 +1,91 @@
 package com.recipease.project;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.bumptech.glide.Glide;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by andrewratz on 2/21/18.
- */
+import static android.support.v4.content.ContextCompat.startActivity;
 
-public class RecipeAdapter extends ArrayAdapter<Recipe> {
-    public RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
-        super(context, 0, recipeList);
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
+
+    private ArrayList<Recipe> recipeList;
+    private Context context;
+
+    RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
+        this.recipeList = recipeList;
+        this.context = context;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
-        Recipe recipe = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_recipe, parent, false);
-        }
-        // Lookup view for data population
-        TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-        TextView tvCookTime = (TextView) convertView.findViewById(R.id.tvCookTime);
-        ImageView ivImageURL = (ImageView) convertView.findViewById(R.id.ivImage);
-        // Populate the data into the template view using the data object
-        tvTitle.setText(recipe.getTitle());
-        tvCookTime.setText(Integer.toString(recipe.getCookTime()));
-        Picasso
-                .with(getContext())
-                .load(recipe.getImageURL())
-                .fit()
-                .into(ivImageURL);
-        // Return the completed view to render on screen
-        return convertView;
+    public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_recipe, parent, false));
     }
+
+    @Override
+    public void onBindViewHolder(RecipeAdapter.ViewHolder holder, int position) {
+        Recipe currentRecipe = recipeList.get(position);
+        holder.bindTo(currentRecipe);
+        Glide.with(context).load(currentRecipe.getImageURL()).into(holder.recipeImage);
+    }
+
+    @Override
+    public int getItemCount() {
+        return recipeList.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder{
+
+        private TextView titleText;
+        private TextView cookTimeText;
+        private ImageView recipeImage;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+
+            titleText = (TextView) itemView.findViewById(R.id.title);
+            cookTimeText = (TextView) itemView.findViewById(R.id.cooktime);
+            recipeImage = itemView.findViewById(R.id.recipeImage);
+
+            itemView.setOnClickListener( new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Recipe currentRecipe = recipeList.get(getAdapterPosition());
+                    Intent details = new Intent(context, RecipeDetailsActivity.class);
+                    sendRecipe(details, currentRecipe);
+                    startActivity(context, details, null);
+                }
+            });
+        }
+
+        void bindTo(Recipe currentRecipe) {
+            //Populate the textviews with data
+            titleText.setText(currentRecipe.getTitle());
+            cookTimeText.setText(String.format("Cook Time: %d minutes", currentRecipe.getCookTime()));
+        }
+
+    }
+
+    private void sendRecipe(Intent intent, Recipe recipe_to_bring) {
+        String title = recipe_to_bring.getTitle();
+        long recipeID = recipe_to_bring.getRecipeID();
+        int cookTime = recipe_to_bring.getCookTime();
+        String imageURL = recipe_to_bring.getImageURL();
+        List<String> cookingIngredients = recipe_to_bring.getCookingIngredients();
+        List<String> cookingInstructions = recipe_to_bring.getCookingInstructions();
+        intent.putExtra("TITLE", title);
+        intent.putExtra("UNIQUE ID", recipeID);
+        intent.putExtra("COOK TIME", cookTime);
+        intent.putExtra("IMAGE URL", imageURL);
+        intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
+        intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);
+    }
+
 }
