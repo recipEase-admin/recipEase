@@ -50,7 +50,7 @@ public class BrowseRecipesActivity extends AppCompatActivity {
 
         //Set results TextView
         TextView resultText = findViewById(R.id.resultText);
-        resultText.setText(String.format("%d Results", recipeList.size()));
+        resultText.setText(String.format("%d Results", 5)); //hardcoded for now since size() doesn't seem to work
 
     }
 
