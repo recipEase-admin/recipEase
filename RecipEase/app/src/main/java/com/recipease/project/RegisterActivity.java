@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etEmail, etPassword, etBio, etDisplayName;
     private String email, password, bio, displayName;
     private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registerUser( View v ) {
-
         email = etEmail.getText().toString();
         password = etPassword.getText().toString();
         bio = etBio.getText().toString();
@@ -46,8 +48,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         if( allFieldsFilled() ) {
             createNewUser();
-            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
-            startActivity(i);
         }
         else {
             showAlert( "Please fill in all fields", "Try again" );
@@ -84,9 +84,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createNewUser() {
-        // Create a new user in firebase system
+        // Create a new user in firebase system, also creates user in database
         createFirebaseUser();
-        createUserInDatabase();
     }
 
     private void createFirebaseUser() {
@@ -95,7 +94,9 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Login successful", Toast.LENGTH_LONG).show();
+                            createUserInDatabase();
+                            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(i);
                         }
                         else {
                             // If sign in fails, display a message to the user.
@@ -107,6 +108,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createUserInDatabase() {
+        //Used to connect to the firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //References the root of the database
+        DatabaseReference database_reference = database.getReference().child("users");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid;
+        if (user != null) {
+            uid = user.getUid();
+            User new_user = new User(email, bio, displayName, uid);
+            database_reference.child(uid).setValue(new_user);
+        }
 
     }
 }
