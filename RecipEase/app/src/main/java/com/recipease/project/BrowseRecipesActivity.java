@@ -1,6 +1,7 @@
 package com.recipease.project;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +33,8 @@ public class BrowseRecipesActivity extends AppCompatActivity {
     private ArrayList<Recipe> recipeList;
     RecipeAdapter recipeAdapter;
 
+    //private ArrayList<String> serialRecipeList = (ArrayList<String>) getIntent().getSerializableExtra("recipes");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,10 @@ public class BrowseRecipesActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recipeList = new ArrayList<>();
+
+        //DataWrapper recipeDataWrapper = (DataWrapper) getIntent().getSerializableExtra("recipes");
+        //recipeList = getIntent().getParcelableArrayListExtra("recipes");//recipeDataWrapper.getRecipes();
+
         recipeAdapter = new RecipeAdapter(this, recipeList);
         recyclerView.setAdapter(recipeAdapter);
 
@@ -80,7 +87,6 @@ public class BrowseRecipesActivity extends AppCompatActivity {
         return;
 
     }
-
 
 
 

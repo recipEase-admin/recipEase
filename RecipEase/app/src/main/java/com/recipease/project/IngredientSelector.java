@@ -99,13 +99,16 @@ public class IngredientSelector extends AppCompatActivity {
 
 
         ArrayList<Recipe> recipeList = new ArrayList<>();
-        RecipeAdapter recipeAdapter = new RecipeAdapter(this, recipeList);
+        //RecipeAdapter recipeAdapter = new RecipeAdapter(this, recipeList);
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
         getAllRecipes(recipeList);
 
         Intent intent = new Intent(this, BrowseRecipesActivity.class);
+        //intent.putExtra("recipes", new DataWrapper(recipeList));
         intent.putExtra("recipes", recipeList);
+       // intent.putParcelableArrayListExtra("key", ArrayList<Recipe extends Parcelable> recipeList);
+
         /* Hey, Look Over Here
          Use (ArrayList<String>) getIntent().getSerializableExtra("recipes"); to open this list in the other class
           */
