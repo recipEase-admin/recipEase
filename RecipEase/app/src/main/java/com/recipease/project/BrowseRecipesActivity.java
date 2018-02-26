@@ -55,10 +55,6 @@ public class BrowseRecipesActivity extends AppCompatActivity {
 
         getAllRecipes(recipeAdapter, recipeList);
 
-        //Set results TextView
-        TextView resultText = findViewById(R.id.resultText);
-        resultText.setText(String.format("%d Results", 5)); //hardcoded for now since size() doesn't seem to work
-
     }
 
     //Returns a list of all recipes
@@ -75,8 +71,13 @@ public class BrowseRecipesActivity extends AppCompatActivity {
                     //Adds this new recipe to the recipe arraylist
                     recipeList.add(recipe);
                 }
+
                 //Asynchronous so have to use this to notify adapter when finished
                 recipeAdapter.notifyDataSetChanged();
+
+                //Set results TextView
+                TextView resultText = findViewById(R.id.resultText);
+                resultText.setText(String.format("%d Results", recipeList.size()));
             }
 
             @Override
