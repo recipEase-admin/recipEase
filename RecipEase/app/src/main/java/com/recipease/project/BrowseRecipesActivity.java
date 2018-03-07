@@ -53,7 +53,7 @@ public class BrowseRecipesActivity extends AppCompatActivity {
         recipeAdapter = new RecipeAdapter(this, recipeList);
         recyclerView.setAdapter(recipeAdapter);
 
-        getAllRecipes(recipeAdapter, recipeList);
+        retrieveRecipes(recipeAdapter, recipeList);
 
     }
 
@@ -71,13 +71,8 @@ public class BrowseRecipesActivity extends AppCompatActivity {
                     //Adds this new recipe to the recipe arraylist
                     recipeList.add(recipe);
                 }
-
                 //Asynchronous so have to use this to notify adapter when finished
                 recipeAdapter.notifyDataSetChanged();
-
-                //Set results TextView
-                TextView resultText = findViewById(R.id.resultText);
-                resultText.setText(String.format("%d Results", recipeList.size()));
             }
 
             @Override
@@ -89,6 +84,40 @@ public class BrowseRecipesActivity extends AppCompatActivity {
 
     }
 
+    //Returns a list of all recipes
+    public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
+        // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
+        Intent intent = getIntent();
+        final ArrayList<Long> recipe_ids = (ArrayList<Long>) intent.getSerializableExtra("recipe_ids");
+
+        // Read recipes in from the database and convert them to an ArrayList of Recipe objects
+        database_reference.child("recipes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot all_recipes) {
+                //Loop through each separate recipe
+                for (DataSnapshot single_recipe : all_recipes.getChildren()) {
+                    //Create a new recipe object
+                    Recipe recipe = single_recipe.getValue(Recipe.class);
+                    if (recipe_ids.contains(recipe.getRecipeID())) {
+                        //Adds this new recipe to the recipe arraylist
+                        recipeList.add(recipe);
+                    }
+                }
+                //Asynchronous so have to use this to notify adapter when finished
+                recipeAdapter.notifyDataSetChanged();
+
+                //Set results TextView
+                TextView resultText = findViewById(R.id.resultText);
+                resultText.setText(String.format("%d Results", recipeList.size())); //Size now works :)
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+        return;
 
 
+    }
 }

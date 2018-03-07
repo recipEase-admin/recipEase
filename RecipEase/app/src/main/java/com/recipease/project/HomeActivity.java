@@ -47,12 +47,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void goToFindRecipesPage( View v ) {
-        Intent i = new Intent(HomeActivity.this, IngredientSelector.class);
+        Intent i = new Intent(HomeActivity.this, IngredientSelectorTest.class);
         startActivity(i);
     }
 
     public void goToIngredientSelector(View v){
-        Intent i = new Intent(HomeActivity.this, IngredientSelector.class);
+        Intent i = new Intent(HomeActivity.this, IngredientSelectorTest.class);
         startActivity(i);
     }
 

@@ -74,16 +74,13 @@
                         android:scaleType="centerCrop"
                         android:id="@+id/top-dairy-view"
                         android:src="@mipmap/dairy_icon" />
-                    <CheckBox android:id="@+id/milk"
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/ingredientRecyclerView"
+                        android:scrollbars="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Milk"
-                        android:onClick="addItem"/>
-                    <CheckBox android:id="@+id/cheese"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cheese"
-                        android:onClick="addItem"/>
+                        android:clickable="true" />
                 </LinearLayout>
             </FrameLayout>
             ​
@@ -125,6 +122,7 @@
             android:id="@+id/veggie-cell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#fff"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:clipChildren="false"
@@ -203,6 +201,7 @@
             android:id="@+id/fruit-cell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#fff"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:clipChildren="false"
@@ -276,6 +275,7 @@
             android:id="@+id/meat-cell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#fff"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:clipChildren="false"
