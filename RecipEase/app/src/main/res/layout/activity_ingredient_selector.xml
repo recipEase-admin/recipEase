@@ -47,6 +47,27 @@
             </com.miguelcatalan.materialsearchview.MaterialSearchView>
         </android.support.v7.widget.Toolbar>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select ingredients from the categories, and when you're ready tap 'Find Recipes'"
+            android:layout_margin="20sp" />
+
+
+        <Button
+            android:id="@+id/sendbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/round_shape_btn"
+            android:onClick="sendRecipes"
+            android:padding="20sp"
+            android:layout_marginTop="20sp"
+            android:text="Find Recipes"
+            android:textColor="@color/colorAccent"
+            android:textColorHint="@color/colorWhite" />
+
         <com.ramotion.foldingcell.FoldingCell
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/dairy-cell"
@@ -348,20 +369,6 @@
 
             ​
         </com.ramotion.foldingcell.FoldingCell>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:text="Recipes!"
-            android:layout_gravity="center_horizontal"
-            android:onClick="sendRecipes"
-            android:id="@+id/sendbutton"/>
-
-
-
-
-
 
 
     </LinearLayout>
