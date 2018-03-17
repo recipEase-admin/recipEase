@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class HomeActivity extends AppCompatActivity {
 
     private ListView mDrawerList;
@@ -27,18 +29,30 @@ public class HomeActivity extends AppCompatActivity {
         String[] osArray = { "Profile", "Favorites", "Settings", "About", "Logout" };
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
-
+        mDrawerList.bringToFront();
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(HomeActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                switch (position) {
+                    case 4: //Logout
+                        FirebaseAuth.getInstance().signOut();
+                        Toast.makeText(HomeActivity.this, "Succesfully logged out", Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(HomeActivity.this, MainActivity.class);
+                        startActivity(i);
+                        break;
+                }
             }
         });
     }
 
     public void goToFindRecipesPage( View v ) {
-        Intent i = new Intent(HomeActivity.this, BrowseRecipesActivity.class);
+        Intent i = new Intent(HomeActivity.this, IngredientSelector.class);
+        startActivity(i);
+    }
+
+    public void goToIngredientSelector(View v){
+        Intent i = new Intent(HomeActivity.this, IngredientSelector.class);
         startActivity(i);
     }
 

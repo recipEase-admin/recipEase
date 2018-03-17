@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +34,22 @@ public class MainActivity extends AppCompatActivity {
         etUsername = (EditText) findViewById(R.id.etUsername);
         etPassword = (EditText) findViewById(R.id.etPassword);
         firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(FirebaseAuth authData) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // user is logged in
+                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(MainActivity.this, HomeActivity.class);
+                    startActivity(i);
+                } else {
+                    // user is not logged in
+                }
+            }
+        });
+
     }
 
     public void btnLogin_Click(View v) {
@@ -60,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(MainActivity.this, HomeActivity.class);
-//                            i.putExtra("Email", firebaseAuth.getCurrentUser().getEmail());
                                 startActivity(i);
                             } else {
                                 Log.e("ERROR", task.getException().toString());
