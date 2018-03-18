@@ -19,6 +19,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     Filter inputFilter;
     ArrayList<String> recipeInstructions = new ArrayList<String>();
+    ArrayList<String> recipeIngredients = new ArrayList<String>();
 
     private EditText etIngredient;
 
