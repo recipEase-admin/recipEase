@@ -18,10 +18,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     private ArrayList<Recipe> recipeList;
     private Context context;
+    private int numIngredients;
 
-    RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
+    RecipeAdapter(Context context, ArrayList<Recipe> recipeList, int numIngredients) {
         this.recipeList = recipeList;
         this.context = context;
+        this.numIngredients = numIngredients;
     }
 
     @Override
@@ -46,12 +48,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         private TextView titleText;
         private TextView cookTimeText;
         private ImageView recipeImage;
+        private TextView missingIngredientsText;
 
         ViewHolder(View itemView) {
             super(itemView);
 
             titleText = (TextView) itemView.findViewById(R.id.title);
             cookTimeText = (TextView) itemView.findViewById(R.id.cooktime);
+            missingIngredientsText = (TextView) itemView.findViewById(R.id.missing_ingredients);
             recipeImage = itemView.findViewById(R.id.recipeImage);
 
             itemView.setOnClickListener( new View.OnClickListener(){
@@ -69,6 +73,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             //Populate the textviews with data
             titleText.setText(currentRecipe.getTitle());
             cookTimeText.setText(String.format("Cook Time: %d minutes", currentRecipe.getCookTime()));
+
+            int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
+
+            missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
         }
 
     }

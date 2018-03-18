@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/missing_ingredients"
             android:layout_below="@id/cooktime"
-            android:text="Number of Missing Ingredients"
             android:padding="8dp"
             style="@style/TextAppearance.AppCompat.Subhead" />
 

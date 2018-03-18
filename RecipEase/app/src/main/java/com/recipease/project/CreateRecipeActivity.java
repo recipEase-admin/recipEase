@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,14 +19,18 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     Filter inputFilter;
     ArrayList<String> recipeInstructions = new ArrayList<String>();
-    ArrayList<String> recipeIngredients = new ArrayList<String>();
-    private EditText etInstruction;
+
     private EditText etIngredient;
-    private TextView theInstructions;
+
     private TextView theIngredients;
+    private EditText etInstruction, etCookTime, etName;
+    private TextView theInstructions;
+    RadioGroup difficultyGroup;
+    int difficulty = 0;
+  
     @Override
 
-    // TODO: 3/16/2018 Check all fields filled when recipe submitted
+    // TODO: 3/16/2018 Check ingredient/image fields are filled
 
     // TODO: 3/16/2018 Add upload image functionality
 
@@ -32,46 +38,65 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     // TODO: 3/16/2018 Add database functionality
 
-    // TODO: Add ability remove instructions / ingredients
+    // TODO: Add remove ingredients ability
 
 
     
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_recipe);
 
         etInstruction = findViewById(R.id.etInstruction);
+        etCookTime = findViewById(R.id.cookTime);
+        etName = findViewById(R.id.etName);
         theInstructions = findViewById(R.id.tvInstructions);
+
         etIngredient = findViewById(R.id.etIngredient);
         theIngredients = findViewById(R.id.tvIngredients);
+
+        difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
+
         inputFilter = new Filter();
+
+        difficultyGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (checkedId == R.id.diff_1) {
+                    //some code
+                    difficulty = 1;
+                } else if (checkedId == R.id.diff_2) {
+                    //some code
+                    difficulty = 2;
+                }
+                else if (checkedId == R.id.diff_3) {
+                    //some code
+                    difficulty = 3;
+                }
+
+            }
+
+        });
     }
 
     public void addInstructionToRecipe(View v) {
-        // TODO: 3/16/2018 Apply Filtering System
         String newInstruction = etInstruction.getText().toString();
-        theInstructions.setText("");
+
         if(inputFilter.containsProfanity(newInstruction)) {
-            showAlert("You're instruction contains profanity, please remove it.", "I'll Handle It");
+            showAlert("Your instruction contains profanity, please remove the profanity.", "I'll Handle It");
+        }
+        else if(newInstruction.equals("")) {
+            showAlert("Please enter an instruction first", "I'm On It");
         }
         else {
-            if( newInstruction.equals("Enter Cooking Instruction") ) {
-                showAlert("Please enter an instruction first", "I'm On It");
-            }
-            else {
-                // Add instruction to list
-                recipeInstructions.add( newInstruction );
-                int i = 1;
-                for(String s : recipeInstructions) {
-                    theInstructions.setText( theInstructions.getText().toString() + i + ") " + s + "\n" );
-                    i++;
-                }
-                etInstruction.setText("Enter Cooking Instruction");
-            }
+            // Add instruction to list
+            recipeInstructions.add( newInstruction );
+            setInstructionText();
         }
 
     }
-
 
     public void addIngredientToRecipe(View v) {
         // TODO: 3/28/18 Add Database functionality, add search method
@@ -100,10 +125,60 @@ public class CreateRecipeActivity extends AppCompatActivity {
         return fieldText.equals("");
     }
 
-    private boolean allFieldsFilled() {
-        return false;
+    public void setInstructionText() {
+        int i = 1;
+        String textFieldText = "";
+        for(String s : recipeInstructions) {
+            textFieldText += i + ") " + s + "\n";
+            i++;
+        }
+        theInstructions.setText(textFieldText);
+        etInstruction.setHint("Enter Cooking Instruction");
+
     }
 
+    public void removeInstruction(View v) {
+        if( recipeInstructions.isEmpty() ) {
+            showAlert("There are no instructions to delete", "Okay, I'll Add One");
+        }
+        else {
+            recipeInstructions.remove(recipeInstructions.size() - 1);
+            if(recipeInstructions.isEmpty()) {
+                setInstructionText();
+                etInstruction.setText("");
+                etInstruction.setHint("Enter Cooking Instruction");
+                theInstructions.setText("No Instructions Yet");
+            }
+            else {
+                setInstructionText();
+            }
+        }
+    }
+
+    public void createRecipe(View v) {
+        // Get input from fields
+        String recipeName = etName.getText().toString();
+        int cookTime = 0;
+
+        // Check if all fields filled
+        if( difficulty == 0 || recipeName.equals("") || etCookTime.getText().toString().equals("")) {
+            showAlert("Please fill in all fields", "I'm on it");
+        }
+        else if(recipeInstructions.isEmpty()) {
+            showAlert("Please add instructions for the recipe", "I'm on it");
+        }
+        else if(inputFilter.containsProfanity(recipeName)) {
+            showAlert("Your recipe name contains profanity, please remove the profanity.", "I'll Handle It");
+        }
+        else {
+            try{
+                cookTime = Integer.parseInt(etCookTime.getText().toString());
+            }
+            catch(Exception e) {
+                showAlert("Please enter a number for the time to prepare", "I'm on it");
+            }
+        }
+    }
 
     public void showAlert(String message, String actionText) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
