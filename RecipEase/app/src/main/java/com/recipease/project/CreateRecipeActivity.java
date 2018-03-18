@@ -19,11 +19,15 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     Filter inputFilter;
     ArrayList<String> recipeInstructions = new ArrayList<String>();
+
+    private EditText etIngredient;
+
+    private TextView theIngredients;
     private EditText etInstruction, etCookTime, etName;
     private TextView theInstructions;
     RadioGroup difficultyGroup;
     int difficulty = 0;
-
+  
     @Override
 
     // TODO: 3/16/2018 Check ingredient/image fields are filled
@@ -47,7 +51,12 @@ public class CreateRecipeActivity extends AppCompatActivity {
         etCookTime = findViewById(R.id.cookTime);
         etName = findViewById(R.id.etName);
         theInstructions = findViewById(R.id.tvInstructions);
+
+        etIngredient = findViewById(R.id.etIngredient);
+        theIngredients = findViewById(R.id.tvIngredients);
+
         difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
+
         inputFilter = new Filter();
 
         difficultyGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -89,6 +98,33 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     }
 
+    public void addIngredientToRecipe(View v) {
+        // TODO: 3/28/18 Add Database functionality, add search method
+        String newIngredient = etIngredient.getText().toString();
+        theIngredients.setText("");
+            if( newIngredient.equals("Enter Cooking Instruction") ) {
+                showAlert("Please enter an ingredient first", "I'm On It");
+            }
+            else {
+                // Add instruction to list
+                recipeIngredients.add( newIngredient );
+                int i = 1;
+                for(String s : recipeIngredients) {
+                    theIngredients.setText( theIngredients.getText().toString() + i + ") " + s + "\n" );
+                    i++;
+                }
+                etIngredient.setText("Enter Cooking Ingredient");
+            }
+
+
+    }
+
+
+
+    private boolean fieldIsEmpty( String fieldText ) {
+        return fieldText.equals("");
+    }
+
     public void setInstructionText() {
         int i = 1;
         String textFieldText = "";
@@ -98,6 +134,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
         }
         theInstructions.setText(textFieldText);
         etInstruction.setHint("Enter Cooking Instruction");
+
     }
 
     public void removeInstruction(View v) {

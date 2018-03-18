@@ -160,10 +160,10 @@
             android:textColor="#08f"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText4" />
+            app:layout_constraintTop_toBottomOf="@+id/etIngredient" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/tvIngredients"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -175,7 +175,7 @@
             app:layout_constraintTop_toBottomOf="@+id/button6" />
 
         <EditText
-            android:id="@+id/editText4"
+            android:id="@+id/etIngredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -201,7 +201,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            app:layout_constraintTop_toBottomOf="@+id/tvIngredients" />
 
         <Button
             android:id="@+id/button3"

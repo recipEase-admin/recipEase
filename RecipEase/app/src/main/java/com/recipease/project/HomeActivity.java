@@ -39,6 +39,10 @@ public class HomeActivity extends AppCompatActivity {
                         Intent goToCreateRecipe = new Intent(HomeActivity.this, CreateRecipeActivity.class);
                         startActivity(goToCreateRecipe);
                         break;
+                    case 2:
+                        Intent goToAbout = new Intent ( HomeActivity.this, AboutActivity.class);
+                        startActivity(goToAbout);
+                        break;
                     case 3: //Logout
                         FirebaseAuth.getInstance().signOut();
                         Toast.makeText(HomeActivity.this, "Succesfully logged out", Toast.LENGTH_LONG).show();
