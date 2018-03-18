@@ -17,6 +17,8 @@
         android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
+        android:divider="#08f"
+        android:dividerHeight="20.sp"
         android:background="@color/colorWhite"/>
 
     <include layout="@layout/content_home" />

@@ -17,8 +17,11 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     Filter inputFilter;
     ArrayList<String> recipeInstructions = new ArrayList<String>();
+    ArrayList<String> recipeIngredients = new ArrayList<String>();
     private EditText etInstruction;
+    private EditText etIngredient;
     private TextView theInstructions;
+    private TextView theIngredients;
     @Override
 
     // TODO: 3/16/2018 Check all fields filled when recipe submitted
@@ -39,6 +42,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
         etInstruction = findViewById(R.id.etInstruction);
         theInstructions = findViewById(R.id.tvInstructions);
+        etIngredient = findViewById(R.id.etIngredient);
+        theIngredients = findViewById(R.id.tvIngredients);
         inputFilter = new Filter();
     }
 
@@ -64,6 +69,28 @@ public class CreateRecipeActivity extends AppCompatActivity {
                 etInstruction.setText("Enter Cooking Instruction");
             }
         }
+
+    }
+
+
+    public void addIngredientToRecipe(View v) {
+        // TODO: 3/28/18 Add Database functionality, add search method
+        String newIngredient = etIngredient.getText().toString();
+        theIngredients.setText("");
+            if( newIngredient.equals("Enter Cooking Instruction") ) {
+                showAlert("Please enter an ingredient first", "I'm On It");
+            }
+            else {
+                // Add instruction to list
+                recipeIngredients.add( newIngredient );
+                int i = 1;
+                for(String s : recipeIngredients) {
+                    theIngredients.setText( theIngredients.getText().toString() + i + ") " + s + "\n" );
+                    i++;
+                }
+                etIngredient.setText("Enter Cooking Ingredient");
+            }
+
 
     }
 
