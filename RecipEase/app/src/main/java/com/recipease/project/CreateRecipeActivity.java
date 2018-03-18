@@ -2,12 +2,16 @@ package com.recipease.project;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -20,6 +24,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
     Filter inputFilter;
     ArrayList<String> recipeInstructions = new ArrayList<String>();
     ArrayList<String> recipeIngredients = new ArrayList<String>();
+
+
 
     private EditText etIngredient;
 
@@ -59,6 +65,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
         difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
 
         inputFilter = new Filter();
+
+
 
         difficultyGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -109,12 +117,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
             else {
                 // Add instruction to list
                 recipeIngredients.add( newIngredient );
-                int i = 1;
-                for(String s : recipeIngredients) {
-                    theIngredients.setText( theIngredients.getText().toString() + i + ") " + s + "\n" );
-                    i++;
-                }
-                etIngredient.setText("Enter Cooking Ingredient");
+                setIngredientText();
             }
 
 
@@ -136,6 +139,37 @@ public class CreateRecipeActivity extends AppCompatActivity {
         theInstructions.setText(textFieldText);
         etInstruction.setHint("Enter Cooking Instruction");
 
+    }
+
+    public void setIngredientText() {
+        int i = 1;
+        String textFieldText = "";
+        for(String s : recipeIngredients) {
+            textFieldText += i + ") " + s + "\n";
+            i++;
+        }
+        theIngredients.setText(textFieldText);
+        etIngredient.setHint("Enter Cooking Ingredients");
+
+    }
+
+
+    public void removeIngredient(View v) {
+        if( recipeIngredients.isEmpty() ) {
+            showAlert("There are no instructions to delete", "Okay, I'll Add One");
+        }
+        else {
+            recipeIngredients.remove(recipeIngredients.size() - 1);
+            if(recipeIngredients.isEmpty()) {
+                setIngredientText();
+                etIngredient.setText("");
+                etIngredient.setHint("Enter Cooking Instruction");
+                theIngredients.setText("No Instructions Yet");
+            }
+            else {
+                setIngredientText();
+            }
+        }
     }
 
     public void removeInstruction(View v) {
@@ -167,6 +201,9 @@ public class CreateRecipeActivity extends AppCompatActivity {
         }
         else if(recipeInstructions.isEmpty()) {
             showAlert("Please add instructions for the recipe", "I'm on it");
+        }
+        else if(recipeIngredients.isEmpty()){
+            showAlert("Please add ingredients for the recipe", "I'm on it");
         }
         else if(inputFilter.containsProfanity(recipeName)) {
             showAlert("Your recipe name contains profanity, please remove the profanity.", "I'll Handle It");

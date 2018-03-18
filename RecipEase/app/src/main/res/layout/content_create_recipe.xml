@@ -157,6 +157,7 @@
             android:background="@drawable/round_shape_btn"
             android:padding="10sp"
             android:text="Tap to Add Ingredient"
+            android:onClick="addIngredientToRecipe"
             android:textColor="#08f"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -253,23 +254,43 @@
 
         <Button
             android:id="@+id/button5"
-            android:onClick="removeInstruction"
             android:layout_width="216dp"
             android:layout_height="47dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Remove Last Instruction"
-            android:padding="10sp"
-            android:textColor="#ff0000"
             android:background="@drawable/round_shape_btn_red_border"
+            android:onClick="removeInstruction"
+            android:padding="10sp"
+            android:text="Remove Last Instruction"
+            android:textColor="#ff0000"
             app:layout_constraintBottom_toTopOf="@+id/button4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvInstructions"
             app:layout_constraintVertical_bias="0.0" />
+
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="216dp"
+            android:layout_height="47dp"
+            android:background="@drawable/round_shape_btn_red_border"
+            android:onClick="removeIngredient"
+            android:padding="10sp"
+            android:text="Remove Last Ingredient"
+            android:textColor="#ff0000"
+            tools:layout_editor_absoluteX="152dp"
+            tools:layout_editor_absoluteY="1016dp"
+            app:layout_constraintBottom_toTopOf="@+id/button5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvIngredients"
+            app:layout_constraintVertical_bias="0.0"/>
+
 
         <TextView
             android:id="@+id/textView3"
