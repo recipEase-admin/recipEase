@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="175dp"
             android:orientation="vertical"
-            android:background="#0088ff"
+            android:background="#fff"
             android:weightSum="1"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="Edit Search"
                 android:id="@+id/editSearchTextView"
-                android:textColor="#ffffff"
+                android:textColor="#08f"
                 android:textSize="15dp"
                 android:layout_marginTop="140dp"
                 android:layout_marginLeft="20dp"/>
@@ -42,7 +42,7 @@
                 android:textSize="15dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="140dp"
-                android:textColor="#ffffff" />
+                android:textColor="#08f" />
 
             <ImageView
                 android:layout_width="317dp"

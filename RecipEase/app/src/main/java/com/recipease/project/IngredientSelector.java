@@ -105,8 +105,11 @@ public class IngredientSelector extends AppCompatActivity {
         getAllRecipes(recipeList);
 
         Intent intent = new Intent(this, BrowseRecipesActivity.class);
+
+        intent.putExtra("numIngredients", setofIngredients.size());
+
+
         //intent.putExtra("recipes", new DataWrapper(recipeList));
-        intent.putExtra("recipes", recipeList);
        // intent.putParcelableArrayListExtra("key", ArrayList<Recipe extends Parcelable> recipeList);
 
         /* Hey, Look Over Here

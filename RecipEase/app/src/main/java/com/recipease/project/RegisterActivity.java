@@ -28,6 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etEmail, etPassword, etBio, etDisplayName;
     private String email, password, bio, displayName;
     private FirebaseAuth mAuth;
+    Filter inputFilter;
+    boolean firebaseUserCreated = false;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -38,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = (EditText) findViewById(R.id.etPassword);
         etBio = (EditText) findViewById(R.id.etBio);
         etDisplayName = (EditText) findViewById(R.id.etDisplayName);
+        inputFilter = new Filter();
     }
 
     public void registerUser( View v ) {
@@ -45,9 +48,17 @@ public class RegisterActivity extends AppCompatActivity {
         password = etPassword.getText().toString();
         bio = etBio.getText().toString();
         displayName = etDisplayName.getText().toString();
+        String[] input = {email,password,bio,displayName};
 
         if( allFieldsFilled() ) {
-            createNewUser();
+            for(String s : input) {
+                if(inputFilter.containsProfanity(s)) {
+                    showAlert("Your input contains profanity, please remove it before continuing", "I'm on it");
+                }
+                else {
+                    createNewUser();
+                }
+            }
         }
         else {
             showAlert( "Please fill in all fields", "Try again" );
@@ -68,7 +79,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean allFieldsFilled() {
-
         // Store values to array list
         ArrayList<String> tfValues = new ArrayList<String>();
         tfValues.add(email);
@@ -86,6 +96,11 @@ public class RegisterActivity extends AppCompatActivity {
     private void createNewUser() {
         // Create a new user in firebase system, also creates user in database
         createFirebaseUser();
+        if(firebaseUserCreated){
+            createUserInDatabase();
+            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+            startActivity(i);
+        }
     }
 
     private void createFirebaseUser() {
@@ -94,9 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            createUserInDatabase();
-                            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
-                            startActivity(i);
+                            firebaseUserCreated = true;
                         }
                         else {
                             // If sign in fails, display a message to the user.
@@ -119,6 +132,5 @@ public class RegisterActivity extends AppCompatActivity {
             User new_user = new User(email, bio, displayName, uid);
             database_reference.child(uid).setValue(new_user);
         }
-
     }
 }
