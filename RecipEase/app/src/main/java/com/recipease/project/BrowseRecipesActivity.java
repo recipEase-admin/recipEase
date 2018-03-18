@@ -50,7 +50,9 @@ public class BrowseRecipesActivity extends AppCompatActivity {
         //DataWrapper recipeDataWrapper = (DataWrapper) getIntent().getSerializableExtra("recipes");
         //recipeList = getIntent().getParcelableArrayListExtra("recipes");//recipeDataWrapper.getRecipes();
 
-        recipeAdapter = new RecipeAdapter(this, recipeList);
+        Bundle extras = getIntent().getExtras();
+        int numIngredients = (int) extras.getInt("numIngredients");
+        recipeAdapter = new RecipeAdapter(this, recipeList, numIngredients);
         recyclerView.setAdapter(recipeAdapter);
 
         getAllRecipes(recipeAdapter, recipeList);
