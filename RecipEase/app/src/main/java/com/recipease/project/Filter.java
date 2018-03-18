@@ -12,10 +12,12 @@ public class Filter {
 
     public boolean containsProfanity( String inputToCheck ) {
         String[] profanityWords = {"fuck","shit","ass","cunt","nigger","bitch", "faggot", "asshole","goddamn","damn"};
-
+        String[] splitInput = inputToCheck.split(" ");
         for(String curseWord : profanityWords) {
-            if(curseWord.equals( inputToCheck )) {
-                return true;
+            for(String wordToCheck : splitInput) {
+                if(curseWord.equals( wordToCheck )) {
+                    return true;
+                }
             }
         }
         return false;
