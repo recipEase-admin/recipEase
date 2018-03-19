@@ -17,6 +17,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class CreateRecipeActivity extends AppCompatActivity {
@@ -25,8 +30,6 @@ public class CreateRecipeActivity extends AppCompatActivity {
     ArrayList<String> recipeInstructions = new ArrayList<String>();
     ArrayList<String> recipeIngredients = new ArrayList<String>();
 
-
-
     private EditText etIngredient;
 
     private TextView theIngredients;
@@ -34,6 +37,13 @@ public class CreateRecipeActivity extends AppCompatActivity {
     private TextView theInstructions;
     RadioGroup difficultyGroup;
     int difficulty = 0;
+    int cookTime = 0;
+
+    private String recipeTitle;
+
+    private FirebaseAuth firebaseAuth;
+    private String userID = "";
+    FirebaseUser user;
   
     @Override
 
@@ -54,6 +64,11 @@ public class CreateRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_recipe);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
+
+        userID = user.getUid();
+
         etInstruction = findViewById(R.id.etInstruction);
         etCookTime = findViewById(R.id.cookTime);
         etName = findViewById(R.id.etName);
@@ -63,7 +78,6 @@ public class CreateRecipeActivity extends AppCompatActivity {
         theIngredients = findViewById(R.id.tvIngredients);
 
         difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
-
         inputFilter = new Filter();
 
 
@@ -192,11 +206,10 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     public void createRecipe(View v) {
         // Get input from fields
-        String recipeName = etName.getText().toString();
-        int cookTime = 0;
+        recipeTitle = etName.getText().toString();
 
         // Check if all fields filled
-        if( difficulty == 0 || recipeName.equals("") || etCookTime.getText().toString().equals("")) {
+        if( difficulty == 0 || recipeTitle.equals("") || etCookTime.getText().toString().equals("")) {
             showAlert("Please fill in all fields", "I'm on it");
         }
         else if(recipeInstructions.isEmpty()) {
@@ -205,12 +218,13 @@ public class CreateRecipeActivity extends AppCompatActivity {
         else if(recipeIngredients.isEmpty()){
             showAlert("Please add ingredients for the recipe", "I'm on it");
         }
-        else if(inputFilter.containsProfanity(recipeName)) {
+        else if(inputFilter.containsProfanity(recipeTitle)) {
             showAlert("Your recipe name contains profanity, please remove the profanity.", "I'll Handle It");
         }
         else {
             try{
                 cookTime = Integer.parseInt(etCookTime.getText().toString());
+                storeRecipeInDatabase();
             }
             catch(Exception e) {
                 showAlert("Please enter a number for the time to prepare", "I'm on it");
@@ -229,5 +243,22 @@ public class CreateRecipeActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    public void storeRecipeInDatabase() {
+        Recipe newRecipe = new Recipe();
+        newRecipe.setCookingInstructions( recipeInstructions );
+        newRecipe.setCookTime( cookTime );
+        newRecipe.setCookingIngredients( recipeIngredients );
+        newRecipe.setTitle( recipeTitle );
+        newRecipe.setImageURL( "lololol" );
+        newRecipe.generateRecipeId();
+        newRecipe.setNumFavorites(0);
+
+        //Used to connect to the firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //References the root of the database
+        DatabaseReference database_reference = database.getReference().child("recipes");
+        database_reference.child(Long.toString(newRecipe.getRecipeID())).setValue(newRecipe);
     }
 }

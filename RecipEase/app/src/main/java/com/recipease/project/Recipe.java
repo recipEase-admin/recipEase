@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -18,9 +19,15 @@ public class Recipe {
         private String title;
         private long recipeID;
         private int cookTime;
+        private int difficulty;
         private String imageURL;
+        private int numFavorites;
         private List<String> cookingIngredients;
         private List<String> cookingInstructions;
+
+        public void generateRecipeId() {
+            this.recipeID = new Date().getTime();
+        }
 
         public String getTitle() {
             return title;
@@ -32,10 +39,6 @@ public class Recipe {
 
         public long getRecipeID() {
             return recipeID;
-        }
-
-        public void setRecipeID(long recipeID) {
-            this.recipeID = recipeID;
         }
 
         public int getCookTime() { return cookTime; }
@@ -62,5 +65,20 @@ public class Recipe {
             this.cookingInstructions = cookingInstructions;
         }
 
+        public void setDifficulty( int newDifficulty ) {
+            this.difficulty = newDifficulty;
+        }
+
+        public int getDifficulty() {
+            return this.difficulty;
+        }
+
+        public int getNumFavorites() {
+            return this.numFavorites;
+        }
+
+        public void setNumFavorites( int newNumFavorites ) {
+            this.numFavorites = newNumFavorites;
+        }
 
 }
