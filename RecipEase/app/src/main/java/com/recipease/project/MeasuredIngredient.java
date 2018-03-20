@@ -1,4 +1,4 @@
-package com.recipease.recipease;
+package com.recipease.project;
 
 /**
  * Created by pdiddy on 2/19/2018.

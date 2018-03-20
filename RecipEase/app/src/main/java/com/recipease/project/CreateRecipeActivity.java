@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -19,10 +20,16 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class CreateRecipeActivity extends AppCompatActivity {
 
@@ -246,7 +253,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
     }
 
     public void storeRecipeInDatabase() {
-        Recipe newRecipe = new Recipe();
+        final Recipe newRecipe = new Recipe();
         newRecipe.setCookingInstructions( recipeInstructions );
         newRecipe.setCookTime( cookTime );
         newRecipe.setCookingIngredients( recipeIngredients );
@@ -254,11 +261,36 @@ public class CreateRecipeActivity extends AppCompatActivity {
         newRecipe.setImageURL( "lololol" );
         newRecipe.generateRecipeId();
         newRecipe.setNumFavorites(0);
+        newRecipe.setOwnerID(userID);
 
         //Used to connect to the firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         //References the root of the database
-        DatabaseReference database_reference = database.getReference().child("recipes");
-        database_reference.child(Long.toString(newRecipe.getRecipeID())).setValue(newRecipe);
+        DatabaseReference database_reference = database.getReference();
+        //Add the new recipe to the database
+        database_reference.child("recipes").child(Long.toString(newRecipe.getRecipeID())).setValue(newRecipe);
+        //Give the owner (creator) of the new recipe the recipeID
+        database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot the_user) {
+                User user = the_user.getValue(User.class);
+                ArrayList<Long> recipesOwned;
+                if (user.getRecipesOwned() == null) {
+                    recipesOwned = new ArrayList<Long>();
+                }
+                else {
+                    recipesOwned = new ArrayList(user.getRecipesOwned());
+                }
+                recipesOwned.add(newRecipe.getRecipeID());
+                user.setRecipesOwned(recipesOwned);
+                the_user.getRef().setValue(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+        showAlert("Recipe successfully uploaded!", "Cool, I'm hyped");
     }
 }

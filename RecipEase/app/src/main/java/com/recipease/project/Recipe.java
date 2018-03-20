@@ -18,6 +18,7 @@ public class Recipe {
 
         private String title;
         private long recipeID;
+        private String ownerID;
         private int cookTime;
         private int difficulty;
         private String imageURL;
@@ -80,5 +81,10 @@ public class Recipe {
         public void setNumFavorites( int newNumFavorites ) {
             this.numFavorites = newNumFavorites;
         }
+
+        public String getOwnerID() { return this.ownerID; }
+
+        public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
+
 
 }
