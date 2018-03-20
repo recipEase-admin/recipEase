@@ -35,7 +35,10 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 switch (position) {
-
+                    case 0:
+                        Intent goToProfile = new Intent(HomeActivity.this, ProfileActivity.class);
+                        startActivity(goToProfile);
+                        break;
                     case 1:
                         Intent goToCreateRecipe = new Intent(HomeActivity.this, CreateRecipeActivity.class);
                         startActivity(goToCreateRecipe);

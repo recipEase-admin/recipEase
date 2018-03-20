@@ -12,4 +12,5 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_create_recipe">CreateRecipeActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 </resources>
