@@ -1,23 +1,23 @@
 package com.recipease.project;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.RadioButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,19 +25,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
 public class CreateRecipeActivity extends AppCompatActivity {
 
     Filter inputFilter;
+    Uri imageURI;
+
     ArrayList<String> recipeInstructions = new ArrayList<String>();
     ArrayList<String> recipeIngredients = new ArrayList<String>();
 
     private EditText etIngredient;
+
+    private ImageView ivRecipePicture;
+    private String imageURL;
 
     private TextView theIngredients;
     private EditText etInstruction, etCookTime, etName;
@@ -83,6 +90,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
         etIngredient = findViewById(R.id.etIngredient);
         theIngredients = findViewById(R.id.tvIngredients);
+
+        ivRecipePicture = findViewById(R.id.ivRecipePicture);
 
         difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
         inputFilter = new Filter();
@@ -251,14 +260,39 @@ public class CreateRecipeActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+    private void storeRecipeInDatabase() {
+        createImageURL();
+    }
 
-    public void storeRecipeInDatabase() {
+    private void createImageURL() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("recipe_pictures" + "/" + userID + "/" + imageURI.getLastPathSegment());
+        UploadTask uploadTask = storageRef.putFile(imageURI);
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                imageURL = downloadUrl.toString();
+                uploadRecipe();
+            }
+        });
+
+    }
+
+    private void uploadRecipe() {
         final Recipe newRecipe = new Recipe();
         newRecipe.setCookingInstructions( recipeInstructions );
         newRecipe.setCookTime( cookTime );
         newRecipe.setCookingIngredients( recipeIngredients );
         newRecipe.setTitle( recipeTitle );
-        newRecipe.setImageURL( "lololol" );
+        newRecipe.setImageURL( imageURL );
         newRecipe.generateRecipeId();
         newRecipe.setNumFavorites(0);
         newRecipe.setOwnerID(userID);
@@ -292,5 +326,26 @@ public class CreateRecipeActivity extends AppCompatActivity {
             }
         });
         showAlert("Recipe successfully uploaded!", "Cool, I'm hyped");
+    }
+
+    //Called when imageView is clicked
+    private static final int READ_REQUEST_CODE = 42;
+    public void selectRecipePicture(View v) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent resultData) {
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = null;
+            if (resultData != null) {
+                uri = resultData.getData();
+                Glide.with(this).load(uri).centerCrop().into(ivRecipePicture);
+                imageURI = uri;
+            }
+        }
     }
 }

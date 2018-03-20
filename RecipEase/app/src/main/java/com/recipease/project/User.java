@@ -10,7 +10,7 @@ import java.util.List;
 public class User {
 //----------------------------------------------------------------------------
     // Fields //
-    private String email, displayName, bio;
+    private String email, displayName, bio, imageURL;
     private String uid;
     private List<Long> recipesOwned;
 
@@ -58,4 +58,11 @@ public class User {
         this.recipesOwned = recipesOwned;
     }
 
+    public String getImageURL() {
+        return this.imageURL;
+    }
+
+    public void setImageURL( String newImageURL ) {
+        this.imageURL = newImageURL;
+    }
 }
