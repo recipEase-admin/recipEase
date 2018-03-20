@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import android.widget.Filter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +21,13 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     private ArrayList<Ingredient> ingredientList;
     private Context context;
 
+
     IngredientAdapter(Context context, ArrayList<Ingredient> ingredientList) {
         this.ingredientList = ingredientList;
         this.context = context;
+
     }
+
 
     @Override
     public IngredientAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -35,6 +39,8 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         Ingredient currentIngredient = ingredientList.get(position);
         holder.bindTo(currentIngredient);
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -48,7 +54,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView);
 
-            nameCheckBox = (CheckBox) itemView.findViewById(R.id.name);
+            nameCheckBox = (CheckBox) itemView.findViewById(R.id.lbl_name);
 
         }
 
@@ -58,4 +64,6 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         }
 
     }
+
+
 }

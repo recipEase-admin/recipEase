@@ -66,6 +66,8 @@ public class IngredientSelectorTest extends AppCompatActivity {
 
         getAllIngredients(ingredientAdapter, ingredientList);
 
+        System.out.println(ingredientList.size());
+
     }
 
     //Returns a list of all ingredients

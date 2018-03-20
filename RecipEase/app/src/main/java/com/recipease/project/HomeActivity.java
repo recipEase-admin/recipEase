@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void goToIngredientSelector(View v){
-        Intent i = new Intent(HomeActivity.this, IngredientSelectorTest.class);
+        Intent i = new Intent(HomeActivity.this, IngredientSelector.class);
         startActivity(i);
     }
 
