@@ -44,6 +44,7 @@ public class IngredientAutoCompleteAdapter extends ArrayAdapter<Ingredient> {
             TextView lbl = (TextView) view.findViewById((R.id.lbl_name));
             if(lbl!=null){
                 lbl.setText(in.getName());
+                lbl.setTag(in.getName());
             }
         }
         return view;

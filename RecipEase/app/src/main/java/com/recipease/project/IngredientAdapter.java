@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
-import android.widget.Filter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,52 +16,56 @@ import static android.support.v4.content.ContextCompat.startActivity;
 
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.ViewHolder> {
 
-    private ArrayList<Ingredient> ingredientList;
+    private ArrayList<Ingredient> checkedIngredientList;
     private Context context;
 
-
-    IngredientAdapter(Context context, ArrayList<Ingredient> ingredientList) {
-        this.ingredientList = ingredientList;
+    IngredientAdapter(Context context, ArrayList<Ingredient> checkedIngredientList) {
+        this.checkedIngredientList = checkedIngredientList;
         this.context = context;
-
     }
-
 
     @Override
     public IngredientAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_ingredient, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_selected_ingredient, parent, false));
     }
 
     @Override
     public void onBindViewHolder(IngredientAdapter.ViewHolder holder, int position) {
-        Ingredient currentIngredient = ingredientList.get(position);
+        Ingredient currentIngredient = checkedIngredientList.get(position);
         holder.bindTo(currentIngredient);
     }
 
-
-
     @Override
     public int getItemCount() {
-        return ingredientList.size();
+        return checkedIngredientList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder{
 
-        private CheckBox nameCheckBox;
+        private TextView nameText;
+        private ImageView trash;
 
         ViewHolder(View itemView) {
             super(itemView);
 
-            nameCheckBox = (CheckBox) itemView.findViewById(R.id.lbl_name);
+            nameText = (TextView) itemView.findViewById(R.id.name);
+            trash = itemView.findViewById(R.id.trash);
 
+            itemView.setOnClickListener( new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    checkedIngredientList.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                }
+            });
         }
 
         void bindTo(Ingredient currentIngredient) {
-            //Populate the checkboxes with data
-            nameCheckBox.setText(currentIngredient.getName());
+            //Populate the textviews with data
+            nameText.setText(currentIngredient.getName());
+            trash.setImageResource(R.drawable.ic_trash);
         }
 
     }
-
 
 }

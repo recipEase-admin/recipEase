@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollViewIngredients"
-        tools:context="com.example.archit.ingredients.Recipes">
+        tools:context="com.recipease.project.IngredientSelector">
 
 
 
@@ -56,10 +56,10 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="com.recipease.project.BrowseRecipesActivity">
+            tools:context="com.recipease.project.IngredientSelector">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/ingredientRecyclerView"
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

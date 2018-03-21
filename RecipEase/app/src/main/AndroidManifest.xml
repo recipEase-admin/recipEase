@@ -35,7 +35,6 @@
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".IngredientSelector" />
-        <activity android:name=".IngredientSelectorTest"></activity>
     </application>
 
 </manifest>

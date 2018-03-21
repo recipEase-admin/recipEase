@@ -1,16 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-
 
         <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/lbl_name"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
@@ -18,11 +8,6 @@
             android:gravity="center_vertical|center_horizontal"
             android:text="temp"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp" />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        />
-
-</LinearLayout>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:onClick="addItem"/>

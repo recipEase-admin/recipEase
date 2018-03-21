@@ -1,6 +1,7 @@
 package com.recipease.project;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 import android.graphics.Color;
@@ -23,6 +24,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.AdapterView;
 import android.view.Menu;
 import android.content.Intent;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import static android.content.ContentValues.TAG;
 import java.util.HashMap;
@@ -30,21 +36,17 @@ import java.util.HashMap;
 
 public class IngredientSelector extends AppCompatActivity {
 
-
-    // Set is for storing all the ingredients, two arrays carry the names and ids for autocomplete
-    HashSet<String> setofIngredients = new HashSet<String>();
-    //int[] options = {R.id.spinach, R.id.carrot,R.id.bacon,R.id.chicken,R.id.apple,R.id.banana};
-    String[] names = {"spinach", "carrot","bacon","chicken","apple","banana","milk","cheese"};
+    String[] ingredientNames;
+    String[] checkedIngredientNames;
 
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
 
     private RecyclerView recyclerView;
     private ArrayList<Ingredient> ingredientList;
-    IngredientAdapter ingredientAdapter;
-    IngredientAutoCompleteAdapter ia;
+    IngredientAutoCompleteAdapter ingredientAutoCompleteAdapter;
 
-    private ArrayList<Ingredient> checked_ingredients;
+    private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,57 +56,14 @@ public class IngredientSelector extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
 
-//        checked_ingredients = new ArrayList<>();
-//
-        ingredientAdapter = new IngredientAdapter(this, ingredientList);
-//        recyclerView.setAdapter(ingredientAdapter);
-//        getAllIngredients(ingredientAdapter,ingredientList);
-
-
-//
-//        HashMap<String,Ingredient> map = new HashMap<String,Ingredient>();
-//        System.out.println(ingredientList.size());
-//        for(Ingredient x: ingredientList){
-//            map.put(x.getName(),x);
-//        }
-
         ingredientList = new ArrayList<Ingredient>();
-        ia = new IngredientAutoCompleteAdapter(this,R.layout.activity_ingredient_selector,R.id.lbl_name,ingredientList);
-        getAllIngredients(ia, ingredientList);
+        ingredientAutoCompleteAdapter = new IngredientAutoCompleteAdapter(this,R.layout.activity_ingredient_selector,R.id.lbl_name,ingredientList);
+        getAllIngredients(ingredientAutoCompleteAdapter, ingredientList);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,names);
-        AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.actv);
-        actv.setAdapter(ia);
-        actv.setTextColor(Color.WHITE);
-        actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-
-
-
-
-
-
-
-
-
-
-
-//
-//        // setting up autocomplete
-//        AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.actv);
-//
-//        actv.setThreshold(1);
-//        actv.setAdapter(ia);
-//        actv.setTextColor(Color.WHITE);
-//        actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-
-
-//        actv.setOnItemClickListener(new OnItemClickListener() {
-//            @Override
-//            public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
-//                String i = (String)parent.getItemAtPosition(position);
-//                Log.d("LOL", i);
-//            }
-//        });
+        IngredientAdapter ingredientAdapter = new IngredientAdapter(IngredientSelector.this, checked_ingredients);
+        recyclerView = findViewById(R.id.ingredientRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(IngredientSelector.this));
+        recyclerView.setAdapter(ingredientAdapter);
 
     }
 
@@ -115,46 +74,18 @@ public class IngredientSelector extends AppCompatActivity {
         return true;
     }
 
-
-    //Sending intent to BrowseRecipes Activity
-    public void sendRecipes(View view){
-
-
-        ArrayList<Recipe> recipeList = new ArrayList<>();
-        //RecipeAdapter recipeAdapter = new RecipeAdapter(this, recipeList);
-        database = FirebaseDatabase.getInstance();
-        database_reference = database.getReference();
-
-        Intent intent = new Intent(this, BrowseRecipesActivity.class);
-        intent.putExtra("recipes", recipeList);
-
-        /* Hey, Look Over Here
-         Use (ArrayList<String>) getIntent().getSerializableExtra("recipes"); to open this list in the other class
-          */
-        startActivity(intent);
-    }
-
-
     //Adding and removing ingredients from set
     public void addItem(View view) {
-//        boolean checked = ((CheckBox) view).isChecked();
-//
-//        for(int i=0; i<options.length; i++){
-//
-//            if(view.getId()==options[i]){
-//
-//                if(checked){
-//                    setofIngredients.add(names[i]);
-//                }
-//                else{
-//                    setofIngredients.remove(names[i]);
-//                }
-//                break;
-//            }
-//
-//        }
+        TextView lbl = (TextView) view;
+        String selection = lbl.getText().toString();
+        System.out.println(selection);
+        for (int i = 0; i < ingredientList.size(); i++) {
+            if (ingredientList.get(i).getName().equals(selection)) {
+                checked_ingredients.add(ingredientList.get(i));
+                return;
+            }
+        }
     }
-
 
     //Returns a list of all ingredients
     public void getAllIngredients(final IngredientAutoCompleteAdapter ingredientAdapter, final ArrayList<Ingredient> ingredientList) {
@@ -172,7 +103,15 @@ public class IngredientSelector extends AppCompatActivity {
                 }
                 //Asynchronous so have to use this to notify adapter when finished
                 ingredientAdapter.notifyDataSetChanged();
-                System.out.println(ingredientList.size());
+                ingredientNames = new String[ingredientList.size()];
+                for (int i = 0; i < ingredientList.size(); i++) {
+                    ingredientNames[i] = ingredientList.get(i).getName();
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(IngredientSelector.this,R.layout.item_ingredient,ingredientNames);
+                AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.actv);
+                actv.setAdapter(adapter);
+                actv.setTextColor(Color.WHITE);
+                actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
             }
 
             @Override
@@ -182,5 +121,54 @@ public class IngredientSelector extends AppCompatActivity {
         });
         return;
 
+    }
+
+    //Sending intent to BrowseRecipes Activity
+    public void sendRecipes(View view){
+        if (checked_ingredients.isEmpty()) {
+            Toast.makeText(IngredientSelector.this, "Select at least one ingredient", Toast.LENGTH_LONG).show();
+        }
+        else {
+            ArrayList<Long> recipe_ids_intersection = convertToRecipeIDs();
+            Intent intent = new Intent(this, BrowseRecipesActivity.class);
+            // Put as Serializable
+            intent.putExtra("recipe_ids", recipe_ids_intersection);
+            startActivity(intent);
+        }
+    }
+
+    //Narrows down the recipe ids to send by using intersect operations
+    public ArrayList<Long> convertToRecipeIDs() {
+        ArrayList<Collection<Long>> recipe_ids = new ArrayList<>();
+        for (int i = 0; i < checked_ingredients.size(); i+=2) {
+            //If odd number of ingredients selected and are on the last loop, add last one to the list
+            if ((checked_ingredients.size() - i) == 1) {
+                Collection<Long> collection = checked_ingredients.get(i).getRecipesUsing();
+                recipe_ids.add(collection);
+                break;
+            }
+            else {
+                Collection<Long> collection1 = checked_ingredients.get(i).getRecipesUsing();
+                Collection<Long> collection2 = checked_ingredients.get(i + 1).getRecipesUsing();
+                Collection<Long> intersection = CollectionUtils.intersection(collection1, collection2);
+                recipe_ids.add(intersection);
+            }
+        }
+        //Now we have an Arraylist of Collection of recipe_ids
+        while (recipe_ids.size() > 1) {
+            Collection<Long> collection1 = recipe_ids.get(0);
+            System.out.println(collection1);
+            Collection<Long> collection2 = recipe_ids.get(1);
+            System.out.println(collection2);
+            Collection<Long> intersection = CollectionUtils.intersection(collection1, collection2);
+            System.out.println(intersection);
+            //Add this intersection
+            recipe_ids.add(0, intersection);
+            //Remove the former two collections
+            recipe_ids.remove(1);
+            recipe_ids.remove(1);
+        }
+        //Final intersection has been formed
+        return (ArrayList<Long>) recipe_ids.get(0);
     }
 }
