@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -48,6 +50,7 @@ public class IngredientSelector extends AppCompatActivity {
 
     private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
 
+    private AutoCompleteTextView actv;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,8 @@ public class IngredientSelector extends AppCompatActivity {
         recyclerView = findViewById(R.id.ingredientRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(IngredientSelector.this));
         recyclerView.setAdapter(ingredientAdapter);
+
+        actv = (AutoCompleteTextView) findViewById(R.id.actv);
 
     }
 
@@ -82,6 +87,8 @@ public class IngredientSelector extends AppCompatActivity {
         for (int i = 0; i < ingredientList.size(); i++) {
             if (ingredientList.get(i).getName().equals(selection)) {
                 checked_ingredients.add(ingredientList.get(i));
+                actv.dismissDropDown();
+                hideKeyboard();
                 return;
             }
         }
@@ -170,5 +177,14 @@ public class IngredientSelector extends AppCompatActivity {
         }
         //Final intersection has been formed
         return (ArrayList<Long>) recipe_ids.get(0);
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }
