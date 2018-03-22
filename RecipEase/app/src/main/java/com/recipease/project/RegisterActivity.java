@@ -48,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         etDisplayName = (EditText) findViewById(R.id.etDisplayName);
         ivProfilePicture = (ImageView) findViewById(R.id.ivProfilePicture);
         inputFilter = new Filter();
+        imageURI = null;
     }
 
     public void registerUser(View v) {
@@ -94,6 +95,9 @@ public class RegisterActivity extends AppCompatActivity {
         // Check for empty values
         for (String tfValue : tfValues) {
             if (tfValue.equals("")) return false;
+        }
+        if (imageURI == null) {
+            return false;
         }
         return true;
     }
