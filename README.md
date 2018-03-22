@@ -2,74 +2,73 @@
 
 One Paragraph of project description goes here
 
-## Getting Started
+# Table of Contents
+1. [Getting Started](#Getting-Started)
+2. [Prerequisites](#Prerequisites)
+3. [Installing](#Installing)
+4. [Testing](#Testing)
+5. [Deployment](#Deployment)
+6. [Build With](#Built-With)
+7. [Contributing](#Contributing)
+8. [Versioning](#Versioning)
+9. [Authors](#Authors)
+10. [License](#License)
+11. [Acknowledgments](#Acknowledgments)
+
+## Getting Started <a name="Getting-Started"></a>
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites
+### Prerequisites <a name="Prerequisites"></a>
 
 * Android device running Android 5.1 Lollipop or greater
 * Android Studio
 
-### Installing
+### Installing <a name="Installing"></a>
 
 * Download the repo and open it in Android Studio as an Android Studio project
 * Build the application and run it on either a virtual machine or a physical device
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+## Testing <a name="Testing"></a>
 
 ```
 Give an example
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
+## Deployment <a name="Deployment"></a>
 
 Add additional notes about how to deploy this on a live system
 
-## Built With
+## Built With <a name="Built-With"></a>
 
 * [FirebaseAuth](https://firebase.google.com/products/auth/) - Handles user authentication
 * [FirebaseDatabase](https://firebase.google.com/products/database) - The database used
 * [FirebaseStorage](https://firebase.google.com/products/storage/) - Stores user uploaded images
 
-## Contributing
+## Contributing <a name="Contributing"></a>
 
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Versioning
+## Versioning <a name="Versioning"></a>
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
-## Authors
+## Authors <a name="Authors"></a>
 
-* **Andrew Ratz** - *Initial work* - [ar4757](https://github.com/ar4757)
-* **Joe Knight** - *Initial work* - [knightjoe2222](https://github.com/knightjoe2222)
-* **Akira Sewnath** - *Initial work* - [asewnath](https://github.com/asewnath)
-* **Archit Rathi** - *Initial work* - [progdude](https://github.com/progdude)
-* **Robert Matyjek** - *Initial work* - [RobertMatyjek](https://github.com/RobertMatyjek)
-* **Robert Robillard** - *Initial work* - [BobbyRobillard](https://github.com/BobbyRobillard)
-* **Lily Ohira** - *Initial work* - [lilohi](https://github.com/lilohi)
+* **Andrew Ratz** - *Database integration, logo design, Recipe Details GUI, recipe suggestions algorithm, and the overall concept* - [ar4757](https://github.com/ar4757)
+* **Joe Knight** - *Scripting to make the database suit our needs, and database implementation* - [knightjoe2222](https://github.com/knightjoe2222)
+* **Akira Sewnath** - *Browse Recipes GUI, including dynamic loading of recipes while scrolling, and unit tests* - [asewnath](https://github.com/asewnath)
+* **Archit Rathi** - *Ingredient Selection GUI, including autocomplete search bar* - [progdude](https://github.com/progdude)
+* **Robert Matyjek** - *Navigation Bar and unit tests* - [RobertMatyjek](https://github.com/RobertMatyjek)
+* **Robert Robillard** - *Registration, Home, and Profile GUIs, as well as keeping the team organized* - [BobbyRobillard](https://github.com/BobbyRobillard)
+* **Lily Ohira** - *User profile GUI, and task management of the team* - [lilohi](https://github.com/lilohi)
 
 See also the list of [contributors](https://github.com/recipEase-admin/recipEase/contributors) who participated in this project.
 
-## License
+## License <a name="License"></a>
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
+## Acknowledgments <a name="Acknowledgments"></a>
 
-* The Recipe1M dataset hosted by MIT, which we modified for our database [Recipe1M](http://im2recipe.csail.mit.edu)
+* The Recipe1M dataset hosted by MIT, which we modified for our database - [Recipe1M](http://im2recipe.csail.mit.edu)
