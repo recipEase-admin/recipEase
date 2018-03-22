@@ -20,41 +20,49 @@ One Paragraph of project description goes here
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites <a name="Prerequisites"></a>
+<a name="Prerequisites"></a>
+### Prerequisites
 
 * Android device running Android 5.1 Lollipop or greater
 * Android Studio
 
-### Installing <a name="Installing"></a>
+<a name="Installing"></a>
+### Installing
 
 * Download the repo and open it in Android Studio as an Android Studio project
 * Build the application and run it on either a virtual machine or a physical device
 
-## Testing <a name="Testing"></a>
+<a name="Testing"></a>
+## Testing
 
 ```
 Give an example
 ```
 
-## Deployment <a name="Deployment"></a>
+<a name="Deployment"></a>
+## Deployment
 
 Add additional notes about how to deploy this on a live system
 
-## Built With <a name="Built-With"></a>
+<a name="Built-With"></a>
+## Built With
 
 * [FirebaseAuth](https://firebase.google.com/products/auth/) - Handles user authentication
 * [FirebaseDatabase](https://firebase.google.com/products/database) - The database used
 * [FirebaseStorage](https://firebase.google.com/products/storage/) - Stores user uploaded images
 
-## Contributing <a name="Contributing"></a>
+<a name="Contributing"></a>
+## Contributing
 
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Versioning <a name="Versioning"></a>
+<a name="Versioning"></a>
+## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
-## Authors <a name="Authors"></a>
+<a name="Authors"></a>
+## Authors
 
 * **Andrew Ratz** - *Database integration, logo design, Recipe Details GUI, recipe suggestions algorithm, and the overall concept* - [ar4757](https://github.com/ar4757)
 * **Joe Knight** - *Scripting to make the database suit our needs, and database implementation* - [knightjoe2222](https://github.com/knightjoe2222)
@@ -66,10 +74,12 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 See also the list of [contributors](https://github.com/recipEase-admin/recipEase/contributors) who participated in this project.
 
-## License <a name="License"></a>
+<a name="License"></a>
+## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments <a name="Acknowledgments"></a>
+<a name="Acknowledgments"></a>
+## Acknowledgments
 
 * The Recipe1M dataset hosted by MIT, which we modified for our database - [Recipe1M](http://im2recipe.csail.mit.edu)
