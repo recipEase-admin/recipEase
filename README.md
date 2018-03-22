@@ -1,5 +1,7 @@
 # RecipEase
 
+![recipease_logo_animated_final](https://user-images.githubusercontent.com/26062564/37796120-dbd97cc4-2dec-11e8-9f10-fc63f87c3c77.gif)
+
 One Paragraph of project description goes here
 
 # Table of Contents
