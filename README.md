@@ -1,8 +1,10 @@
 # RecipEase
 
-![recipease_logo_animated_final](https://user-images.githubusercontent.com/26062564/37796120-dbd97cc4-2dec-11e8-9f10-fc63f87c3c77.gif)
+<img src="https://user-images.githubusercontent.com/26062564/37796120-dbd97cc4-2dec-11e8-9f10-fc63f87c3c77.gif" width="180" height="270">
 
-One Paragraph of project description goes here
+RecipEase is a Java application for Android made to revolutionize the way users decide on what meals to cook. It recommends potential recipes for the user to make based on ingredients they want to cook with, allowing for easy brainstorming of potential uses for ingredients that have been sitting in the pantry for a while, unused. This app is ideal for the amateur cook, who may buy an ingredient to use in one particular recipe, without knowing what else it can be used for. Recipe suggestions inform the user of how many ingredients they are missing, if any, as well as key details such as the cook time and instructions. Social features such as favoriting recipes and uploading personal recipes are other important aspects of the app. 
+
+The overall goal of RecipEase is to increase utilization of ingredients through appropriate recipe suggestions, allowing for a more streamlined cooking experience.
 
 # Table of Contents
 1. [Getting Started](#Getting-Started)
