@@ -15,7 +15,8 @@ One Paragraph of project description goes here
 10. [License](#License)
 11. [Acknowledgments](#Acknowledgments)
 
-## Getting Started <a name="Getting-Started"></a>
+<a name="Getting-Started"></a>
+## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
