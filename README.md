@@ -4,8 +4,8 @@ One Paragraph of project description goes here
 
 # Table of Contents
 1. [Getting Started](#Getting-Started)
-  1. [Prerequisites](#Prerequisites)
-  2. [Installing](#Installing)
+  1. [Prerequisites](##Prerequisites)
+  2. [Installing](##Installing)
 2. [Testing](#Testing)
 3. [Deployment](#Deployment)
 4. [Build With](#Built-With)
