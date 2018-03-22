@@ -4,16 +4,16 @@ One Paragraph of project description goes here
 
 # Table of Contents
 1. [Getting Started](#Getting-Started)
-2. [Prerequisites](#Prerequisites)
-3. [Installing](#Installing)
-4. [Testing](#Testing)
-5. [Deployment](#Deployment)
-6. [Build With](#Built-With)
-7. [Contributing](#Contributing)
-8. [Versioning](#Versioning)
-9. [Authors](#Authors)
-10. [License](#License)
-11. [Acknowledgments](#Acknowledgments)
+  1. [Prerequisites](#Prerequisites)
+  2. [Installing](#Installing)
+2. [Testing](#Testing)
+3. [Deployment](#Deployment)
+4. [Build With](#Built-With)
+5. [Contributing](#Contributing)
+6. [Versioning](#Versioning)
+7. [Authors](#Authors)
+8. [License](#License)
+9. [Acknowledgments](#Acknowledgments)
 
 <a name="Getting-Started"></a>
 ## Getting Started
