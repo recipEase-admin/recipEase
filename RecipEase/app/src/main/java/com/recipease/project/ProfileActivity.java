@@ -1,6 +1,8 @@
 package com.recipease.project;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -103,10 +105,19 @@ public class ProfileActivity extends AppCompatActivity {
                 Log.i(TAG, "onCancelled", databaseError.toException());
             }
         });
+    }
 
-
-
-
+    private void showAlert(String messageToSay, String buttonText) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(messageToSay);
+        alertDialogBuilder.setPositiveButton(buttonText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     public void saveChanges(View v) {
@@ -119,6 +130,9 @@ public class ProfileActivity extends AppCompatActivity {
             else {
                 databaseReference.child("users").child(userID).setValue(current_user);
             }
+            showAlert("Profile has been update","Righteous");
+            Intent goHome = new Intent(ProfileActivity.this, HomeActivity.class);
+            startActivity(goHome);
         }
 
     }
