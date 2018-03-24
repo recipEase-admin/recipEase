@@ -137,27 +137,6 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     }
 
-    public void addIngredientToRecipe(View v) {
-        // TODO: 3/28/18 Add Database functionality, add search method
-        String newIngredient = etIngredient.getText().toString();
-        theIngredients.setText("");
-            if( newIngredient.equals("Enter Cooking Instruction") ) {
-                showAlert("Please enter an ingredient first", "I'm On It");
-            }
-            else {
-                // Add instruction to list
-                recipeIngredients.add( newIngredient );
-                setIngredientText();
-            }
-
-
-    }
-
-
-
-    private boolean fieldIsEmpty( String fieldText ) {
-        return fieldText.equals("");
-    }
 
     public void setInstructionText() {
         int i = 1;
@@ -168,39 +147,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
         }
         theInstructions.setText(textFieldText);
         etInstruction.setHint("Enter Cooking Instruction");
-
     }
 
-    public void setIngredientText() {
-        int i = 1;
-        String textFieldText = "";
-        for(String s : recipeIngredients) {
-            textFieldText += i + ") " + s + "\n";
-            i++;
-        }
-        theIngredients.setText(textFieldText);
-        etIngredient.setHint("Enter Cooking Ingredients");
-
-    }
-
-
-    public void removeIngredient(View v) {
-        if( recipeIngredients.isEmpty() ) {
-            showAlert("There are no instructions to delete", "Okay, I'll Add One");
-        }
-        else {
-            recipeIngredients.remove(recipeIngredients.size() - 1);
-            if(recipeIngredients.isEmpty()) {
-                setIngredientText();
-                etIngredient.setText("");
-                etIngredient.setHint("Enter Cooking Instruction");
-                theIngredients.setText("No Instructions Yet");
-            }
-            else {
-                setIngredientText();
-            }
-        }
-    }
 
     public void removeInstruction(View v) {
         if( recipeInstructions.isEmpty() ) {
