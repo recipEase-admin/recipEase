@@ -16,16 +16,6 @@
         tools:context="com.recipease.project.MyProfile"
         tools:showIn="@layout/activity_profile">
 
-        <Button
-            android:id="@+id/btSaveChanges"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:clickable="true"
-            android:onClick="saveChanges"
-            android:text="Save Changes"
-            app:layout_constraintBottom_toTopOf="@+id/etDisplayName"
-            tools:layout_editor_absoluteX="129dp" />
 
         <ImageView
             android:id="@+id/ivProfilePic"
@@ -69,49 +59,50 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivProfilePic"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.086" />
 
         <EditText
             android:id="@+id/etBio"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="76dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="104dp"
             android:ems="10"
             android:inputType="textMultiLine"
             android:textColor="@color/colorPrimaryDark"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivProfilePic" />
 
         <TextView
             android:id="@+id/textView13"
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
-            android:layout_marginBottom="32dp"
+            android:layout_height="20dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
             android:text="Favorite Recipes"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorPrimaryDark"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
         <TextView
             android:id="@+id/textView14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="110dp"
+            android:layout_height="22dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="52dp"
             android:text="Personal Recipes"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorPrimaryDark"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
         <TextView
             android:id="@+id/textView5"
@@ -134,9 +125,25 @@
             android:layout_marginTop="8dp"
             android:text="*tap to edit*"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etBio" />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="48dp"
+            android:text="Save Changes"
+            android:background="@drawable/round_shape_btn"
+            android:textColor="#08f"
+            android:padding="10sp"
+            android:onClick="saveChanges"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
