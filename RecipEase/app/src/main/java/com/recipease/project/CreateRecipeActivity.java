@@ -14,7 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -45,7 +45,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class CreateRecipeActivity extends AppCompatActivity {
+public class CreateRecipeActivity extends DrawerActivity{
 
     Filter inputFilter;
     Uri imageURI;
@@ -105,7 +105,12 @@ public class CreateRecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_recipe);
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View contentView = inflater.inflate(R.layout.activity_create_recipe, null, false);
+        mDrawerLayout.addView(contentView, 0);
+
 
 
         database = FirebaseDatabase.getInstance();

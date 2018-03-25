@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/ic_004_avatar"
+            android:title="profile" />
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/pot"
+            android:title="home" />
+        <item
+            android:id="@+id/create_recipe"
+            android:icon="@drawable/ic_002_chef"
+            android:title="create a recipe" />
+        <item
+            android:id="@+id/find_recipe"
+            android:icon="@drawable/ic_001_tray"
+            android:title="find recipes" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/logo"
+            android:title="about" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_003_exit"
+            android:title="logout" />
+
+</menu>
