@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
 
         mDrawerList = (ListView)findViewById(R.id.navList);
 
-        String[] osArray = { "Profile", "Create A Recipe", "About", "Logout" };
+        String[] osArray = { "Profile", "Create A Recipe", "Personal Recipes", "About", "Logout" };
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
         mDrawerList.bringToFront();
@@ -44,12 +44,16 @@ public class HomeActivity extends AppCompatActivity {
                         startActivity(goToCreateRecipe);
                         break;
                     case 2:
+                        Intent goToPersonalRecipes = new Intent(HomeActivity.this, PersonalRecipesActivity.class);
+                        startActivity(goToPersonalRecipes);
+                        break;
+                    case 3:
                         Intent goToAbout = new Intent ( HomeActivity.this, AboutActivity.class);
                         startActivity(goToAbout);
                         break;
-                    case 3: //Logout
+                    case 4: //Logout
                         FirebaseAuth.getInstance().signOut();
-                        Toast.makeText(HomeActivity.this, "Succesfully logged out", Toast.LENGTH_LONG).show();
+                        Toast.makeText(HomeActivity.this, "Successfully logged out", Toast.LENGTH_LONG).show();
                         Intent i = new Intent(HomeActivity.this, MainActivity.class);
                         startActivity(i);
                         break;

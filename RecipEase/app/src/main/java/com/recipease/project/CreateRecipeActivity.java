@@ -2,18 +2,29 @@ package com.recipease.project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -41,7 +53,6 @@ public class CreateRecipeActivity extends AppCompatActivity {
     ArrayList<String> recipeInstructions = new ArrayList<String>();
     ArrayList<String> recipeIngredients = new ArrayList<String>();
 
-    private EditText etIngredient;
 
     private ImageView ivRecipePicture;
     private String imageURL;
@@ -49,6 +60,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
     private TextView theIngredients;
     private EditText etInstruction, etCookTime, etName;
     private TextView theInstructions;
+    private Button btCreateRecipe;
     RadioGroup difficultyGroup;
     int difficulty = 0;
     int cookTime = 0;
@@ -58,6 +70,23 @@ public class CreateRecipeActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private String userID = "";
     FirebaseUser user;
+
+
+    String[] ingredientNames;
+    String[] checkedIngredientNames;
+
+    private FirebaseDatabase database;
+    private DatabaseReference database_reference;
+
+    private RecyclerView recyclerView;
+    private ArrayList<Ingredient> ingredientList;
+    IngredientAutoCompleteAdapter ingredientAutoCompleteAdapter;
+
+    private ArrayList<Ingredient> checked_ingredients;
+
+    private AutoCompleteTextView actv;
+
+
   
     @Override
 
@@ -78,6 +107,26 @@ public class CreateRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_recipe);
 
+
+        database = FirebaseDatabase.getInstance();
+        database_reference = database.getReference();
+
+        ingredientList = new ArrayList<Ingredient>();
+        ingredientAutoCompleteAdapter = new IngredientAutoCompleteAdapter(this,R.layout.activity_create_recipe,R.id.lbl_name,ingredientList);
+        getAllIngredients(ingredientAutoCompleteAdapter, ingredientList);
+
+
+        checked_ingredients = new ArrayList<Ingredient>();
+        IngredientAdapter ingredientAdapter = new IngredientAdapter(CreateRecipeActivity.this, checked_ingredients);
+        recyclerView = findViewById(R.id.createIngredientRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(CreateRecipeActivity.this));
+        recyclerView.setAdapter(ingredientAdapter);
+
+        actv = (AutoCompleteTextView) findViewById(R.id.createActv);
+
+
+
+
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
 
@@ -87,8 +136,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
         etCookTime = findViewById(R.id.cookTime);
         etName = findViewById(R.id.etName);
         theInstructions = findViewById(R.id.tvInstructions);
+        btCreateRecipe = findViewById(R.id.btCreateRecipe);
 
-        etIngredient = findViewById(R.id.etIngredient);
         theIngredients = findViewById(R.id.tvIngredients);
 
         ivRecipePicture = findViewById(R.id.ivRecipePicture);
@@ -118,6 +167,72 @@ public class CreateRecipeActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_item_ingredient, menu);
+        return true;
+    }
+
+    //Adding and removing ingredients from set
+    public void addItem(View view) {
+        TextView lbl = (TextView) view;
+        String selection = lbl.getText().toString();
+        System.out.println(selection);
+        for (int i = 0; i < ingredientList.size(); i++) {
+            if (ingredientList.get(i).getName().equals(selection)) {
+                checked_ingredients.add(ingredientList.get(i));
+                actv.dismissDropDown();
+                hideKeyboard();
+                return;
+            }
+        }
+    }
+
+    //Returns a list of all ingredients
+    public void getAllIngredients(final IngredientAutoCompleteAdapter ingredientAdapter, final ArrayList<Ingredient> ingredientList) {
+        // Read ingredients in from the database and convert them to an ArrayList of Ingredient objects
+        database_reference.child("ingredients").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot all_ingredients) {
+                //Loop through each separate ingredient
+                for (DataSnapshot single_ingredient : all_ingredients.getChildren()) {
+                    //Create a new ingredient object
+                    Ingredient ingredient = single_ingredient.getValue(Ingredient.class);
+                    //populateIngredient(new_ingredient, single_ingredient);
+                    //Adds this new ingredient to the ingredient arraylist
+                    ingredientList.add(ingredient);
+                }
+                //Asynchronous so have to use this to notify adapter when finished
+                ingredientAdapter.notifyDataSetChanged();
+                ingredientNames = new String[ingredientList.size()];
+                for (int i = 0; i < ingredientList.size(); i++) {
+                    ingredientNames[i] = ingredientList.get(i).getName();
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateRecipeActivity.this,R.layout.item_ingredient,ingredientNames);
+                AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.createActv);
+                actv.setAdapter(adapter);
+                actv.setTextColor(Color.BLACK);
+                actv.getBackground().mutate().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+        return;
+
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     public void addInstructionToRecipe(View v) {
@@ -168,22 +283,36 @@ public class CreateRecipeActivity extends AppCompatActivity {
         }
     }
 
+    //Runs when Create Recipe button is clicked
     public void createRecipe(View v) {
+        //Lock button until done
+        btCreateRecipe.setEnabled(false);
         // Get input from fields
         recipeTitle = etName.getText().toString();
+        for (int i = 0; i < checked_ingredients.size(); i++) {
+            recipeIngredients.add(checked_ingredients.get(i).getName());
+        }
 
         // Check if all fields filled
         if( difficulty == 0 || recipeTitle.equals("") || etCookTime.getText().toString().equals("")) {
             showAlert("Please fill in all fields", "I'm on it");
+            //Unlock button
+            btCreateRecipe.setEnabled(true);
         }
         else if(recipeInstructions.isEmpty()) {
             showAlert("Please add instructions for the recipe", "I'm on it");
+            //Unlock button
+            btCreateRecipe.setEnabled(true);
         }
         else if(recipeIngredients.isEmpty()){
             showAlert("Please add ingredients for the recipe", "I'm on it");
+            //Unlock button
+            btCreateRecipe.setEnabled(true);
         }
         else if(inputFilter.containsProfanity(recipeTitle)) {
             showAlert("Your recipe name contains profanity, please remove the profanity.", "I'll Handle It");
+            //Unlock button
+            btCreateRecipe.setEnabled(true);
         }
         else {
             try{
@@ -192,6 +321,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
             }
             catch(Exception e) {
                 showAlert("Please enter a number for the time to prepare", "I'm on it");
+                //Unlock button
+                btCreateRecipe.setEnabled(true);
             }
         }
     }
@@ -228,13 +359,14 @@ public class CreateRecipeActivity extends AppCompatActivity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 imageURL = downloadUrl.toString();
-                uploadRecipe();
+                Recipe uploaded = uploadRecipe();
+                addRecipeToIngredient(uploaded);
             }
         });
 
     }
 
-    private void uploadRecipe() {
+    private Recipe uploadRecipe() {
         final Recipe newRecipe = new Recipe();
         newRecipe.setCookingInstructions( recipeInstructions );
         newRecipe.setCookTime( cookTime );
@@ -273,7 +405,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
                 Log.i(TAG, "onCancelled", databaseError.toException());
             }
         });
-        showAlert("Recipe successfully uploaded!", "Cool, I'm hyped");
+        return newRecipe;
     }
 
     //Called when imageView is clicked
@@ -296,4 +428,38 @@ public class CreateRecipeActivity extends AppCompatActivity {
             }
         }
     }
+
+    //Returns a list of all ingredients
+    public void addRecipeToIngredient(final Recipe uploadedRecipe) {
+        // Read ingredients in from the database and convert them to an ArrayList of Ingredient objects
+        for (int i = 0; i < checked_ingredients.size(); i++) {
+            database_reference.child("ingredients").child(Long.toString(checked_ingredients.get(i).getIngredientID())).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot the_ingredient) {
+                        //Create a new ingredient object
+                        Ingredient ingredient = the_ingredient.getValue(Ingredient.class);
+                        ArrayList<Long> recipesUsing;
+                        if (ingredient.getRecipesUsing() == null) {
+                            recipesUsing = new ArrayList<Long>();
+                        } else {
+                            recipesUsing = new ArrayList(ingredient.getRecipesUsing());
+                        }
+                        recipesUsing.add(uploadedRecipe.getRecipeID());
+                        ingredient.setRecipesUsing(recipesUsing);
+                        the_ingredient.getRef().setValue(ingredient);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i(TAG, "onCancelled", databaseError.toException());
+                }
+            });
+            Toast.makeText(this, "Recipe successfully uploaded!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(CreateRecipeActivity.this, HomeActivity.class);
+            startActivity(intent);
+            return;
+
+        }
+    }
+
 }

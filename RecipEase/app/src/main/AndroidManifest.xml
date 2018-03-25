@@ -47,6 +47,10 @@
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".PersonalRecipesActivity"
+            android:label="PersonalRecipesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
