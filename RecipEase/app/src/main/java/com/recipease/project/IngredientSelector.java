@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemClickListener;
@@ -36,7 +37,7 @@ import static android.content.ContentValues.TAG;
 import java.util.HashMap;
 
 
-public class IngredientSelector extends AppCompatActivity {
+public class IngredientSelector extends DrawerActivity {
 
     String[] ingredientNames;
     String[] checkedIngredientNames;
@@ -54,7 +55,13 @@ public class IngredientSelector extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ingredient_selector);
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View contentView = inflater.inflate(R.layout.activity_ingredient_selector, null, false);
+        mDrawerLayout.addView(contentView, 0);
+
+
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
