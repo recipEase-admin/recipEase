@@ -18,7 +18,7 @@ public class AboutActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Intent goToHome= new Intent(AboutActivity.this, HomeActivity.class);
+                Intent goToHome= new Intent(AboutActivity.this, DrawerActivity.class);
                 startActivity(goToHome);
 
             }

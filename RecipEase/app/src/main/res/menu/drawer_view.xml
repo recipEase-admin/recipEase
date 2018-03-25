@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/logo"
+            android:title="profile" />
+        <item
+            android:id="@+id/create_recipe"
+            android:icon="@drawable/meat_icon_background"
+            android:title="create a recipe" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/pot"
+            android:title="about" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logo"
+            android:title="logout" />
+    </group>
+</menu>
