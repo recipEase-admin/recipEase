@@ -1,89 +1,75 @@
 package com.recipease.project;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ramotion.foldingcell.FoldingCell;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.CheckBox;
+import android.widget.AdapterView;
 import android.view.Menu;
 import android.content.Intent;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import static android.content.ContentValues.TAG;
+import java.util.HashMap;
 
 
 public class IngredientSelector extends AppCompatActivity {
 
-
-    // Set is for storing all the ingredients, two arrays carry the names and ids for autocomplete
-    HashSet<String> setofIngredients = new HashSet<String>();
-    int[] options = {R.id.spinach, R.id.carrot,R.id.bacon,R.id.chicken,R.id.apple,R.id.banana,R.id.milk,R.id.cheese};
-    String[] names = {"spinach", "carrot","bacon","chicken","apple","banana","milk","cheese"};
+    String[] ingredientNames;
+    String[] checkedIngredientNames;
 
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
 
+    private RecyclerView recyclerView;
+    private ArrayList<Ingredient> ingredientList;
+    IngredientAutoCompleteAdapter ingredientAutoCompleteAdapter;
 
+    private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
 
+    private AutoCompleteTextView actv;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredient_selector);
 
-        // setting up autocomplete
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,names);
-        AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.actv);
-        actv.setAdapter(adapter);
-        actv.setTextColor(Color.WHITE);
-        actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        database = FirebaseDatabase.getInstance();
+        database_reference = database.getReference();
 
-        // Fixing the folding animation
-        final FoldingCell veggies = (FoldingCell) findViewById(R.id.veggie_cell);
-        final FoldingCell fruits = (FoldingCell) findViewById(R.id.fruit_cell);
-        final FoldingCell meats = (FoldingCell) findViewById(R.id.meat_cell);
-        final FoldingCell dairy = (FoldingCell) findViewById(R.id.dairy_cell);
+        ingredientList = new ArrayList<Ingredient>();
+        ingredientAutoCompleteAdapter = new IngredientAutoCompleteAdapter(this,R.layout.activity_ingredient_selector,R.id.lbl_name,ingredientList);
+        getAllIngredients(ingredientAutoCompleteAdapter, ingredientList);
 
-        veggies.initialize(2000, Color.rgb(245,115,27), 0);
-        fruits.initialize(2000, Color.rgb(245,115,27), 0);
-        meats.initialize(2000, Color.rgb(245,115,27), 0);
+        IngredientAdapter ingredientAdapter = new IngredientAdapter(IngredientSelector.this, checked_ingredients);
+        recyclerView = findViewById(R.id.ingredientRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(IngredientSelector.this));
+        recyclerView.setAdapter(ingredientAdapter);
 
-        veggies.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                veggies.toggle(false);
-            }
-        });
-        fruits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fruits.toggle(false);
-            }
-        });
-        meats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                meats.toggle(false);
-            }
-        });
-        dairy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dairy.toggle(false);
-            }
-        });
+        actv = (AutoCompleteTextView) findViewById(R.id.actv);
+
     }
 
 
@@ -93,74 +79,112 @@ public class IngredientSelector extends AppCompatActivity {
         return true;
     }
 
-
-    //Sending intent to BrowseRecipes Activity
-    public void sendRecipes(View view){
-
-
-        ArrayList<Recipe> recipeList = new ArrayList<>();
-        //RecipeAdapter recipeAdapter = new RecipeAdapter(this, recipeList);
-        database = FirebaseDatabase.getInstance();
-        database_reference = database.getReference();
-        getAllRecipes(recipeList);
-
-        Intent intent = new Intent(this, BrowseRecipesActivity.class);
-
-        intent.putExtra("numIngredients", setofIngredients.size());
-
-
-        //intent.putExtra("recipes", new DataWrapper(recipeList));
-       // intent.putParcelableArrayListExtra("key", ArrayList<Recipe extends Parcelable> recipeList);
-
-        /* Hey, Look Over Here
-         Use (ArrayList<String>) getIntent().getSerializableExtra("recipes"); to open this list in the other class
-          */
-        startActivity(intent);
-    }
-
-
     //Adding and removing ingredients from set
     public void addItem(View view) {
-        boolean checked = ((CheckBox) view).isChecked();
-
-        for(int i=0; i<options.length; i++){
-
-            if(view.getId()==options[i]){
-
-                if(checked){
-                    setofIngredients.add(names[i]);
-                }
-                else{
-                    setofIngredients.remove(names[i]);
-                }
-                break;
+        TextView lbl = (TextView) view;
+        String selection = lbl.getText().toString();
+        System.out.println(selection);
+        for (int i = 0; i < ingredientList.size(); i++) {
+            if (ingredientList.get(i).getName().equals(selection)) {
+                checked_ingredients.add(ingredientList.get(i));
+                actv.dismissDropDown();
+                hideKeyboard();
+                return;
             }
-
         }
     }
 
-
-    //Edited the getAllRecipes method from Home Activity for my use
-    public void getAllRecipes(final ArrayList<Recipe> recipeList) {
-        // Read recipes in from the database and convert them to an ArrayList of Recipe objects
-        database_reference.child("recipes").addValueEventListener(new ValueEventListener() {
+    //Returns a list of all ingredients
+    public void getAllIngredients(final IngredientAutoCompleteAdapter ingredientAdapter, final ArrayList<Ingredient> ingredientList) {
+        // Read ingredients in from the database and convert them to an ArrayList of Ingredient objects
+        database_reference.child("ingredients").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot all_recipes) {
-                //Loop through each separate recipe
-                for (DataSnapshot single_recipe : all_recipes.getChildren()) {
-                    //Create a new recipe object
-                    Recipe recipe = single_recipe.getValue(Recipe.class);
-                    //populateRecipe(new_recipe, single_recipe);
-                    //Adds this new recipe to the recipe arraylist
-                    recipeList.add(recipe);
+            public void onDataChange(DataSnapshot all_ingredients) {
+                //Loop through each separate ingredient
+                for (DataSnapshot single_ingredient : all_ingredients.getChildren()) {
+                    //Create a new ingredient object
+                    Ingredient ingredient = single_ingredient.getValue(Ingredient.class);
+                    //populateIngredient(new_ingredient, single_ingredient);
+                    //Adds this new ingredient to the ingredient arraylist
+                    ingredientList.add(ingredient);
                 }
                 //Asynchronous so have to use this to notify adapter when finished
+                ingredientAdapter.notifyDataSetChanged();
+                ingredientNames = new String[ingredientList.size()];
+                for (int i = 0; i < ingredientList.size(); i++) {
+                    ingredientNames[i] = ingredientList.get(i).getName();
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(IngredientSelector.this,R.layout.item_ingredient,ingredientNames);
+                AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.actv);
+                actv.setAdapter(adapter);
+                actv.setTextColor(Color.WHITE);
+                actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.i(TAG, "onCancelled", databaseError.toException());
             }
         });
         return;
+
+    }
+
+    //Sending intent to BrowseRecipes Activity
+    public void sendRecipes(View view){
+        if (checked_ingredients.isEmpty()) {
+            Toast.makeText(IngredientSelector.this, "Select at least one ingredient", Toast.LENGTH_LONG).show();
+        }
+        else {
+            ArrayList<Long> recipe_ids_intersection = convertToRecipeIDs();
+            Intent intent = new Intent(this, BrowseRecipesActivity.class);
+            // Put as Serializable
+            intent.putExtra("recipe_ids", recipe_ids_intersection);
+            startActivity(intent);
+        }
+    }
+
+    //Narrows down the recipe ids to send by using intersect operations
+    public ArrayList<Long> convertToRecipeIDs() {
+        ArrayList<Collection<Long>> recipe_ids = new ArrayList<>();
+        for (int i = 0; i < checked_ingredients.size(); i+=2) {
+            //If odd number of ingredients selected and are on the last loop, add last one to the list
+            if ((checked_ingredients.size() - i) == 1) {
+                Collection<Long> collection = checked_ingredients.get(i).getRecipesUsing();
+                recipe_ids.add(collection);
+                break;
+            }
+            else {
+                Collection<Long> collection1 = checked_ingredients.get(i).getRecipesUsing();
+                Collection<Long> collection2 = checked_ingredients.get(i + 1).getRecipesUsing();
+                Collection<Long> intersection = CollectionUtils.intersection(collection1, collection2);
+                recipe_ids.add(intersection);
+            }
+        }
+        //Now we have an Arraylist of Collection of recipe_ids
+        while (recipe_ids.size() > 1) {
+            Collection<Long> collection1 = recipe_ids.get(0);
+            System.out.println(collection1);
+            Collection<Long> collection2 = recipe_ids.get(1);
+            System.out.println(collection2);
+            Collection<Long> intersection = CollectionUtils.intersection(collection1, collection2);
+            System.out.println(intersection);
+            //Add this intersection
+            recipe_ids.add(0, intersection);
+            //Remove the former two collections
+            recipe_ids.remove(1);
+            recipe_ids.remove(1);
+        }
+        //Final intersection has been formed
+        return (ArrayList<Long>) recipe_ids.get(0);
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

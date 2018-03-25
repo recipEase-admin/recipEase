@@ -1,39 +1,63 @@
 package com.recipease.project;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.RadioButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class CreateRecipeActivity extends AppCompatActivity {
 
     Filter inputFilter;
+    Uri imageURI;
+
     ArrayList<String> recipeInstructions = new ArrayList<String>();
     ArrayList<String> recipeIngredients = new ArrayList<String>();
 
-
-
     private EditText etIngredient;
+
+    private ImageView ivRecipePicture;
+    private String imageURL;
 
     private TextView theIngredients;
     private EditText etInstruction, etCookTime, etName;
     private TextView theInstructions;
     RadioGroup difficultyGroup;
     int difficulty = 0;
+    int cookTime = 0;
+
+    private String recipeTitle;
+
+    private FirebaseAuth firebaseAuth;
+    private String userID = "";
+    FirebaseUser user;
   
     @Override
 
@@ -54,6 +78,11 @@ public class CreateRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_recipe);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
+
+        userID = user.getUid();
+
         etInstruction = findViewById(R.id.etInstruction);
         etCookTime = findViewById(R.id.cookTime);
         etName = findViewById(R.id.etName);
@@ -62,8 +91,9 @@ public class CreateRecipeActivity extends AppCompatActivity {
         etIngredient = findViewById(R.id.etIngredient);
         theIngredients = findViewById(R.id.tvIngredients);
 
-        difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
+        ivRecipePicture = findViewById(R.id.ivRecipePicture);
 
+        difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
         inputFilter = new Filter();
 
 
@@ -107,27 +137,6 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     }
 
-    public void addIngredientToRecipe(View v) {
-        // TODO: 3/28/18 Add Database functionality, add search method
-        String newIngredient = etIngredient.getText().toString();
-        theIngredients.setText("");
-            if( newIngredient.equals("Enter Cooking Instruction") ) {
-                showAlert("Please enter an ingredient first", "I'm On It");
-            }
-            else {
-                // Add instruction to list
-                recipeIngredients.add( newIngredient );
-                setIngredientText();
-            }
-
-
-    }
-
-
-
-    private boolean fieldIsEmpty( String fieldText ) {
-        return fieldText.equals("");
-    }
 
     public void setInstructionText() {
         int i = 1;
@@ -138,39 +147,8 @@ public class CreateRecipeActivity extends AppCompatActivity {
         }
         theInstructions.setText(textFieldText);
         etInstruction.setHint("Enter Cooking Instruction");
-
     }
 
-    public void setIngredientText() {
-        int i = 1;
-        String textFieldText = "";
-        for(String s : recipeIngredients) {
-            textFieldText += i + ") " + s + "\n";
-            i++;
-        }
-        theIngredients.setText(textFieldText);
-        etIngredient.setHint("Enter Cooking Ingredients");
-
-    }
-
-
-    public void removeIngredient(View v) {
-        if( recipeIngredients.isEmpty() ) {
-            showAlert("There are no instructions to delete", "Okay, I'll Add One");
-        }
-        else {
-            recipeIngredients.remove(recipeIngredients.size() - 1);
-            if(recipeIngredients.isEmpty()) {
-                setIngredientText();
-                etIngredient.setText("");
-                etIngredient.setHint("Enter Cooking Instruction");
-                theIngredients.setText("No Instructions Yet");
-            }
-            else {
-                setIngredientText();
-            }
-        }
-    }
 
     public void removeInstruction(View v) {
         if( recipeInstructions.isEmpty() ) {
@@ -192,11 +170,10 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     public void createRecipe(View v) {
         // Get input from fields
-        String recipeName = etName.getText().toString();
-        int cookTime = 0;
+        recipeTitle = etName.getText().toString();
 
         // Check if all fields filled
-        if( difficulty == 0 || recipeName.equals("") || etCookTime.getText().toString().equals("")) {
+        if( difficulty == 0 || recipeTitle.equals("") || etCookTime.getText().toString().equals("")) {
             showAlert("Please fill in all fields", "I'm on it");
         }
         else if(recipeInstructions.isEmpty()) {
@@ -205,12 +182,13 @@ public class CreateRecipeActivity extends AppCompatActivity {
         else if(recipeIngredients.isEmpty()){
             showAlert("Please add ingredients for the recipe", "I'm on it");
         }
-        else if(inputFilter.containsProfanity(recipeName)) {
+        else if(inputFilter.containsProfanity(recipeTitle)) {
             showAlert("Your recipe name contains profanity, please remove the profanity.", "I'll Handle It");
         }
         else {
             try{
                 cookTime = Integer.parseInt(etCookTime.getText().toString());
+                storeRecipeInDatabase();
             }
             catch(Exception e) {
                 showAlert("Please enter a number for the time to prepare", "I'm on it");
@@ -229,5 +207,93 @@ public class CreateRecipeActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+    private void storeRecipeInDatabase() {
+        createImageURL();
+    }
+
+    private void createImageURL() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("recipe_pictures" + "/" + userID + "/" + imageURI.getLastPathSegment());
+        UploadTask uploadTask = storageRef.putFile(imageURI);
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                imageURL = downloadUrl.toString();
+                uploadRecipe();
+            }
+        });
+
+    }
+
+    private void uploadRecipe() {
+        final Recipe newRecipe = new Recipe();
+        newRecipe.setCookingInstructions( recipeInstructions );
+        newRecipe.setCookTime( cookTime );
+        newRecipe.setCookingIngredients( recipeIngredients );
+        newRecipe.setTitle( recipeTitle );
+        newRecipe.setImageURL( imageURL );
+        newRecipe.generateRecipeId();
+        newRecipe.setNumFavorites(0);
+        newRecipe.setOwnerID(userID);
+
+        //Used to connect to the firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //References the root of the database
+        DatabaseReference database_reference = database.getReference();
+        //Add the new recipe to the database
+        database_reference.child("recipes").child(Long.toString(newRecipe.getRecipeID())).setValue(newRecipe);
+        //Give the owner (creator) of the new recipe the recipeID
+        database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot the_user) {
+                User user = the_user.getValue(User.class);
+                ArrayList<Long> recipesOwned;
+                if (user.getRecipesOwned() == null) {
+                    recipesOwned = new ArrayList<Long>();
+                }
+                else {
+                    recipesOwned = new ArrayList(user.getRecipesOwned());
+                }
+                recipesOwned.add(newRecipe.getRecipeID());
+                user.setRecipesOwned(recipesOwned);
+                the_user.getRef().setValue(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+        showAlert("Recipe successfully uploaded!", "Cool, I'm hyped");
+    }
+
+    //Called when imageView is clicked
+    private static final int READ_REQUEST_CODE = 42;
+    public void selectRecipePicture(View v) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent resultData) {
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri uri = null;
+            if (resultData != null) {
+                uri = resultData.getData();
+                Glide.with(this).load(uri).centerCrop().into(ivRecipePicture);
+                imageURI = uri;
+            }
+        }
     }
 }

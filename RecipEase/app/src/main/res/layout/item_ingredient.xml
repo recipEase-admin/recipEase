@@ -1,0 +1,13 @@
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lbl_name"
+    android:layout_width="wrap_content"
+    android:layout_height="80dp"
+    android:layout_marginLeft="20dp"
+    android:gravity="center_vertical|center_horizontal"
+    android:text="temp"
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="16sp"
+    android:clickable="true"
+    android:onClick="addItem"/>
