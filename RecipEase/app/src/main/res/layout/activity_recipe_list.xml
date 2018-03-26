@@ -30,6 +30,7 @@
                 android:id="@+id/editSearchTextView"
                 android:textColor="#08f"
                 android:textSize="15dp"
+                android:onClick="onEditSearch"
                 android:layout_marginTop="140dp"
                 android:layout_marginLeft="20dp"/>
 
