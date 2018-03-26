@@ -27,7 +27,6 @@ public class HomeActivity extends DrawerActivity {
 
         View contentView = inflater.inflate(R.layout.activity_home, null, false);
         mDrawerLayout.addView(contentView, 0);
-
     }
 
     public void goToFindRecipesPage( View v ) {
