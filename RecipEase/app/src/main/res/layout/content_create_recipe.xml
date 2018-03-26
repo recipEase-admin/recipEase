@@ -197,6 +197,7 @@
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:textColor="#FFF"
                 android:textColorHint="#FFF"
                 app:searchBackIcon="@drawable/ic_action_navigation_arrow_back_inverted"
@@ -208,6 +209,7 @@
                 <AutoCompleteTextView
                     android:id="@+id/createActv"
                     android:layout_width="wrap_content"
+                    android:hint="Enter Ingredient Name"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:ems="10"
@@ -215,6 +217,7 @@
                     >
 
                 </AutoCompleteTextView>
+
             </com.miguelcatalan.materialsearchview.MaterialSearchView>
 
             <android.support.v7.widget.RecyclerView
@@ -284,7 +287,6 @@
             android:padding="10sp"
             android:text="Remove Last Instruction"
             android:textColor="#ff0000"
-            app:layout_constraintBottom_toTopOf="@+id/button4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -307,6 +309,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7"
             app:layout_constraintVertical_bias="1.0" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:paddingLeft="10sp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="56dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            app:srcCompat="@android:drawable/btn_plus" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="64dp"
+            android:text='Tap "+" to add ingredient not found'
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/relativeLayout2" />
 
     </android.support.constraint.ConstraintLayout>
 
