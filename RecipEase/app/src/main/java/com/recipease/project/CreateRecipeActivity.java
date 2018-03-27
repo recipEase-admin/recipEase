@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class CreateRecipeActivity extends DrawerActivity{
     private EditText etInstruction, etCookTime, etName;
     private TextView theInstructions;
     private Button btCreateRecipe;
+    private ImageButton btCreateIngredient;
     RadioGroup difficultyGroup;
     int difficulty = 0;
     int cookTime = 0;
@@ -143,6 +145,7 @@ public class CreateRecipeActivity extends DrawerActivity{
         etName = findViewById(R.id.etName);
         theInstructions = findViewById(R.id.tvInstructions);
         btCreateRecipe = findViewById(R.id.btCreateRecipe);
+        btCreateIngredient = findViewById(R.id.btCreateIngredient);
 
         theIngredients = findViewById(R.id.tvIngredients);
 
@@ -185,7 +188,6 @@ public class CreateRecipeActivity extends DrawerActivity{
     public void addItem(View view) {
         TextView lbl = (TextView) view;
         String selection = lbl.getText().toString();
-        System.out.println(selection);
         for (int i = 0; i < ingredientList.size(); i++) {
             if (ingredientList.get(i).getName().equals(selection)) {
                 checked_ingredients.add(ingredientList.get(i));
@@ -321,12 +323,19 @@ public class CreateRecipeActivity extends DrawerActivity{
             btCreateRecipe.setEnabled(true);
         }
         else {
-            try{
+            try {
                 cookTime = Integer.parseInt(etCookTime.getText().toString());
-                storeRecipeInDatabase();
             }
             catch(Exception e) {
                 showAlert("Please enter a number for the time to prepare", "I'm on it");
+                //Unlock button
+                btCreateRecipe.setEnabled(true);
+            }
+            try {
+                storeRecipeInDatabase();
+            }
+            catch(Exception e) {
+                showAlert("Please upload a photo for the recipe", "I'm on it");
                 //Unlock button
                 btCreateRecipe.setEnabled(true);
             }
@@ -468,4 +477,22 @@ public class CreateRecipeActivity extends DrawerActivity{
         }
     }
 
+    public void createIngredient(View view) {
+        String ingredient_name = actv.getText().toString();
+        final Ingredient newIngredient = new Ingredient();
+        newIngredient.setName(ingredient_name);
+        newIngredient.generateIngredientId();
+
+        //Used to connect to the firebase database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //References the root of the database
+        DatabaseReference database_reference = database.getReference();
+        //Add the new recipe to the database
+        database_reference.child("ingredients").child(Long.toString(newIngredient.getIngredientID())).setValue(newIngredient);
+        checked_ingredients.add(newIngredient);
+        actv.performClick();
+        actv.dismissDropDown();
+        hideKeyboard();
+        return;
+    }
 }

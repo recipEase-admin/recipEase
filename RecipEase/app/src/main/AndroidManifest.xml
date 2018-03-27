@@ -13,8 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,34 +22,34 @@
         </activity>
         <activity
             android:name=".BrowseRecipesActivity"
-            android:label="@string/title_activity_browse_recipes"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RecipeDetailsActivity" />
+            android:label="@string/title_activity_browse_recipes" />
+        <activity
+            android:name=".RecipeDetailsActivity"
+            android:label="@string/title_activity_recipe_details" />
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_home" />
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".IngredientSelector" />
+            android:label="@string/title_activity_register" />
+        <activity
+            android:name=".IngredientSelector"
+            android:label="@string/title_activity_ingredient_selector" />
         <activity
             android:name=".AboutActivity"
-            android:label="AboutActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_about" />
         <activity
             android:name=".CreateRecipeActivity"
-            android:label="@string/title_activity_create_recipe"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_create_recipe" />
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_profile" />
         <activity
             android:name=".PersonalRecipesActivity"
-            android:label="PersonalRecipesActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_personal_recipes" />
+        <activity
+            android:name=".AnimationActivity"
+            android:label="@string/title_activity_animation" />
         <activity android:name=".DrawerActivity" />
     </application>
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -41,6 +43,12 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        TextView tvLogo = (TextView) findViewById(R.id.logoText);
+
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Painter.ttf");
+        tvLogo.setTypeface(font);
+
         mAuth = FirebaseAuth.getInstance();
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
@@ -48,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         etDisplayName = (EditText) findViewById(R.id.etDisplayName);
         ivProfilePicture = (ImageView) findViewById(R.id.ivProfilePicture);
         inputFilter = new Filter();
-        imageURI = null;
+        imageURI = Uri.parse("android.resource://" + getPackageName() + "/drawable/ic_default_profile");
     }
 
     public void registerUser(View v) {
@@ -109,7 +117,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             createUserInDatabase();
-                            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent i = new Intent(RegisterActivity.this, AnimationActivity.class);
                             startActivity(i);
                         } else {
                             // If sign in fails, display a message to the user.

@@ -144,9 +144,11 @@ public class IngredientSelector extends DrawerActivity {
         }
         else {
             ArrayList<Long> recipe_ids_intersection = convertToRecipeIDs();
+            int numIngredients = checked_ingredients.size();
             Intent intent = new Intent(this, BrowseRecipesActivity.class);
             // Put as Serializable
             intent.putExtra("recipe_ids", recipe_ids_intersection);
+            intent.putExtra("numIngredients", numIngredients);
             startActivity(intent);
         }
     }

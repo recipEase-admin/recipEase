@@ -2,12 +2,14 @@ package com.recipease.project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,6 +46,11 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
         View contentView = inflater.inflate(R.layout.activity_recipe_list, null, false);
         mDrawerLayout.addView(contentView, 0);
+
+        TextView tvLogo = (TextView) findViewById(R.id.logoText);
+
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Painter.ttf");
+        tvLogo.setTypeface(font);
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
@@ -91,6 +98,10 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
     }
 
+    public void onEditSearch(View view){
+        finish();
+    }
+
     //Returns a list of all recipes
     public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
@@ -126,5 +137,11 @@ public class BrowseRecipesActivity extends DrawerActivity {
         return;
 
 
+    }
+
+    public void goBackToIngredientSelector(View view) {
+        this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+        this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+        return;
     }
 }
