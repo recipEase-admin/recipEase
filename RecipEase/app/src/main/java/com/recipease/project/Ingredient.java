@@ -1,6 +1,7 @@
 package com.recipease.project;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,20 +14,19 @@ public class Ingredient {
     private Long ingredientID;
     private List<Long> recipesUsing;
 
+    public void generateIngredientId() {
+        this.ingredientID = new Date().getTime();
+    }
+
+    public Long getIngredientID() {
+        return ingredientID;
+    }
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public long getIngredientID() {
-        return ingredientID;
-    }
-
-    public void setIngredientID(long ingredientID) {
-        this.ingredientID = ingredientID;
     }
 
     public List<Long> getRecipesUsing() {

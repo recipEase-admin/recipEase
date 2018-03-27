@@ -36,7 +36,6 @@ public class ProfileActivity extends AppCompatActivity {
     // TODO: 3/20/2018 Get user's bio, profile picture, and display name from database - DONE
     // TODO: 3/21/2018 Get recipes created and recipes favorited from database
 
-    ArrayList<Recipe> favoriteRecipes, personalRecipes;
     ArrayList<Long> recipesOwned;
 
     String displayName, bio;
@@ -63,9 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
         etDisplayName = findViewById(R.id.etDisplayName);
         etBio = findViewById(R.id.etBio);
         ivProfilePic = findViewById(R.id.ivProfilePic);
-
-        favoriteRecipes = new ArrayList<>();
-        personalRecipes = new ArrayList<>();
 
 
         // Get current user's information
