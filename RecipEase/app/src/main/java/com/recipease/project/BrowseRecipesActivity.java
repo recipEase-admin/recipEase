@@ -126,7 +126,12 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
                 //Set results TextView
                 TextView resultText = findViewById(R.id.resultText);
-                resultText.setText(String.format("%d Results", recipeList.size())); //Size now works :)
+                if (recipeList.size() == 1) {
+                    resultText.setText(String.format("%d Result", recipeList.size()));
+                }
+                else {
+                    resultText.setText(String.format("%d Results", recipeList.size()));
+                }
             }
 
             @Override
