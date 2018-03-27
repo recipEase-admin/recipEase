@@ -1,5 +1,6 @@
 package com.recipease.project;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +41,11 @@ public class PersonalRecipesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
+
+        TextView tvLogo = (TextView) findViewById(R.id.logoText);
+
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Painter.ttf");
+        tvLogo.setTypeface(font);
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
