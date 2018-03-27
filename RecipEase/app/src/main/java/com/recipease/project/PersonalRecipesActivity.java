@@ -1,11 +1,14 @@
 package com.recipease.project;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +27,7 @@ import static android.content.ContentValues.TAG;
  * Created by andrewratz on 3/24/18.
  */
 
-public class PersonalRecipesActivity extends AppCompatActivity {
+public class PersonalRecipesActivity extends DrawerActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
@@ -40,7 +43,10 @@ public class PersonalRecipesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_list);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View contentView = inflater.inflate(R.layout.activity_recipe_list, null, false);
+        mDrawerLayout.addView(contentView, 0);
 
         TextView tvLogo = (TextView) findViewById(R.id.logoText);
 

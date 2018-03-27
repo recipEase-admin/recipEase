@@ -2,6 +2,7 @@ package com.recipease.project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,7 +33,7 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends DrawerActivity {
 
     // TODO: 3/20/2018 Get user's bio, profile picture, and display name from database - DONE
     // TODO: 3/21/2018 Get recipes created and recipes favorited from database
@@ -57,7 +59,10 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View contentView = inflater.inflate(R.layout.activity_profile, null, false);
+        mDrawerLayout.addView(contentView, 0);
 
         etDisplayName = findViewById(R.id.etDisplayName);
         etBio = findViewById(R.id.etBio);
