@@ -41,9 +41,4 @@ public class HomeActivity extends DrawerActivity {
         startActivity(i);
     }
 
-    public void goToIngredientSelector(View v){
-        Intent i = new Intent(HomeActivity.this, IngredientSelector.class);
-        startActivity(i);
-    }
-
 }

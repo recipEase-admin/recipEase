@@ -7,20 +7,6 @@
     tools:context="com.recipease.project.BrowseRecipesActivity"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="220dp"
@@ -47,8 +33,7 @@
                 android:textSize="15dp"
                 android:onClick="onEditSearch"
                 android:layout_marginTop="140dp"
-                android:layout_marginLeft="20dp"
-                android:onClick="goBackToIngredientSelector" />
+                android:layout_marginLeft="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
