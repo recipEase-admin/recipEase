@@ -98,6 +98,10 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
     }
 
+    public void onEditSearch(View view){
+        finish();
+    }
+
     //Returns a list of all recipes
     public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
