@@ -48,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         etDisplayName = (EditText) findViewById(R.id.etDisplayName);
         ivProfilePicture = (ImageView) findViewById(R.id.ivProfilePicture);
         inputFilter = new Filter();
-        imageURI = null;
+        imageURI = Uri.parse("android.resource://" + getPackageName() + "/drawable/ic_default_profile");
     }
 
     public void registerUser(View v) {
@@ -109,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             createUserInDatabase();
-                            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent i = new Intent(RegisterActivity.this, AnimationActivity.class);
                             startActivity(i);
                         } else {
                             // If sign in fails, display a message to the user.
