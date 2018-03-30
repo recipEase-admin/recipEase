@@ -106,7 +106,7 @@ public class BrowseRecipesActivity extends DrawerActivity {
     public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
         Intent intent = getIntent();
-        final ArrayList<Long> recipe_ids = (ArrayList<Long>) intent.getSerializableExtra("recipe_ids");
+        final ArrayList<String> recipe_ids = (ArrayList<String>) intent.getSerializableExtra("recipe_ids");
 
         // Read recipes in from the database and convert them to an ArrayList of Recipe objects
         database_reference.child("recipes").addValueEventListener(new ValueEventListener() {

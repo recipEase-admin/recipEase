@@ -72,7 +72,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         void bindTo(Recipe currentRecipe) {
             //Populate the textviews with data
             titleText.setText(currentRecipe.getTitle());
-            cookTimeText.setText(String.format("Cook Time: %d minutes", currentRecipe.getCookTime()));
 
             int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
 
@@ -83,14 +82,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     private void sendRecipe(Intent intent, Recipe recipe_to_bring) {
         String title = recipe_to_bring.getTitle();
-        long recipeID = recipe_to_bring.getRecipeID();
-        int cookTime = recipe_to_bring.getCookTime();
+        String recipeID = recipe_to_bring.getRecipeID();
         String imageURL = recipe_to_bring.getImageURL();
         List<String> cookingIngredients = recipe_to_bring.getCookingIngredients();
         List<String> cookingInstructions = recipe_to_bring.getCookingInstructions();
         intent.putExtra("TITLE", title);
         intent.putExtra("UNIQUE ID", recipeID);
-        intent.putExtra("COOK TIME", cookTime);
         intent.putExtra("IMAGE URL", imageURL);
         intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
         intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);

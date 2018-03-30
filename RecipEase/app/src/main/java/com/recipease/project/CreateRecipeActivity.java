@@ -141,41 +141,16 @@ public class CreateRecipeActivity extends DrawerActivity{
         userID = user.getUid();
 
         etInstruction = findViewById(R.id.etInstruction);
-        etCookTime = findViewById(R.id.cookTime);
         etName = findViewById(R.id.etName);
         theInstructions = findViewById(R.id.tvInstructions);
         btCreateRecipe = findViewById(R.id.btCreateRecipe);
         btCreateIngredient = findViewById(R.id.btCreateIngredient);
 
-        theIngredients = findViewById(R.id.tvIngredients);
 
         ivRecipePicture = findViewById(R.id.ivRecipePicture);
 
-        difficultyGroup = (RadioGroup) findViewById(R.id.difficultyGroup);
         inputFilter = new Filter();
 
-
-
-        difficultyGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                if (checkedId == R.id.diff_1) {
-                    //some code
-                    difficulty = 1;
-                } else if (checkedId == R.id.diff_2) {
-                    //some code
-                    difficulty = 2;
-                }
-                else if (checkedId == R.id.diff_3) {
-                    //some code
-                    difficulty = 3;
-                }
-
-            }
-
-        });
     }
 
     @Override
@@ -201,7 +176,7 @@ public class CreateRecipeActivity extends DrawerActivity{
     //Returns a list of all ingredients
     public void getAllIngredients(final IngredientAutoCompleteAdapter ingredientAdapter, final ArrayList<Ingredient> ingredientList) {
         // Read ingredients in from the database and convert them to an ArrayList of Ingredient objects
-        database_reference.child("ingredients").addValueEventListener(new ValueEventListener() {
+        database_reference.child("ingredientRecipes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot all_ingredients) {
                 //Loop through each separate ingredient
@@ -384,11 +359,10 @@ public class CreateRecipeActivity extends DrawerActivity{
     private Recipe uploadRecipe() {
         final Recipe newRecipe = new Recipe();
         newRecipe.setCookingInstructions( recipeInstructions );
-        newRecipe.setCookTime( cookTime );
         newRecipe.setCookingIngredients( recipeIngredients );
         newRecipe.setTitle( recipeTitle );
         newRecipe.setImageURL( imageURL );
-        newRecipe.generateRecipeId();
+        newRecipe.generateRecipeID();
         newRecipe.setNumFavorites(0);
         newRecipe.setOwnerID(userID);
 
@@ -397,15 +371,15 @@ public class CreateRecipeActivity extends DrawerActivity{
         //References the root of the database
         DatabaseReference database_reference = database.getReference();
         //Add the new recipe to the database
-        database_reference.child("recipes").child(Long.toString(newRecipe.getRecipeID())).setValue(newRecipe);
+        database_reference.child("recipes").child(newRecipe.getRecipeID()).setValue(newRecipe);
         //Give the owner (creator) of the new recipe the recipeID
         database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot the_user) {
                 User user = the_user.getValue(User.class);
-                ArrayList<Long> recipesOwned;
+                ArrayList<String> recipesOwned;
                 if (user.getRecipesOwned() == null) {
-                    recipesOwned = new ArrayList<Long>();
+                    recipesOwned = new ArrayList<String>();
                 }
                 else {
                     recipesOwned = new ArrayList(user.getRecipesOwned());
@@ -448,14 +422,14 @@ public class CreateRecipeActivity extends DrawerActivity{
     public void addRecipeToIngredient(final Recipe uploadedRecipe) {
         // Read ingredients in from the database and convert them to an ArrayList of Ingredient objects
         for (int i = 0; i < checked_ingredients.size(); i++) {
-            database_reference.child("ingredients").child(Long.toString(checked_ingredients.get(i).getIngredientID())).addListenerForSingleValueEvent(new ValueEventListener() {
+            database_reference.child("ingredientRecipes").child(Long.toString(checked_ingredients.get(i).getIngredientID())).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot the_ingredient) {
                         //Create a new ingredient object
                         Ingredient ingredient = the_ingredient.getValue(Ingredient.class);
-                        ArrayList<Long> recipesUsing;
+                        ArrayList<String> recipesUsing;
                         if (ingredient.getRecipesUsing() == null) {
-                            recipesUsing = new ArrayList<Long>();
+                            recipesUsing = new ArrayList<String>();
                         } else {
                             recipesUsing = new ArrayList(ingredient.getRecipesUsing());
                         }
@@ -488,7 +462,7 @@ public class CreateRecipeActivity extends DrawerActivity{
         //References the root of the database
         DatabaseReference database_reference = database.getReference();
         //Add the new recipe to the database
-        database_reference.child("ingredients").child(Long.toString(newIngredient.getIngredientID())).setValue(newIngredient);
+        database_reference.child("ingredientRecipes").child(Long.toString(newIngredient.getIngredientID())).setValue(newIngredient);
         checked_ingredients.add(newIngredient);
         actv.performClick();
         actv.dismissDropDown();

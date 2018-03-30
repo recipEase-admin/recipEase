@@ -3,6 +3,9 @@ package com.recipease.project;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,18 +20,20 @@ import java.util.List;
 public class Recipe {
 
         private String title;
-        private long recipeID;
+        private String recipeID;
         private String ownerID;
-        private int cookTime;
         private int difficulty;
         private String imageURL;
+        private String sourceURL;
         private int numFavorites;
         private List<String> cookingIngredients;
         private List<String> cookingInstructions;
 
-        public void generateRecipeId() {
+
+        /*public void generateRecipeId() {
             this.recipeID = new Date().getTime();
         }
+        */
 
         public String getTitle() {
             return title;
@@ -38,17 +43,24 @@ public class Recipe {
             this.title = title;
         }
 
-        public long getRecipeID() {
-            return recipeID;
+        public String getRecipeID() {
+        return recipeID;
+    }
+
+        public void generateRecipeID() {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference database_reference = database.getReference();
+            String key = database_reference.child("recipes").push().getKey();
+            this.recipeID = key;
         }
-
-        public int getCookTime() { return cookTime; }
-
-        public void setCookTime(int cookTime) { this.cookTime = cookTime; }
 
         public String getImageURL() { return imageURL; }
 
         public void setImageURL(String imageURL) { this.imageURL = imageURL; }
+
+        public String getSourceURL() { return sourceURL; }
+
+        public void setSourceURL(String sourceURL) { this.sourceURL = sourceURL; }
 
         public List<String> getCookingIngredients() {
             return cookingIngredients;
@@ -64,14 +76,6 @@ public class Recipe {
 
         public void setCookingInstructions(ArrayList<String> cookingInstructions) {
             this.cookingInstructions = cookingInstructions;
-        }
-
-        public void setDifficulty( int newDifficulty ) {
-            this.difficulty = newDifficulty;
-        }
-
-        public int getDifficulty() {
-            return this.difficulty;
         }
 
         public int getNumFavorites() {
