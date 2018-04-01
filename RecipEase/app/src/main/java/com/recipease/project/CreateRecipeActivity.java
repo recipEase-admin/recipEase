@@ -59,14 +59,11 @@ public class CreateRecipeActivity extends DrawerActivity{
     private ImageView ivRecipePicture;
     private String imageURL;
 
-    private TextView theIngredients;
-    private EditText etInstruction, etCookTime, etName;
+    private EditText etInstruction, etName;
     private TextView theInstructions;
     private Button btCreateRecipe;
     private ImageButton btCreateIngredient;
-    RadioGroup difficultyGroup;
     int difficulty = 0;
-    int cookTime = 0;
 
     private String recipeTitle;
 
@@ -76,7 +73,6 @@ public class CreateRecipeActivity extends DrawerActivity{
 
 
     String[] ingredientNames;
-    String[] checkedIngredientNames;
 
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
@@ -131,6 +127,8 @@ public class CreateRecipeActivity extends DrawerActivity{
         recyclerView.setAdapter(ingredientAdapter);
 
         actv = (AutoCompleteTextView) findViewById(R.id.createActv);
+        actv.setTextColor(Color.BLACK);
+        actv.getBackground().mutate().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
 
 
 
@@ -187,17 +185,14 @@ public class CreateRecipeActivity extends DrawerActivity{
                     //Adds this new ingredient to the ingredient arraylist
                     ingredientList.add(ingredient);
                 }
-                //Asynchronous so have to use this to notify adapter when finished
-                ingredientAdapter.notifyDataSetChanged();
                 ingredientNames = new String[ingredientList.size()];
                 for (int i = 0; i < ingredientList.size(); i++) {
                     ingredientNames[i] = ingredientList.get(i).getName();
                 }
+                //Asynchronous so have to use this to notify adapter when finished
+                ingredientAdapter.notifyDataSetChanged();
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateRecipeActivity.this,R.layout.item_ingredient,ingredientNames);
-                AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.createActv);
                 actv.setAdapter(adapter);
-                actv.setTextColor(Color.BLACK);
-                actv.getBackground().mutate().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
             }
 
             @Override
@@ -277,7 +272,7 @@ public class CreateRecipeActivity extends DrawerActivity{
         }
 
         // Check if all fields filled
-        if( difficulty == 0 || recipeTitle.equals("") || etCookTime.getText().toString().equals("")) {
+        if( difficulty == 0 || recipeTitle.equals("")) {
             showAlert("Please fill in all fields", "I'm on it");
             //Unlock button
             btCreateRecipe.setEnabled(true);
@@ -298,14 +293,6 @@ public class CreateRecipeActivity extends DrawerActivity{
             btCreateRecipe.setEnabled(true);
         }
         else {
-            try {
-                cookTime = Integer.parseInt(etCookTime.getText().toString());
-            }
-            catch(Exception e) {
-                showAlert("Please enter a number for the time to prepare", "I'm on it");
-                //Unlock button
-                btCreateRecipe.setEnabled(true);
-            }
             try {
                 storeRecipeInDatabase();
             }

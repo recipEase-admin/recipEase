@@ -7,11 +7,11 @@
             android:title="profile" />
         <item
             android:id="@+id/home"
-            android:icon="@drawable/pot"
+            android:icon="@drawable/pot_outlined_menu"
             android:title="home" />
         <item
             android:id="@+id/create_recipe"
-            android:icon="@drawable/ic_002_chef"
+            android:icon="@drawable/pencil"
             android:title="create a recipe" />
         <item
             android:id="@+id/personal_recipes"

@@ -49,9 +49,9 @@ public class IngredientSelector extends DrawerActivity {
     private ArrayList<Ingredient> ingredientList;
     IngredientAutoCompleteAdapter ingredientAutoCompleteAdapter;
 
-    private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
-
     private AutoCompleteTextView actv;
+
+    private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +61,14 @@ public class IngredientSelector extends DrawerActivity {
         View contentView = inflater.inflate(R.layout.activity_ingredient_selector, null, false);
         mDrawerLayout.addView(contentView, 0);
 
-
+        ingredientNames = new String[1];
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
+
+        actv = (AutoCompleteTextView) findViewById(R.id.actv);
+        actv.setTextColor(Color.WHITE);
+        actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 
         ingredientList = new ArrayList<Ingredient>();
         ingredientAutoCompleteAdapter = new IngredientAutoCompleteAdapter(this,R.layout.activity_ingredient_selector,R.id.lbl_name,ingredientList);
@@ -74,8 +78,6 @@ public class IngredientSelector extends DrawerActivity {
         recyclerView = findViewById(R.id.ingredientRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(IngredientSelector.this));
         recyclerView.setAdapter(ingredientAdapter);
-
-        actv = (AutoCompleteTextView) findViewById(R.id.actv);
 
     }
 
@@ -115,17 +117,16 @@ public class IngredientSelector extends DrawerActivity {
                     //Adds this new ingredient to the ingredient arraylist
                     ingredientList.add(ingredient);
                 }
-                //Asynchronous so have to use this to notify adapter when finished
-                ingredientAdapter.notifyDataSetChanged();
+
                 ingredientNames = new String[ingredientList.size()];
                 for (int i = 0; i < ingredientList.size(); i++) {
                     ingredientNames[i] = ingredientList.get(i).getName();
                 }
+                //Asynchronous so have to use this to notify adapter when finished
+                ingredientAdapter.notifyDataSetChanged();
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(IngredientSelector.this,R.layout.item_ingredient,ingredientNames);
-                AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.actv);
                 actv.setAdapter(adapter);
-                actv.setTextColor(Color.WHITE);
-                actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+
             }
 
             @Override
@@ -133,7 +134,6 @@ public class IngredientSelector extends DrawerActivity {
                 Log.i(TAG, "onCancelled", databaseError.toException());
             }
         });
-        return;
 
     }
 

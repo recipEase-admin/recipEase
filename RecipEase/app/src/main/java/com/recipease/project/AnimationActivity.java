@@ -20,7 +20,7 @@ public class AnimationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animation);
-        Toast.makeText(AnimationActivity.this, "Account successfully created", Toast.LENGTH_LONG).show();
+        Toast.makeText(AnimationActivity.this, "Account successfully created", Toast.LENGTH_SHORT).show();
         Glide.with(this).load(R.raw.recipease_logo_animated_final)
                 .into(new GlideDrawableImageViewTarget((ImageView) findViewById(R.id.ivAnimation)));
         new Handler().postDelayed(new Runnable() {
