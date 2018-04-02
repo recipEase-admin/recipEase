@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -41,18 +42,20 @@ public class RecipeDetailsActivity extends DrawerActivity {
     private void receiveRecipe() {
         Intent intent = getIntent();
         String title = intent.getStringExtra("TITLE");
-        long recipeID = intent.getLongExtra("UNIQUE ID", 0);
+        String recipeID = intent.getStringExtra("UNIQUE ID");
         int cookTime = intent.getIntExtra("COOK TIME", 0);
         String imageURL = intent.getStringExtra("IMAGE URL");
         ArrayList<String> cookingIngredients = intent.getStringArrayListExtra("INGREDIENTS LIST");
         ArrayList<String> cookingInstructions = intent.getStringArrayListExtra("INSTRUCTIONS LIST");
 
         ImageView ivImageURL = (ImageView) findViewById(R.id.ivImageURL);
-        Picasso
-                .with(getBaseContext())
-                .load(imageURL)
-                .fit()
-                .into(ivImageURL);
+
+        if (imageURL.equals("")) {
+            Glide.with(RecipeDetailsActivity.this).load(R.drawable.no_image).into(ivImageURL);
+        }
+        else {
+            Glide.with(RecipeDetailsActivity.this).load(imageURL).into(ivImageURL);
+        }
 
         TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvTitle.setText(title);

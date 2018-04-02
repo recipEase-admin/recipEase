@@ -35,7 +35,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public void onBindViewHolder(RecipeAdapter.ViewHolder holder, int position) {
         Recipe currentRecipe = recipeList.get(position);
         holder.bindTo(currentRecipe);
-        Glide.with(context).load(currentRecipe.getImageURL()).into(holder.recipeImage);
+        if (currentRecipe.getImageURL().equals("")) {
+            Glide.with(context).load(R.drawable.no_image).into(holder.recipeImage);
+        }
+        else {
+            Glide.with(context).load(currentRecipe.getImageURL()).into(holder.recipeImage);
+        }
     }
 
     @Override
