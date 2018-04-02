@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // user is logged in
-                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                     Intent i = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(i);
                 } else {
@@ -82,12 +81,11 @@ public class MainActivity extends AppCompatActivity {
                             progressDialog.dismiss();
 
                             if (task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(i);
                             } else {
                                 Log.e("ERROR", task.getException().toString());
-                                Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                             }
                         }

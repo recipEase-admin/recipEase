@@ -49,9 +49,9 @@ public class IngredientSelector extends DrawerActivity {
     private ArrayList<Ingredient> ingredientList;
     IngredientAutoCompleteAdapter ingredientAutoCompleteAdapter;
 
-    private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
-
     private AutoCompleteTextView actv;
+
+    private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +61,14 @@ public class IngredientSelector extends DrawerActivity {
         View contentView = inflater.inflate(R.layout.activity_ingredient_selector, null, false);
         mDrawerLayout.addView(contentView, 0);
 
-
+        ingredientNames = new String[1];
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
+
+        actv = (AutoCompleteTextView) findViewById(R.id.actv);
+        actv.setTextColor(Color.WHITE);
+        actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 
         ingredientList = new ArrayList<Ingredient>();
         ingredientAutoCompleteAdapter = new IngredientAutoCompleteAdapter(this,R.layout.activity_ingredient_selector,R.id.lbl_name,ingredientList);
@@ -74,8 +78,6 @@ public class IngredientSelector extends DrawerActivity {
         recyclerView = findViewById(R.id.ingredientRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(IngredientSelector.this));
         recyclerView.setAdapter(ingredientAdapter);
-
-        actv = (AutoCompleteTextView) findViewById(R.id.actv);
 
     }
 
@@ -104,7 +106,7 @@ public class IngredientSelector extends DrawerActivity {
     //Returns a list of all ingredients
     public void getAllIngredients(final IngredientAutoCompleteAdapter ingredientAdapter, final ArrayList<Ingredient> ingredientList) {
         // Read ingredients in from the database and convert them to an ArrayList of Ingredient objects
-        database_reference.child("ingredients").addValueEventListener(new ValueEventListener() {
+        database_reference.child("ingredientRecipes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot all_ingredients) {
                 //Loop through each separate ingredient
@@ -115,17 +117,16 @@ public class IngredientSelector extends DrawerActivity {
                     //Adds this new ingredient to the ingredient arraylist
                     ingredientList.add(ingredient);
                 }
-                //Asynchronous so have to use this to notify adapter when finished
-                ingredientAdapter.notifyDataSetChanged();
+
                 ingredientNames = new String[ingredientList.size()];
                 for (int i = 0; i < ingredientList.size(); i++) {
                     ingredientNames[i] = ingredientList.get(i).getName();
                 }
+                //Asynchronous so have to use this to notify adapter when finished
+                ingredientAdapter.notifyDataSetChanged();
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(IngredientSelector.this,R.layout.item_ingredient,ingredientNames);
-                AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.actv);
                 actv.setAdapter(adapter);
-                actv.setTextColor(Color.WHITE);
-                actv.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+
             }
 
             @Override
@@ -133,7 +134,6 @@ public class IngredientSelector extends DrawerActivity {
                 Log.i(TAG, "onCancelled", databaseError.toException());
             }
         });
-        return;
 
     }
 
@@ -143,7 +143,7 @@ public class IngredientSelector extends DrawerActivity {
             Toast.makeText(IngredientSelector.this, "Select at least one ingredient", Toast.LENGTH_LONG).show();
         }
         else {
-            ArrayList<Long> recipe_ids_intersection = convertToRecipeIDs();
+            ArrayList<String> recipe_ids_intersection = convertToRecipeIDs();
             int numIngredients = checked_ingredients.size();
             Intent intent = new Intent(this, BrowseRecipesActivity.class);
             // Put as Serializable
@@ -154,29 +154,29 @@ public class IngredientSelector extends DrawerActivity {
     }
 
     //Narrows down the recipe ids to send by using intersect operations
-    public ArrayList<Long> convertToRecipeIDs() {
-        ArrayList<Collection<Long>> recipe_ids = new ArrayList<>();
+    public ArrayList<String> convertToRecipeIDs() {
+        ArrayList<Collection<String>> recipe_ids = new ArrayList<>();
         for (int i = 0; i < checked_ingredients.size(); i+=2) {
             //If odd number of ingredients selected and are on the last loop, add last one to the list
             if ((checked_ingredients.size() - i) == 1) {
-                Collection<Long> collection = checked_ingredients.get(i).getRecipesUsing();
+                Collection<String> collection = checked_ingredients.get(i).getRecipesUsing();
                 recipe_ids.add(collection);
                 break;
             }
             else {
-                Collection<Long> collection1 = checked_ingredients.get(i).getRecipesUsing();
-                Collection<Long> collection2 = checked_ingredients.get(i + 1).getRecipesUsing();
-                Collection<Long> intersection = CollectionUtils.intersection(collection1, collection2);
+                Collection<String> collection1 = checked_ingredients.get(i).getRecipesUsing();
+                Collection<String> collection2 = checked_ingredients.get(i + 1).getRecipesUsing();
+                Collection<String> intersection = CollectionUtils.intersection(collection1, collection2);
                 recipe_ids.add(intersection);
             }
         }
         //Now we have an Arraylist of Collection of recipe_ids
         while (recipe_ids.size() > 1) {
-            Collection<Long> collection1 = recipe_ids.get(0);
+            Collection<String> collection1 = recipe_ids.get(0);
             System.out.println(collection1);
-            Collection<Long> collection2 = recipe_ids.get(1);
+            Collection<String> collection2 = recipe_ids.get(1);
             System.out.println(collection2);
-            Collection<Long> intersection = CollectionUtils.intersection(collection1, collection2);
+            Collection<String> intersection = CollectionUtils.intersection(collection1, collection2);
             System.out.println(intersection);
             //Add this intersection
             recipe_ids.add(0, intersection);
@@ -185,7 +185,7 @@ public class IngredientSelector extends DrawerActivity {
             recipe_ids.remove(1);
         }
         //Final intersection has been formed
-        return (ArrayList<Long>) recipe_ids.get(0);
+        return (ArrayList<String>) recipe_ids.get(0);
     }
 
     private void hideKeyboard() {

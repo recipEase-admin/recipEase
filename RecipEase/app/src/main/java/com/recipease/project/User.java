@@ -12,7 +12,7 @@ public class User {
     // Fields //
     private String email, displayName, bio, imageURL;
     private String uid;
-    private List<Long> recipesOwned;
+    private List<String> recipesOwned;
 
 //----------------------------------------------------------------------------
     // Public Methods //
@@ -50,11 +50,11 @@ public class User {
         this.email = newEmail;
     }
 
-    public List<Long> getRecipesOwned () {
+    public List<String> getRecipesOwned () {
         return this.recipesOwned;
     }
 
-    public void setRecipesOwned (ArrayList<Long> recipesOwned) {
+    public void setRecipesOwned (ArrayList<String> recipesOwned) {
         this.recipesOwned = recipesOwned;
     }
 

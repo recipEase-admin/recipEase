@@ -12,7 +12,7 @@ import java.util.List;
 public class Ingredient {
     private String name;
     private Long ingredientID;
-    private List<Long> recipesUsing;
+    private List<String> recipesUsing;
 
     public void generateIngredientId() {
         this.ingredientID = new Date().getTime();
@@ -29,11 +29,11 @@ public class Ingredient {
         this.name = name;
     }
 
-    public List<Long> getRecipesUsing() {
+    public List<String> getRecipesUsing() {
         return recipesUsing;
     }
 
-    public void setRecipesUsing(ArrayList<Long> recipesUsing) {
+    public void setRecipesUsing(ArrayList<String> recipesUsing) {
         this.recipesUsing = recipesUsing;
     }
 
