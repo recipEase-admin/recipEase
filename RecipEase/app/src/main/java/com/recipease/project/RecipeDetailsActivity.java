@@ -92,7 +92,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
             Glide.with(RecipeDetailsActivity.this).load(R.drawable.no_image).into(ivImageURL);
         }
         else {
-            Glide.with(RecipeDetailsActivity.this).load(imageURL).into(ivImageURL);
+            Glide.with(RecipeDetailsActivity.this).load(imageURL).centerCrop().into(ivImageURL);
         }
 
         TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
