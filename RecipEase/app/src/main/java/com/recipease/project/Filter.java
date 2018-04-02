@@ -17,6 +17,7 @@ public class Filter {
 
         String[] splitInput = inputToCheck.split(" ");
         for(String singleWord : splitInput) {
+            singleWord = singleWord.toLowerCase();
             if(hasProfanityWordContained(singleWord)) {
                 return true;
             }
@@ -26,10 +27,11 @@ public class Filter {
 
     private boolean hasProfanityWordContained(String input) {
         for(String curseWord : profanityWords) {
+            curseWord = curseWord.toLowerCase();
             if(input.contains(curseWord))
                 return true;
         }
         return false;
     }
-
 }
+
