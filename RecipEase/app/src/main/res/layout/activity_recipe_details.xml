@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="match_parent"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -57,12 +58,32 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
+    <ImageView
+        android:id="@+id/favoriteButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/tvCookTime"
+        android:adjustViewBounds="false"
+        android:onClick="onClickFavorites"
+        android:src="@drawable/new_heart" />
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/tvCookTime"
+        android:layout_toRightOf="@id/favoriteButton"
+        android:id="@+id/tvNumFavorites"
+        android:textSize= "30dp"
+        android:paddingTop = "15dp"
+        android:paddingLeft = "15dp"/>
+
+
     <TextView
         android:id="@+id/staticIngredients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/staticInstructions"
-        android:layout_below="@+id/tvCookTime"
+        android:layout_below="@+id/favoriteButton"
         android:text="Ingredients"
         android:textColor="@color/colorPrimary"
         android:textSize="24sp"
