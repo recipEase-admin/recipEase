@@ -63,7 +63,6 @@ public class CreateRecipeActivity extends DrawerActivity{
     private TextView theInstructions;
     private Button btCreateRecipe;
     private ImageButton btCreateIngredient;
-    int difficulty = 0;
 
     private String recipeTitle;
 
@@ -271,13 +270,8 @@ public class CreateRecipeActivity extends DrawerActivity{
             recipeIngredients.add(checked_ingredients.get(i).getName());
         }
 
-        // Check if all fields filled
-        if( difficulty == 0 || recipeTitle.equals("")) {
-            showAlert("Please fill in all fields", "I'm on it");
-            //Unlock button
-            btCreateRecipe.setEnabled(true);
-        }
-        else if(recipeInstructions.isEmpty()) {
+
+        if(recipeInstructions.isEmpty()) {
             showAlert("Please add instructions for the recipe", "I'm on it");
             //Unlock button
             btCreateRecipe.setEnabled(true);
