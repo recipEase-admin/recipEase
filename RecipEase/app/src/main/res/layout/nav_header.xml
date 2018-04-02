@@ -3,22 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="192dp"
     android:background="?attr/colorAccent"
-    android:padding="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:gravity="bottom"
     android:orientation="vertical"
-    android:gravity="bottom">
+    android:padding="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
+        android:id="@+id/logoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/logoText"
         android:text="@string/textLogo"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
     <ImageView
-        android:src="@drawable/pot"
-        android:layout_width="75dp"
-        android:layout_height="75dp" />
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:src="@drawable/pot" />
 
 </LinearLayout>
