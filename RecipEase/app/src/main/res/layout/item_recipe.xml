@@ -13,10 +13,11 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/recipeImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/recipeImage"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:cropToPadding="false" />
 
         <ImageView
             android:id="@+id/ivTransparency"
@@ -24,6 +25,25 @@
             android:layout_height="50dp"
             android:layout_alignBottom="@id/recipeImage"
             android:background="#aa000000" />
+
+        <ImageView
+            android:id = "@+id/heart"
+            android:src = "@drawable/new_heart"
+            android:layout_width = "80dp"
+            android:layout_height = "80dp"
+            android:layout_alignTop = "@id/recipeImage"
+            android:layout_alignLeft="@id/recipeImage"
+            android:padding="1dp"/>
+
+        <TextView
+            android:id = "@+id/favorites"
+            android:layout_width = "60dp"
+            android:layout_height = "60dp"
+            android:layout_alignBaseline="@id/heart"
+            android:textSize = "20dp"
+            android:paddingLeft = "35dp"
+            android:paddingTop = "20dp"/>
+
 
         <TextView
             android:id="@+id/title"
@@ -38,16 +58,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cooktime"
-            android:layout_below="@id/recipeImage"
-            android:textColor="?android:textColorSecondary"
-            android:padding="8dp"
-            style="@style/TextAppearance.AppCompat.Subhead" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/missing_ingredients"
-            android:layout_below="@id/cooktime"
+            android:layout_below="@id/recipeImage"
             android:padding="8dp"
             style="@style/TextAppearance.AppCompat.Subhead" />
 

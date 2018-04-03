@@ -66,6 +66,20 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+
+        recipeList.clear();
+        retrieveRecipes(recipeAdapter, recipeList);
+
+    }
+
     public void onEditSearch(View view){
         finish();
     }
@@ -80,8 +94,8 @@ public class BrowseRecipesActivity extends DrawerActivity {
             database_reference.child("recipes").child(recipe_ids.get(i)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                    recipeList.add(recipe);
+                    Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
+                    recipeList.add(recipe); //breaks here
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
 

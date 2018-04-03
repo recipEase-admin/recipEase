@@ -9,6 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +22,15 @@ import static android.support.v4.content.ContextCompat.startActivity;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
+    private FirebaseDatabase database;
     private ArrayList<Recipe> recipeList;
     private Context context;
     private int numIngredients;
+    private DatabaseReference database_reference;
+    int nFavorites;
+   // private DatabaseReference favorites_reference;
+
+
 
     RecipeAdapter(Context context, ArrayList<Recipe> recipeList, int numIngredients) {
         this.recipeList = recipeList;
@@ -35,7 +47,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public void onBindViewHolder(RecipeAdapter.ViewHolder holder, int position) {
         Recipe currentRecipe = recipeList.get(position);
         holder.bindTo(currentRecipe);
-        Glide.with(context).load(currentRecipe.getImageURL()).into(holder.recipeImage);
+        if (currentRecipe.getImageURL().equals("")) {
+            Glide.with(context).load(R.drawable.no_image).into(holder.recipeImage);
+        }
+        else {
+            Glide.with(context).load(currentRecipe.getImageURL()).into(holder.recipeImage);
+        }
     }
 
     @Override
@@ -46,7 +63,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder{
 
         private TextView titleText;
-        private TextView cookTimeText;
+        private TextView numFavoritesText;
         private ImageView recipeImage;
         private TextView missingIngredientsText;
 
@@ -54,7 +71,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             super(itemView);
 
             titleText = (TextView) itemView.findViewById(R.id.title);
-            cookTimeText = (TextView) itemView.findViewById(R.id.cooktime);
+            numFavoritesText = (TextView) itemView.findViewById(R.id.favorites);
             missingIngredientsText = (TextView) itemView.findViewById(R.id.missing_ingredients);
             recipeImage = itemView.findViewById(R.id.recipeImage);
 
@@ -65,6 +82,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                     Intent details = new Intent(context, RecipeDetailsActivity.class);
                     sendRecipe(details, currentRecipe);
                     startActivity(context, details, null);
+
                 }
             });
         }
@@ -72,9 +90,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         void bindTo(Recipe currentRecipe) {
             //Populate the textviews with data
             titleText.setText(currentRecipe.getTitle());
+            numFavoritesText.setText(String.format("%d", currentRecipe.getNumFavorites()));
 
             int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
-
             missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
         }
 
@@ -84,11 +102,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         String title = recipe_to_bring.getTitle();
         String recipeID = recipe_to_bring.getRecipeID();
         String imageURL = recipe_to_bring.getImageURL();
+        int numFavorites = recipe_to_bring.getNumFavorites();
         List<String> cookingIngredients = recipe_to_bring.getCookingIngredients();
         List<String> cookingInstructions = recipe_to_bring.getCookingInstructions();
         intent.putExtra("TITLE", title);
         intent.putExtra("UNIQUE ID", recipeID);
         intent.putExtra("IMAGE URL", imageURL);
+        intent.putExtra("NUM FAVORITES", numFavorites);
         intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
         intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);
     }
