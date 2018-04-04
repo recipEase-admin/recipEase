@@ -59,6 +59,7 @@
             android:layout_height="59dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="68dp"
             android:ems="10"
             android:hint="Enter Cooking Instruction"
             android:inputType="textPersonName"
@@ -124,6 +125,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
 
+            android:layout_marginTop="56dp"
             android:background="@drawable/round_shape_btn"
             android:onClick="addInstructionToRecipe"
             android:padding="10sp"
@@ -207,7 +209,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/createIngredientRecyclerView"
             android:layout_width="350dp"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="24dp"

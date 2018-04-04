@@ -42,6 +42,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,8 @@ public class CreateRecipeActivity extends DrawerActivity{
     private String userID = "";
     FirebaseUser user;
 
+    private IngredientAdapter ingredientAdapter;
+
 
     String[] ingredientNames;
 
@@ -85,7 +88,6 @@ public class CreateRecipeActivity extends DrawerActivity{
     private AutoCompleteTextView actv;
 
 
-  
     @Override
 
     // TODO: 3/16/2018 Check ingredient/image fields are filled
@@ -99,7 +101,7 @@ public class CreateRecipeActivity extends DrawerActivity{
     // TODO: Add remove ingredients ability
 
 
-    
+
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -109,9 +111,9 @@ public class CreateRecipeActivity extends DrawerActivity{
         View contentView = inflater.inflate(R.layout.activity_create_recipe, null, false);
         mDrawerLayout.addView(contentView, 0);
 
-
-
+        //Used to connect to the firebase database
         database = FirebaseDatabase.getInstance();
+        //References the root of the database
         database_reference = database.getReference();
 
         ingredientList = new ArrayList<Ingredient>();
@@ -120,7 +122,7 @@ public class CreateRecipeActivity extends DrawerActivity{
 
 
         checked_ingredients = new ArrayList<Ingredient>();
-        IngredientAdapter ingredientAdapter = new IngredientAdapter(CreateRecipeActivity.this, checked_ingredients);
+        ingredientAdapter = new IngredientAdapter(CreateRecipeActivity.this, checked_ingredients);
         recyclerView = findViewById(R.id.createIngredientRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(CreateRecipeActivity.this));
         recyclerView.setAdapter(ingredientAdapter);
@@ -147,6 +149,8 @@ public class CreateRecipeActivity extends DrawerActivity{
         ivRecipePicture = findViewById(R.id.ivRecipePicture);
 
         inputFilter = new Filter();
+
+        imageURL = "";
 
     }
 
@@ -270,8 +274,13 @@ public class CreateRecipeActivity extends DrawerActivity{
             recipeIngredients.add(checked_ingredients.get(i).getName());
         }
 
-
-        if(recipeInstructions.isEmpty()) {
+        // Check if all fields filled
+        if(recipeTitle.equals("")) {
+            showAlert("Please fill in all fields", "I'm on it");
+            //Unlock button
+            btCreateRecipe.setEnabled(true);
+        }
+        else if(recipeInstructions.isEmpty()) {
             showAlert("Please add instructions for the recipe", "I'm on it");
             //Unlock button
             btCreateRecipe.setEnabled(true);
@@ -291,9 +300,8 @@ public class CreateRecipeActivity extends DrawerActivity{
                 storeRecipeInDatabase();
             }
             catch(Exception e) {
-                showAlert("Please upload a photo for the recipe", "I'm on it");
-                //Unlock button
-                btCreateRecipe.setEnabled(true);
+                Recipe uploaded = uploadRecipe();
+                addRecipeToIngredient(uploaded);
             }
         }
     }
@@ -403,9 +411,18 @@ public class CreateRecipeActivity extends DrawerActivity{
     public void addRecipeToIngredient(final Recipe uploadedRecipe) {
         // Read ingredients in from the database and convert them to an ArrayList of Ingredient objects
         for (int i = 0; i < checked_ingredients.size(); i++) {
-            database_reference.child("ingredientRecipes").child(Long.toString(checked_ingredients.get(i).getIngredientID())).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot the_ingredient) {
+            System.out.println(checked_ingredients.get(i).getIngredientID());
+            if (checked_ingredients.get(i).getIngredientID() == null) {
+                checked_ingredients.get(i).generateIngredientId();
+                ArrayList<String> recipesUsing = new ArrayList<String>();
+                recipesUsing.add(uploadedRecipe.getRecipeID());
+                checked_ingredients.get(i).setRecipesUsing(recipesUsing);
+                database_reference.child("ingredientRecipes").child(Long.toString(checked_ingredients.get(i).getIngredientID())).setValue(checked_ingredients.get(i));
+            }
+            else {
+                database_reference.child("ingredientRecipes").child(Long.toString(checked_ingredients.get(i).getIngredientID())).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot the_ingredient) {
                         //Create a new ingredient object
                         Ingredient ingredient = the_ingredient.getValue(Ingredient.class);
                         ArrayList<String> recipesUsing;
@@ -417,37 +434,29 @@ public class CreateRecipeActivity extends DrawerActivity{
                         recipesUsing.add(uploadedRecipe.getRecipeID());
                         ingredient.setRecipesUsing(recipesUsing);
                         the_ingredient.getRef().setValue(ingredient);
-                }
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.i(TAG, "onCancelled", databaseError.toException());
-                }
-            });
-            Toast.makeText(this, "Recipe successfully uploaded!", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(CreateRecipeActivity.this, HomeActivity.class);
-            startActivity(intent);
-            return;
-
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled", databaseError.toException());
+                    }
+                });
+            }
         }
+        Toast.makeText(this, "Recipe successfully uploaded!", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(CreateRecipeActivity.this, HomeActivity.class);
+        startActivity(intent);
+        return;
     }
 
     public void createIngredient(View view) {
         String ingredient_name = actv.getText().toString();
         final Ingredient newIngredient = new Ingredient();
         newIngredient.setName(ingredient_name);
-        newIngredient.generateIngredientId();
 
-        //Used to connect to the firebase database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //References the root of the database
-        DatabaseReference database_reference = database.getReference();
-        //Add the new recipe to the database
-        database_reference.child("ingredientRecipes").child(Long.toString(newIngredient.getIngredientID())).setValue(newIngredient);
         checked_ingredients.add(newIngredient);
         actv.performClick();
         actv.dismissDropDown();
         hideKeyboard();
-        return;
     }
 }
