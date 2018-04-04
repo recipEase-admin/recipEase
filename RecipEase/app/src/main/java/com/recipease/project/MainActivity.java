@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         etPassword = (EditText) findViewById(R.id.etPassword);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        etPassword.setTransformationMethod(new PasswordMethod());
+
+
         firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(FirebaseAuth authData) {
