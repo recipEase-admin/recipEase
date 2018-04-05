@@ -51,6 +51,8 @@ public class IngredientSelector extends DrawerActivity {
 
     private AutoCompleteTextView actv;
 
+    private IngredientAdapter ingredientAdapter;
+
     private ArrayList<Ingredient> checked_ingredients = new ArrayList<Ingredient>();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,7 @@ public class IngredientSelector extends DrawerActivity {
         ingredientAutoCompleteAdapter = new IngredientAutoCompleteAdapter(this,R.layout.activity_ingredient_selector,R.id.lbl_name,ingredientList);
         getAllIngredients(ingredientAutoCompleteAdapter, ingredientList);
 
-        IngredientAdapter ingredientAdapter = new IngredientAdapter(IngredientSelector.this, checked_ingredients);
+        ingredientAdapter = new IngredientAdapter(IngredientSelector.this, checked_ingredients);
         recyclerView = findViewById(R.id.ingredientRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(IngredientSelector.this));
         recyclerView.setAdapter(ingredientAdapter);
@@ -96,6 +98,7 @@ public class IngredientSelector extends DrawerActivity {
         for (int i = 0; i < ingredientList.size(); i++) {
             if (ingredientList.get(i).getName().equals(selection)) {
                 checked_ingredients.add(ingredientList.get(i));
+                ingredientAdapter.notifyItemInserted(checked_ingredients.size() - 1);
                 actv.dismissDropDown();
                 hideKeyboard();
                 return;

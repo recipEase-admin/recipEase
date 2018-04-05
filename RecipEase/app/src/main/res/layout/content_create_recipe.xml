@@ -31,10 +31,14 @@
             android:id="@+id/ivRecipePicture"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:onClick="selectRecipePicture"
-            app:srcCompat="@mipmap/fruit_icon"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="76dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:srcCompat="@mipmap/fruit_icon" />
 
         <TextView
             android:id="@+id/textView9"
@@ -42,45 +46,37 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="Tap to Add a Photo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivRecipePicture" />
 
-        <EditText
-            android:id="@+id/etInstruction"
-            android:layout_width="237dp"
-            android:layout_height="56dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:hint="Enter Cooking Instruction"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.503"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="630dp" />
-
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="82dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="56dp"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="com.recipease.project.CreateRecipeActivity"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="348dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etName"
+            tools:context="com.recipease.project.CreateRecipeActivity">
 
             <com.miguelcatalan.materialsearchview.MaterialSearchView
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:textColor="#FFF"
                 android:textColorHint="#FFF"
                 app:searchBackIcon="@drawable/ic_action_navigation_arrow_back_inverted"
@@ -91,46 +87,22 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/createActv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
                     android:layout_gravity="center_horizontal"
                     android:ems="10"
                     android:hint="Enter Ingredient Name"
-
-                    tools:layout_editor_absoluteX="85dp"
-                    tools:layout_editor_absoluteY="324dp">
+                    tools:layout_editor_absoluteX="213dp"
+                    tools:layout_editor_absoluteY="0dp">
 
                 </AutoCompleteTextView>
 
             </com.miguelcatalan.materialsearchview.MaterialSearchView>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/createIngredientRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/search_view"
-                android:clickable="true"
-                android:scrollbars="vertical" />
-
         </RelativeLayout>
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-
-            android:background="@drawable/round_shape_btn"
-            android:onClick="addInstructionToRecipe"
-            android:padding="10sp"
-            android:text="Tap to Add Instruction"
-            android:textColor="#08f"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etInstruction" />
 
         <TextView
             android:id="@+id/tvInstructions"
@@ -143,37 +115,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button3" />
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout3" />
 
 
         <Button
             android:id="@+id/btCreateRecipe"
             android:layout_width="383dp"
             android:layout_height="84dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/round_shape_btn"
             android:onClick="createRecipe"
             android:padding="5sp"
             android:text="Create Recipe"
             android:textColor="#08f"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvInstructions" />
-
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="216dp"
-            android:layout_height="47dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/round_shape_btn_red_border"
-            android:onClick="removeInstruction"
-            android:padding="10sp"
-            android:text="Remove Last Instruction"
-            android:textColor="#ff0000"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.525"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvInstructions" />
+            app:layout_constraintTop_toBottomOf="@+id/createInstructionRecyclerView" />
 
 
         <ImageButton
@@ -182,13 +138,13 @@
             android:layout_height="50sp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="168dp"
             android:onClick="createIngredient"
             android:paddingLeft="10sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.974"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/ivRecipePicture"
             app:srcCompat="@drawable/ic_add" />
 
         <TextView
@@ -197,12 +153,71 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="68dp"
             android:text='Tap "+" to add ingredient not found'
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/relativeLayout2" />
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/relativeLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="82dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="19dp"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/createIngredientRecyclerView"
+            tools:context="com.recipease.project.CreateRecipeActivity">
+
+            <com.miguelcatalan.materialsearchview.MaterialSearchView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:textColor="#FFF"
+                android:textColorHint="#FFF"
+                app:searchBackIcon="@drawable/ic_action_navigation_arrow_back_inverted"
+                app:searchBackground="@color/colorPrimary"
+                app:searchCloseIcon="@drawable/ic_action_navigation_close_inverted"
+                app:searchSuggestionBackground="@color/colorPrimary"
+                app:searchSuggestionIcon="@drawable/ic_suggestion">
+
+                <EditText
+                    android:id="@+id/etInstruction"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ems="10"
+                    android:hint="Enter Cooking Instruction"
+                    android:inputType="textPersonName" />
+
+
+            </com.miguelcatalan.materialsearchview.MaterialSearchView>
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/btCreateInstruction"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:onClick="createInstruction"
+            android:paddingLeft="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.974"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/relativeLayout3"
+            app:srcCompat="@drawable/ic_add" />
 
         <EditText
             android:id="@+id/etName"
@@ -210,14 +225,38 @@
             android:layout_height="49dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="236dp"
+            android:layout_marginTop="256dp"
             android:ems="10"
             android:hint="Recipe Title"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/createIngredientRecyclerView"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="24dp"
+            android:clickable="true"
+            android:scrollbars="vertical"
+            app:layout_constraintTop_toTopOf="@+id/textView15"
+            tools:layout_editor_absoluteX="17dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/createInstructionRecyclerView"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="80dp"
+            android:clickable="true"
+            android:onClick="createInstruction"
+            android:scrollbars="vertical"
+            app:layout_constraintTop_toTopOf="@+id/relativeLayout3"
+            tools:layout_editor_absoluteX="17dp" />
 
     </android.support.constraint.ConstraintLayout>
 
