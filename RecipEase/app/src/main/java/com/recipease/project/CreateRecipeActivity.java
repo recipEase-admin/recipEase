@@ -73,13 +73,16 @@ public class CreateRecipeActivity extends DrawerActivity{
 
     private IngredientAdapter ingredientAdapter;
 
+    private InstructionAdapter instructionAdapter;
+
+    private RecyclerView instructionRecyclerView;
 
     String[] ingredientNames;
 
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
 
-    private RecyclerView recyclerView;
+    private RecyclerView ingredientRecyclerView;
     private ArrayList<Ingredient> ingredientList;
     IngredientAutoCompleteAdapter ingredientAutoCompleteAdapter;
 
@@ -123,13 +126,18 @@ public class CreateRecipeActivity extends DrawerActivity{
 
         checked_ingredients = new ArrayList<Ingredient>();
         ingredientAdapter = new IngredientAdapter(CreateRecipeActivity.this, checked_ingredients);
-        recyclerView = findViewById(R.id.createIngredientRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(CreateRecipeActivity.this));
-        recyclerView.setAdapter(ingredientAdapter);
+        ingredientRecyclerView = findViewById(R.id.createIngredientRecyclerView);
+        ingredientRecyclerView.setLayoutManager(new LinearLayoutManager(CreateRecipeActivity.this));
+        ingredientRecyclerView.setAdapter(ingredientAdapter);
 
         actv = (AutoCompleteTextView) findViewById(R.id.createActv);
         actv.setTextColor(Color.BLACK);
         actv.getBackground().mutate().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+
+        instructionAdapter = new InstructionAdapter(CreateRecipeActivity.this, recipeInstructions);
+        instructionRecyclerView = findViewById(R.id.createInstructionRecyclerView);
+        instructionRecyclerView.setLayoutManager(new LinearLayoutManager(CreateRecipeActivity.this));
+        instructionRecyclerView.setAdapter(instructionAdapter);
 
 
 
@@ -151,6 +159,9 @@ public class CreateRecipeActivity extends DrawerActivity{
         inputFilter = new Filter();
 
         imageURL = "";
+
+        etInstruction.setTextColor(Color.BLACK);
+        etInstruction.getBackground().mutate().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
 
     }
 
@@ -213,54 +224,6 @@ public class CreateRecipeActivity extends DrawerActivity{
         if (view != null) {
             InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    public void addInstructionToRecipe(View v) {
-        String newInstruction = etInstruction.getText().toString();
-
-        if(inputFilter.containsProfanity(newInstruction)) {
-            showAlert("Your instruction contains profanity, please remove the profanity.", "I'll Handle It");
-        }
-        else if(newInstruction.equals("")) {
-            showAlert("Please enter an instruction first", "I'm On It");
-        }
-        else {
-            // Add instruction to list
-            recipeInstructions.add( newInstruction );
-            setInstructionText();
-        }
-
-    }
-
-
-    public void setInstructionText() {
-        int i = 1;
-        String textFieldText = "";
-        for(String s : recipeInstructions) {
-            textFieldText += i + ") " + s + "\n";
-            i++;
-        }
-        theInstructions.setText(textFieldText);
-        etInstruction.setHint("Enter Cooking Instruction");
-    }
-
-
-    public void removeInstruction(View v) {
-        if( recipeInstructions.isEmpty() ) {
-            showAlert("There are no instructions to delete", "Okay, I'll Add One");
-        }
-        else {
-            recipeInstructions.remove(recipeInstructions.size() - 1);
-            if(recipeInstructions.isEmpty()) {
-                setInstructionText();
-                etInstruction.setText("");
-                etInstruction.setHint("Enter Cooking Instruction");
-                theInstructions.setText("No Instructions Yet");
-            }
-            else {
-                setInstructionText();
-            }
         }
     }
 
@@ -455,8 +418,24 @@ public class CreateRecipeActivity extends DrawerActivity{
         newIngredient.setName(ingredient_name);
 
         checked_ingredients.add(newIngredient);
-        actv.performClick();
+        ingredientAdapter.notifyItemInserted(checked_ingredients.size()-1);
         actv.dismissDropDown();
         hideKeyboard();
+    }
+
+    public void createInstruction(View view) {
+        String instruction = etInstruction.getText().toString();
+
+        if(inputFilter.containsProfanity(instruction)) {
+            showAlert("Your instruction contains profanity, please remove the profanity.", "I'll Handle It");
+        }
+        else if(instruction.equals("")) {
+            showAlert("Please enter an instruction first", "I'm On It");
+        }
+        else {
+            recipeInstructions.add(instruction);
+            instructionAdapter.notifyItemInserted(recipeInstructions.size() - 1);
+            hideKeyboard();
+        }
     }
 }
