@@ -122,14 +122,14 @@
             android:id="@+id/btCreateRecipe"
             android:layout_width="383dp"
             android:layout_height="84dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/round_shape_btn"
             android:onClick="createRecipe"
             android:padding="5sp"
             android:text="Create Recipe"
             android:textColor="#08f"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvInstructions" />
+            app:layout_constraintTop_toBottomOf="@+id/createInstructionRecyclerView" />
 
 
         <ImageButton
