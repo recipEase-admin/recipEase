@@ -178,6 +178,7 @@ public class CreateRecipeActivity extends DrawerActivity{
                 checked_ingredients.add(ingredientList.get(i));
                 actv.dismissDropDown();
                 hideKeyboard();
+                actv.setText("");
                 return;
             }
         }

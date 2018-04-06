@@ -101,6 +101,7 @@ public class IngredientSelector extends DrawerActivity {
                 ingredientAdapter.notifyItemInserted(checked_ingredients.size() - 1);
                 actv.dismissDropDown();
                 hideKeyboard();
+                actv.setText("");
                 return;
             }
         }
