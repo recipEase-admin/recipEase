@@ -280,6 +280,7 @@ public class CreateRecipeActivity extends DrawerActivity{
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
     private void storeRecipeInDatabase() {
         createImageURL();
     }

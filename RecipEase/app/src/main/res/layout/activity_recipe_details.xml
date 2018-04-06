@@ -114,18 +114,39 @@
             app:layout_constraintTop_toBottomOf="@+id/tvCookingInstructions"
             tools:layout_editor_absoluteX="0dp" />
 
+        <EditText
+            android:id="@+id/etNewComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/staticComments"
+            android:hint="Enter a comment"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/staticComments"
+            tools:layout_editor_absoluteX="0dp" />
+
         <TextView
             android:id="@+id/tvComments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/staticComments"
+            android:layout_below="@+id/etNewComment"
             android:layout_marginTop="13dp"
             android:text="@string/Comments"
             android:textColor="@color/colorAccent"
             android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@+id/staticComments"
+            app:layout_constraintTop_toBottomOf="@+id/etNewComment"
             tools:layout_editor_absoluteX="0dp" />
+
+        <ImageButton
+            android:id="@+id/btAddComment"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_above="@+id/tvComments"
+            android:layout_alignParentEnd="true"
+            android:onClick="addComment"
+            app:srcCompat="@drawable/ic_add" />
 
     </RelativeLayout>
 </ScrollView>
