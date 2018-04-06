@@ -61,7 +61,6 @@ public class CreateRecipeActivity extends DrawerActivity{
     private String imageURL;
 
     private EditText etInstruction, etName;
-    private TextView theInstructions;
     private Button btCreateRecipe;
     private ImageButton btCreateIngredient;
 
@@ -149,7 +148,6 @@ public class CreateRecipeActivity extends DrawerActivity{
 
         etInstruction = findViewById(R.id.etInstruction);
         etName = findViewById(R.id.etName);
-        theInstructions = findViewById(R.id.tvInstructions);
         btCreateRecipe = findViewById(R.id.btCreateRecipe);
         btCreateIngredient = findViewById(R.id.btCreateIngredient);
 
@@ -420,6 +418,8 @@ public class CreateRecipeActivity extends DrawerActivity{
         checked_ingredients.add(newIngredient);
         ingredientAdapter.notifyItemInserted(checked_ingredients.size()-1);
         actv.dismissDropDown();
+        actv.setText("");
+        actv.setHint("Enter Ingredient Name");
         hideKeyboard();
     }
 
@@ -436,6 +436,9 @@ public class CreateRecipeActivity extends DrawerActivity{
             recipeInstructions.add(instruction);
             instructionAdapter.notifyItemInserted(recipeInstructions.size() - 1);
             hideKeyboard();
+            etInstruction.setText("");
+            etInstruction.setHint("Enter Cooking Instruction");
+
         }
     }
 }
