@@ -2,38 +2,20 @@ package com.recipease.project;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class RecipeDetailsActivity extends DrawerActivity {
 
@@ -44,7 +26,6 @@ public class RecipeDetailsActivity extends DrawerActivity {
     private int numFavorites;
     private String rID;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +35,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
         mDrawerLayout.addView(contentView, 0);
 
         receiveRecipe();
+
     }
 
     public void onClickFavorites(View view){
@@ -80,11 +62,11 @@ public class RecipeDetailsActivity extends DrawerActivity {
         Intent intent = getIntent();
         String title = intent.getStringExtra("TITLE");
         String recipeID = intent.getStringExtra("UNIQUE ID");
-        int cookTime = intent.getIntExtra("COOK TIME", 0);
         numFavorites = intent.getIntExtra("NUM FAVORITES", 0);
         String imageURL = intent.getStringExtra("IMAGE URL");
         ArrayList<String> cookingIngredients = intent.getStringArrayListExtra("INGREDIENTS LIST");
         ArrayList<String> cookingInstructions = intent.getStringArrayListExtra("INSTRUCTIONS LIST");
+        ArrayList<String> comments = intent.getStringArrayListExtra("COMMENTS");
 
         ImageView ivImageURL = (ImageView) findViewById(R.id.ivImageURL);
 
@@ -98,14 +80,19 @@ public class RecipeDetailsActivity extends DrawerActivity {
         TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvTitle.setText(title);
 
-        TextView tvCookTime = (TextView) findViewById(R.id.tvCookTime);
-        tvCookTime.setText(Integer.toString(cookTime));
-
         TextView tvCookingIngredients = (TextView) findViewById(R.id.tvCookingIngredients);
         tvCookingIngredients.setText(TextUtils.join("\n\n", cookingIngredients));
 
         TextView tvCookingInstructions = (TextView) findViewById(R.id.tvCookingInstructions);
         tvCookingInstructions.setText(TextUtils.join("\n\n", cookingInstructions));
+
+        TextView tvComments = (TextView) findViewById(R.id.tvComments);
+        if (comments == null) {
+            tvComments.setText("There are no comments - be the first!");
+        }
+        else {
+            tvComments.setText(TextUtils.join("\n\n", comments));
+        }
 
         tvNumFavorites = (TextView) findViewById(R.id.tvNumFavorites);
         tvNumFavorites.setText(String.format("%d", numFavorites));

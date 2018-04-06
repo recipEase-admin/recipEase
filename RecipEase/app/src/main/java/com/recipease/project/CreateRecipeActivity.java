@@ -439,7 +439,6 @@ public class CreateRecipeActivity extends DrawerActivity{
             hideKeyboard();
             etInstruction.setText("");
             etInstruction.setHint("Enter Cooking Instruction");
-
         }
     }
 }
