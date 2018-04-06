@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import static android.content.ContentValues.TAG;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class RecipeDetailsActivity extends DrawerActivity {
@@ -44,6 +48,13 @@ public class RecipeDetailsActivity extends DrawerActivity {
     private int numFavorites;
     private String rID;
 
+    //variables for recipesFavorited in user object
+    private FirebaseAuth firebaseAuth;
+    private String userID = "";
+    public  FirebaseUser user;
+    private DatabaseReference user_reference;
+    ArrayList<String> recipesFavorited = new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +63,12 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
         View contentView = inflater.inflate(R.layout.activity_recipe_details, null, false);
         mDrawerLayout.addView(contentView, 0);
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
+        userID = user.getUid();
 
         receiveRecipe();
+
     }
 
     public void onClickFavorites(View view){
@@ -61,16 +76,38 @@ public class RecipeDetailsActivity extends DrawerActivity {
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
 
+        //update numFavorites in recipe object
         ++numFavorites;
-
         favorites_reference = database_reference.child("recipes").child(rID);
         Map<String, Object>  favorites_update = new HashMap<>();
         favorites_update.put("numFavorites", numFavorites);
         favorites_reference.updateChildren(favorites_update);
-
         tvNumFavorites.setText(String.format("%d", numFavorites));
 
-        //disable button?
+        //update recipesFavorited in user object
+        database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot the_user) {
+                User user = the_user.getValue(User.class);
+                ArrayList<String> recipesFavorited;
+                if (user.getRecipesFavorited() == null) {
+                    recipesFavorited = new ArrayList<String>();
+                }
+                else {
+                    recipesFavorited = new ArrayList(user.getRecipesFavorited());
+                }
+                recipesFavorited.add(rID);
+                user.setRecipesFavorited(recipesFavorited);
+                the_user.getRef().setValue(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG, "Could not add recipe to favorites", databaseError.toException());
+            }
+        });
+
+        //disable button
         ImageView heart_button = (ImageView) findViewById(R.id.favoriteButton);
         heart_button.setEnabled(false);
 
