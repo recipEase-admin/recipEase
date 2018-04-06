@@ -80,7 +80,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
         Intent intent = getIntent();
         String title = intent.getStringExtra("TITLE");
         String recipeID = intent.getStringExtra("UNIQUE ID");
-        int cookTime = intent.getIntExtra("COOK TIME", 0);
+        //int cookTime = intent.getIntExtra("COOK TIME", 0);
         numFavorites = intent.getIntExtra("NUM FAVORITES", 0);
         String imageURL = intent.getStringExtra("IMAGE URL");
         ArrayList<String> cookingIngredients = intent.getStringArrayListExtra("INGREDIENTS LIST");
@@ -98,8 +98,8 @@ public class RecipeDetailsActivity extends DrawerActivity {
         TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvTitle.setText(title);
 
-        TextView tvCookTime = (TextView) findViewById(R.id.tvCookTime);
-        tvCookTime.setText(Integer.toString(cookTime));
+        //TextView tvCookTime = (TextView) findViewById(R.id.tvCookTime);
+        //tvCookTime.setText(Integer.toString(cookTime));
 
         TextView tvCookingIngredients = (TextView) findViewById(R.id.tvCookingIngredients);
         tvCookingIngredients.setText(TextUtils.join("\n\n", cookingIngredients));
