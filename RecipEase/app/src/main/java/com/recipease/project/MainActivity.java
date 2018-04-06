@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                             progressDialog.dismiss();
 
                             if (task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(i);
                             } else {
