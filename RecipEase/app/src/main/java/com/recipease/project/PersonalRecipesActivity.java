@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -77,38 +78,42 @@ public class PersonalRecipesActivity extends DrawerActivity {
     //Returns a list of all recipes
     public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         // Read recipes in from the database and convert them to an ArrayList of Recipe objects
-        database_reference.child("recipes").addValueEventListener(new ValueEventListener() {
+        database_reference.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot all_recipes) {
-                //Loop through each separate recipe
-                for (DataSnapshot single_recipe : all_recipes.getChildren()) {
-                    //Create a new recipe object
-                    Recipe recipe = single_recipe.getValue(Recipe.class);
-                    if (firebaseUser.getUid().equals(recipe.getOwnerID())) {
-                        //Adds this new recipe to the recipe arraylist
-                        recipeList.add(recipe);
-                    }
-                }
-                //Asynchronous so have to use this to notify adapter when finished
-                recipeAdapter.notifyDataSetChanged();
+            public void onDataChange(DataSnapshot the_user) {
+                User user = the_user.getValue(User.class);
+                List<String> recipesOwned = user.getRecipesOwned();
+                for (int i = 0; i < recipesOwned.size(); i++) {
+                    database_reference.child("recipes").child(recipesOwned.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot the_recipe) {
+                            Recipe recipe = the_recipe.getValue(Recipe.class);
+                            recipeList.add(recipe);
+                            //Asynchronous so have to use this to notify adapter when finished
+                            recipeAdapter.notifyDataSetChanged();
+                            //Set results TextView
+                            TextView resultText = findViewById(R.id.resultText);
+                            if (recipeList.size() == 1) {
+                                resultText.setText(String.format("%d Result", recipeList.size()));
+                            }
+                            else {
+                                resultText.setText(String.format("%d Results", recipeList.size()));
+                            }
+                        }
 
-                //Set results TextView
-                TextView resultText = findViewById(R.id.resultText);
-                if (recipeList.size() == 1) {
-                    resultText.setText(String.format("%d Result", recipeList.size()));
-                }
-                else {
-                    resultText.setText(String.format("%d Results", recipeList.size()));
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "onCancelled", databaseError.toException());
+
             }
+
         });
-        return;
-
-
     }
 }
