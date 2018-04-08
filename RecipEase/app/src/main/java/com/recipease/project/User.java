@@ -13,7 +13,7 @@ public class User {
     private String email, displayName, bio, imageURL;
     private String uid;
     private List<String> recipesOwned;
-
+    private List<String> recipesFavorited;
 //----------------------------------------------------------------------------
     // Public Methods //
 
@@ -56,6 +56,13 @@ public class User {
 
     public void setRecipesOwned (ArrayList<String> recipesOwned) {
         this.recipesOwned = recipesOwned;
+    }
+    public List<String> getRecipesFavorited () {
+        return this.recipesFavorited;
+    }
+
+    public void setRecipesFavorited (ArrayList<String> recipesFavorited) {
+        this.recipesFavorited = recipesFavorited;
     }
 
     public String getImageURL() {
