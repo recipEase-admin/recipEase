@@ -1,42 +1,36 @@
 package com.recipease.project;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import java.util.concurrent.CountDownLatch;
 
 import static android.content.ContentValues.TAG;
+
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class RecipeDetailsActivity extends DrawerActivity {
@@ -44,9 +38,12 @@ public class RecipeDetailsActivity extends DrawerActivity {
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
     private DatabaseReference favorites_reference;
+    private DatabaseReference comments_reference;
     private TextView tvNumFavorites;
     private int numFavorites;
     private String rID;
+
+    private ArrayList<String> rComments;
 
     //variables for recipesFavorited in user object
     private FirebaseAuth firebaseAuth;
@@ -54,7 +51,6 @@ public class RecipeDetailsActivity extends DrawerActivity {
     public  FirebaseUser user;
     private DatabaseReference user_reference;
     ArrayList<String> recipesFavorited = new ArrayList<String>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +113,12 @@ public class RecipeDetailsActivity extends DrawerActivity {
         Intent intent = getIntent();
         String title = intent.getStringExtra("TITLE");
         String recipeID = intent.getStringExtra("UNIQUE ID");
-        //int cookTime = intent.getIntExtra("COOK TIME", 0);
+
         numFavorites = intent.getIntExtra("NUM FAVORITES", 0);
         String imageURL = intent.getStringExtra("IMAGE URL");
         ArrayList<String> cookingIngredients = intent.getStringArrayListExtra("INGREDIENTS LIST");
         ArrayList<String> cookingInstructions = intent.getStringArrayListExtra("INSTRUCTIONS LIST");
+        ArrayList<String> comments = intent.getStringArrayListExtra("COMMENTS");
 
         ImageView ivImageURL = (ImageView) findViewById(R.id.ivImageURL);
 
@@ -134,21 +131,78 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
         TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvTitle.setText(title);
-
-        //TextView tvCookTime = (TextView) findViewById(R.id.tvCookTime);
-        //tvCookTime.setText(Integer.toString(cookTime));
-
+      
         TextView tvCookingIngredients = (TextView) findViewById(R.id.tvCookingIngredients);
         tvCookingIngredients.setText(TextUtils.join("\n\n", cookingIngredients));
 
         TextView tvCookingInstructions = (TextView) findViewById(R.id.tvCookingInstructions);
         tvCookingInstructions.setText(TextUtils.join("\n\n", cookingInstructions));
 
+        TextView tvComments = (TextView) findViewById(R.id.tvComments);
+        if (comments == null) {
+            tvComments.setText("There are no comments - be the first!");
+        }
+        else {
+            tvComments.setText(TextUtils.join("\n\n", comments));
+        }
+
         tvNumFavorites = (TextView) findViewById(R.id.tvNumFavorites);
         tvNumFavorites.setText(String.format("%d", numFavorites));
 
         rID = recipeID;
+        rComments = comments;
 
+    }
+
+    public void addComment(View view) {
+        Filter inputFilter = new Filter();
+        EditText etNewComment = (EditText) findViewById(R.id.etNewComment);
+        String comment = etNewComment.getText().toString();
+
+        if(inputFilter.containsProfanity(comment)) {
+            showAlert("Your comment contains profanity, please remove the profanity.", "I'll Handle It");
+        }
+        else if(comment.equals("")) {
+            showAlert("Please enter a comment first", "I'm On It");
+        }
+        else {
+            if (rComments == null) {
+                rComments = new ArrayList<String>();
+            }
+            rComments.add(comment);
+            database = FirebaseDatabase.getInstance();
+            database_reference = database.getReference();
+
+            comments_reference = database_reference.child("recipes").child(rID);
+            Map<String, Object>  comments_update = new HashMap<>();
+            comments_update.put("comments", rComments);
+            comments_reference.updateChildren(comments_update);
+
+            Toast.makeText(RecipeDetailsActivity.this, "Comment posted!", Toast.LENGTH_SHORT).show();
+
+            TextView tvComments = (TextView) findViewById(R.id.tvComments);
+            if (rComments == null || rComments.isEmpty()) {
+                tvComments.setText("There are no comments - be the first!");
+            }
+            else {
+                tvComments.setText(TextUtils.join("\n\n", rComments));
+            }
+
+            etNewComment.setText("");
+        }
+    }
+
+    public void showAlert(String message, String actionText) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(message);
+        alertDialogBuilder.setPositiveButton(actionText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
 
