@@ -19,6 +19,7 @@
             android:title="personal recipes" />
         <item
             android:id="@+id/favorites"
+            android:icon="@drawable/ic_001_tray"
             android:title="favorites"/>
         <item
             android:id="@+id/find_recipe"

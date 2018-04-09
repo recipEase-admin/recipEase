@@ -39,14 +39,14 @@ public class PersonalRecipesActivity extends DrawerActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    RecipeAdapter recipeAdapter;
+    FavoriteRecipeAdapter recipeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View contentView = inflater.inflate(R.layout.activity_recipe_list, null, false);
+        View contentView = inflater.inflate(R.layout.personal_recipe_list, null, false);
         mDrawerLayout.addView(contentView, 0);
 
         TextView tvLogo = (TextView) findViewById(R.id.logoText);
@@ -54,9 +54,9 @@ public class PersonalRecipesActivity extends DrawerActivity {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Painter.ttf");
         tvLogo.setTypeface(font);
 
-        TextView tvEditSearch = (TextView) findViewById(R.id.editSearchTextView);
-        tvEditSearch.setEnabled(false);
-        tvEditSearch.setText("Edit Recipes");
+        //TextView tvEditSearch = (TextView) findViewById(R.id.editSearchTextView);
+        //tvEditSearch.setEnabled(false);
+        //tvEditSearch.setText("Edit Recipes");
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
@@ -68,15 +68,24 @@ public class PersonalRecipesActivity extends DrawerActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recipeList = new ArrayList<>();
 
-        recipeAdapter = new RecipeAdapter(this, recipeList, 0);
+        recipeAdapter = new FavoriteRecipeAdapter(this, recipeList);
         recyclerView.setAdapter(recipeAdapter);
 
         retrieveRecipes(recipeAdapter, recipeList);
 
     }
 
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+
+        recipeList.clear();
+        retrieveRecipes(recipeAdapter, recipeList);
+
+    }
     //Returns a list of all recipes
-    public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
+    public void retrieveRecipes(final FavoriteRecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         // Read recipes in from the database and convert them to an ArrayList of Recipe objects
         database_reference.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -84,13 +93,8 @@ public class PersonalRecipesActivity extends DrawerActivity {
                 User user = the_user.getValue(User.class);
                 List<String> recipesOwned = user.getRecipesOwned();
                 if (recipesOwned == null) {
-                    TextView resultText = findViewById(R.id.resultText);
-                    if (recipeList.size() == 1) {
-                        resultText.setText(String.format("%d Result", recipeList.size()));
-                    }
-                    else {
-                        resultText.setText(String.format("%d Results", recipeList.size()));
-                    }
+                    TextView resultText = findViewById(R.id.favoritesPageResults);
+                    resultText.setText(String.format("You didn't make any recipes yet!", recipeList.size()));
                     return;
                 }
                 for (int i = 0; i < recipesOwned.size(); i++) {
@@ -102,12 +106,12 @@ public class PersonalRecipesActivity extends DrawerActivity {
                             //Asynchronous so have to use this to notify adapter when finished
                             recipeAdapter.notifyDataSetChanged();
                             //Set results TextView
-                            TextView resultText = findViewById(R.id.resultText);
+                            TextView resultText = findViewById(R.id.favoritesPageResults);
                             if (recipeList.size() == 1) {
-                                resultText.setText(String.format("%d Result", recipeList.size()));
+                                resultText.setText(String.format("%d Created Recipe", recipeList.size()));
                             }
                             else {
-                                resultText.setText(String.format("%d Results", recipeList.size()));
+                                resultText.setText(String.format("%d Created Recipes", recipeList.size()));
                             }
                         }
 
