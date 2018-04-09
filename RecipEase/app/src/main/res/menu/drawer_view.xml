@@ -12,7 +12,7 @@
         <item
             android:id="@+id/trending"
             android:icon="@drawable/trending"
-            android:title="Trending Recipes" />
+            android:title="trending recipes" />
         <item
             android:id="@+id/create_recipe"
             android:icon="@drawable/pencil"
