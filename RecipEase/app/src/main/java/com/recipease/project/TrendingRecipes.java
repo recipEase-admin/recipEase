@@ -27,6 +27,7 @@ public class TrendingRecipes extends DrawerActivity {
 
     private RecyclerView recyclerView;
     private ArrayList<Recipe> recipeList;
+    private static final int numRecipes = 10;
     RecipeAdapter recipeAdapter;
 
 
@@ -82,7 +83,7 @@ public class TrendingRecipes extends DrawerActivity {
     public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
 
 
-        database_reference.child("recipes").orderByChild("numFavorites").limitToLast(10).addChildEventListener(new ChildEventListener() {
+        database_reference.child("recipes").orderByChild("numFavorites").limitToLast(numRecipes).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Recipe r = dataSnapshot.getValue(Recipe.class);
