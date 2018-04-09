@@ -31,11 +31,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
    // private DatabaseReference favorites_reference;
 
 
-    RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
-        this.recipeList = recipeList;
-        this.context = context;
-
-    }
 
     RecipeAdapter(Context context, ArrayList<Recipe> recipeList, int numIngredients) {
         this.recipeList = recipeList;
@@ -97,10 +92,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             titleText.setText(currentRecipe.getTitle());
             numFavoritesText.setText(String.format("%d", currentRecipe.getNumFavorites()));
 
-            if(numIngredients!=0) {
-                int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
-                missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
-            }
+            int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
+            missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
         }
 
     }
