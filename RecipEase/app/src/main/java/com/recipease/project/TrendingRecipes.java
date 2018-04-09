@@ -27,7 +27,6 @@ public class TrendingRecipes extends DrawerActivity {
 
     private RecyclerView recyclerView;
     private ArrayList<Recipe> recipeList;
-    private static final int numRecipes = 10;
     RecipeAdapter recipeAdapter;
 
 
