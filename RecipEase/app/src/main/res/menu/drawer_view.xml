@@ -10,6 +10,10 @@
             android:icon="@drawable/pot_outlined_menu"
             android:title="home" />
         <item
+            android:id="@+id/trending"
+            android:icon="@drawable/trending"
+            android:title="Trending Recipes" />
+        <item
             android:id="@+id/create_recipe"
             android:icon="@drawable/pencil"
             android:title="create a recipe" />
@@ -29,5 +33,7 @@
             android:id="@+id/logout"
             android:icon="@drawable/ic_003_exit"
             android:title="logout" />
+
+
 
 </menu>
