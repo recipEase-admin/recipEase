@@ -63,7 +63,6 @@ public class BrowseRecipesActivity extends DrawerActivity {
         recyclerView.setAdapter(recipeAdapter);
 
         retrieveRecipes(recipeAdapter, recipeList);
-
     }
 
     @Override
