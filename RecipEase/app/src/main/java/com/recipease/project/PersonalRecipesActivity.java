@@ -3,10 +3,8 @@ package com.recipease.project;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -22,7 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by andrewratz on 3/24/18.
@@ -83,6 +80,16 @@ public class PersonalRecipesActivity extends DrawerActivity {
             public void onDataChange(DataSnapshot the_user) {
                 User user = the_user.getValue(User.class);
                 List<String> recipesOwned = user.getRecipesOwned();
+                if (recipesOwned == null) {
+                    TextView resultText = findViewById(R.id.resultText);
+                    if (recipeList.size() == 1) {
+                        resultText.setText(String.format("%d Result", recipeList.size()));
+                    }
+                    else {
+                        resultText.setText(String.format("%d Results", recipeList.size()));
+                    }
+                    return;
+                }
                 for (int i = 0; i < recipesOwned.size(); i++) {
                     database_reference.child("recipes").child(recipesOwned.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

@@ -105,12 +105,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         int numFavorites = recipe_to_bring.getNumFavorites();
         List<String> cookingIngredients = recipe_to_bring.getCookingIngredients();
         List<String> cookingInstructions = recipe_to_bring.getCookingInstructions();
+        List<String> comments = recipe_to_bring.getComments();
         intent.putExtra("TITLE", title);
         intent.putExtra("UNIQUE ID", recipeID);
         intent.putExtra("IMAGE URL", imageURL);
         intent.putExtra("NUM FAVORITES", numFavorites);
         intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
         intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);
+        intent.putStringArrayListExtra("COMMENTS", (ArrayList) comments);
     }
 
 }

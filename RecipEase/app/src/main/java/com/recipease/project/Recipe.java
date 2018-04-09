@@ -22,18 +22,12 @@ public class Recipe {
         private String title;
         private String recipeID;
         private String ownerID;
-        private int difficulty;
         private String imageURL;
         private String sourceURL;
         private int numFavorites;
         private List<String> cookingIngredients;
         private List<String> cookingInstructions;
-
-
-        /*public void generateRecipeId() {
-            this.recipeID = new Date().getTime();
-        }
-        */
+        private List<String> comments;
 
         public String getTitle() {
             return title;
@@ -89,6 +83,14 @@ public class Recipe {
         public String getOwnerID() { return this.ownerID; }
 
         public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
+
+        public List<String> getComments() {
+        return comments;
+    }
+
+        public void setComments(ArrayList<String> comments) {
+            this.comments = comments;
+        }
 
 
 }
