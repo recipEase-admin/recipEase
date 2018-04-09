@@ -52,6 +52,10 @@ public class DrawerActivity extends AppCompatActivity {
                                 Intent intentA=new Intent(DrawerActivity.this,HomeActivity.class);
                                 startActivity(intentA);
                                 break;
+                            case R.id.trending:
+                                Intent intentlolNiceNames=new Intent(DrawerActivity.this,TrendingRecipes.class);
+                                startActivity(intentlolNiceNames);
+                                break;
                             case R.id.create_recipe:
                                 Intent intentb = new Intent(DrawerActivity.this, CreateRecipeActivity.class);
                                 startActivity(intentb);

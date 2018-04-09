@@ -28,6 +28,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
+
 public class BrowseRecipesActivity extends DrawerActivity {
 
     private FirebaseDatabase database;
