@@ -102,6 +102,10 @@ public class DrawerActivity extends AppCompatActivity {
                                 Intent intentB = new Intent(DrawerActivity.this, PersonalRecipesActivity.class);
                                 startActivity(intentB);
                                 break;
+                            case R.id.favorites:
+                                Intent intentFavorites  = new Intent(DrawerActivity.this, BrowseFavoritesActivity.class);
+                                startActivity(intentFavorites);
+                                break;
                             case R.id.find_recipe:
                                 Intent intentc = new Intent(DrawerActivity.this, IngredientSelector.class);
                                 startActivity(intentc);
@@ -116,7 +120,6 @@ public class DrawerActivity extends AppCompatActivity {
                                 Intent i = new Intent(DrawerActivity.this, MainActivity.class);
                                 startActivity(i);
                                 break;
-
 
                         }
                         return true;

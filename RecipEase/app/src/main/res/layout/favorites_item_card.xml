@@ -7,7 +7,6 @@
     android:layout_margin="8dp"
     android:id="@+id/cardview">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -20,13 +19,6 @@
             android:cropToPadding="false" />
 
         <ImageView
-            android:id="@+id/ivTransparency"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@id/recipeImage"
-            android:background="@color/colorAccent" />
-        <ImageView
-
             android:id = "@+id/heart"
             android:src = "@drawable/new_heart"
             android:layout_width = "80dp"
@@ -45,26 +37,23 @@
             android:paddingTop = "20dp"/>
 
 
+        <ImageView
+            android:id="@+id/ivTransparency"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/recipeImage"
+            android:background="@color/colorAccent" />
+
         <TextView
             android:id="@+id/title"
             style="@style/TextAppearance.AppCompat.Headline"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/ivTransparency"
             android:padding="8dp"
             android:textColor="#FFFFFF"
-            android:background="@color/colorAccent"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/missing_ingredients"
-            android:layout_below="@id/ivTransparency"
-            android:padding="8dp"
-            android:background="#FFFFFF"
-            style="@style/TextAppearance.AppCompat.Subhead" />
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:background="@color/colorAccent"/>
 
     </RelativeLayout>
 

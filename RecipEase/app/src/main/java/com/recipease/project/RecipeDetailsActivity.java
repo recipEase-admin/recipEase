@@ -36,11 +36,15 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
+    private DatabaseReference recipeFavoritesReference;
+    private DatabaseReference userFavoritesReference;
     private DatabaseReference favorites_reference;
     private DatabaseReference comments_reference;
     private TextView tvNumFavorites;
     private int numFavorites;
     private String rID;
+    private ArrayList<String> recipesFavorited  = new ArrayList<String>();
+    private boolean favoritesExecute;
 
     private ArrayList<String> rComments;
 
@@ -49,7 +53,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
     private String userID = "";
     public  FirebaseUser user;
     private DatabaseReference user_reference;
-    ArrayList<String> recipesFavorited = new ArrayList<String>();
+    //ArrayList<String> recipesFavorited = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,40 +75,70 @@ public class RecipeDetailsActivity extends DrawerActivity {
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
 
-        //update numFavorites in recipe object
-        ++numFavorites;
-        favorites_reference = database_reference.child("recipes").child(rID);
-        Map<String, Object>  favorites_update = new HashMap<>();
-        favorites_update.put("numFavorites", numFavorites);
-        favorites_reference.updateChildren(favorites_update);
-        tvNumFavorites.setText(String.format("%d", numFavorites));
-
-        //update recipesFavorited in user object
         database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot the_user) {
                 User user = the_user.getValue(User.class);
-                ArrayList<String> recipesFavorited;
-                if (user.getRecipesFavorited() == null) {
-                    recipesFavorited = new ArrayList<String>();
-                }
-                else {
-                    recipesFavorited = new ArrayList(user.getRecipesFavorited());
-                }
-                recipesFavorited.add(rID);
-                user.setRecipesFavorited(recipesFavorited);
-                the_user.getRef().setValue(user);
+
+                    if (user.getRecipesFavorited() == null) {
+                        recipesFavorited = new ArrayList<String>();
+                        //call function to favorite
+                        //favoriteRecipe();
+
+                        recipesFavorited.add(rID);
+                        user.setRecipesFavorited(recipesFavorited);
+                        the_user.getRef().setValue(user);
+
+                        ++numFavorites;
+                        favorites_reference = database_reference.child("recipes").child(rID);
+                        Map<String, Object> favorites_update = new HashMap<>();
+                        favorites_update.put("numFavorites", numFavorites);
+                        favorites_reference.updateChildren(favorites_update);
+                        tvNumFavorites.setText(String.format("%d", numFavorites));
+
+
+                    }else{
+                        recipesFavorited = new ArrayList(user.getRecipesFavorited());
+                        //unfavoriteRecipe();
+
+                        if(recipesFavorited.contains(rID)){
+
+                            recipesFavorited.remove(rID);
+                            user.setRecipesFavorited(recipesFavorited);
+                            the_user.getRef().setValue(user);
+
+                            --numFavorites;
+                            favorites_reference = database_reference.child("recipes").child(rID);
+                            Map<String, Object> favorites_update = new HashMap<>();
+                            favorites_update.put("numFavorites", numFavorites);
+                            favorites_reference.updateChildren(favorites_update);
+                            tvNumFavorites.setText(String.format("%d", numFavorites));
+
+
+                        }else{
+
+                            recipesFavorited.add(rID);
+                            user.setRecipesFavorited(recipesFavorited);
+                            the_user.getRef().setValue(user);
+
+                            ++numFavorites;
+                            favorites_reference = database_reference.child("recipes").child(rID);
+                            Map<String, Object> favorites_update = new HashMap<>();
+                            favorites_update.put("numFavorites", numFavorites);
+                            favorites_reference.updateChildren(favorites_update);
+                            tvNumFavorites.setText(String.format("%d", numFavorites));
+
+                        }
+
+                    }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.i(TAG, "Could not add recipe to favorites", databaseError.toException());
             }
-        });
 
-        //disable button
-        ImageView heart_button = (ImageView) findViewById(R.id.favoriteButton);
-        heart_button.setEnabled(false);
+        });
 
     }
 

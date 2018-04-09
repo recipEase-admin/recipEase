@@ -16,6 +16,7 @@
     <string name="title_activity_home">Home</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_create_recipe">Create a Recipe</string>
+    <string name="title_activity_favorite_recipes">Favorites</string>
     <string name="title_activity_ingredient_selector">Ingredient Selector</string>
     <string name="title_activity_about">About</string>
     <string name="title_activity_personal_recipes">Personal Recipes</string>
