@@ -27,15 +27,13 @@ public class TrendingRecipes extends DrawerActivity {
 
     private RecyclerView recyclerView;
     private ArrayList<Recipe> recipeList;
-    RecipeAdapter recipeAdapter;
+    FavoriteRecipeAdapter recipeAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
 
         View contentView = inflater.inflate(R.layout.activity_trending_recipes, null, false);
         mDrawerLayout.addView(contentView, 0);
@@ -53,7 +51,7 @@ public class TrendingRecipes extends DrawerActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recipeList = new ArrayList<>();
 
-        recipeAdapter = new RecipeAdapter(this, recipeList);
+        recipeAdapter = new FavoriteRecipeAdapter(this, recipeList);
         recyclerView.setAdapter(recipeAdapter);
 
         retrieveRecipes(recipeAdapter, recipeList);
@@ -79,7 +77,7 @@ public class TrendingRecipes extends DrawerActivity {
     }
 
     //Returns a list of all recipes
-    public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
+    public void retrieveRecipes(final FavoriteRecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
 
 
         database_reference.child("recipes").orderByChild("numFavorites").limitToLast(10).addChildEventListener(new ChildEventListener() {
