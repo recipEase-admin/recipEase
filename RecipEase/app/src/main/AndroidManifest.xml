@@ -54,6 +54,7 @@
             android:name=".AnimationActivity"
             android:label="@string/title_activity_animation" />
         <activity android:name=".DrawerActivity" />
+        <activity android:name=".TrendingRecipes"></activity>
     </application>
 
 </manifest>

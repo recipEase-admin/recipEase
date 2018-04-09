@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,8 +94,8 @@ public class ProfileActivity extends DrawerActivity {
                     recipesOwned = new ArrayList(current_user.getRecipesOwned());
                 }
                 // Set GUI fields to current user's information
-                etDisplayName.setHint(displayName);
-                etBio.setHint(bio);
+                etDisplayName.setText(displayName);
+                etBio.setText(bio);
                 Glide.with(ProfileActivity.this).load(imageURL).centerCrop().into(ivProfilePic);
 
             }

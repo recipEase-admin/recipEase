@@ -30,6 +30,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     int nFavorites;
    // private DatabaseReference favorites_reference;
 
+    RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
+        this.recipeList = recipeList;
+        this.context = context;
+    }
 
 
     RecipeAdapter(Context context, ArrayList<Recipe> recipeList, int numIngredients) {
@@ -92,8 +96,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             titleText.setText(currentRecipe.getTitle());
             numFavoritesText.setText(String.format("%d", currentRecipe.getNumFavorites()));
 
-            int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
-            missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
+            if(numIngredients!=0) {
+                int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
+                missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
+            }
         }
 
     }
@@ -105,12 +111,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         int numFavorites = recipe_to_bring.getNumFavorites();
         List<String> cookingIngredients = recipe_to_bring.getCookingIngredients();
         List<String> cookingInstructions = recipe_to_bring.getCookingInstructions();
+        List<String> comments = recipe_to_bring.getComments();
         intent.putExtra("TITLE", title);
         intent.putExtra("UNIQUE ID", recipeID);
         intent.putExtra("IMAGE URL", imageURL);
         intent.putExtra("NUM FAVORITES", numFavorites);
         intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
         intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);
+        intent.putStringArrayListExtra("COMMENTS", (ArrayList) comments);
     }
 
 }

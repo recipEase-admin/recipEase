@@ -52,6 +52,10 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
+
+        etPassword.setTransformationMethod(new PasswordMethod());
+
+
         etBio = (EditText) findViewById(R.id.etBio);
         etDisplayName = (EditText) findViewById(R.id.etDisplayName);
         ivProfilePicture = (ImageView) findViewById(R.id.ivProfilePicture);

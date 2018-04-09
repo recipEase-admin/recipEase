@@ -11,103 +11,144 @@
         android:layout_height="match_parent"
         tools:context="com.recipease.project.RecipeDetailsActivity">
 
-    <ImageView
-        android:id="@+id/ivImageURL"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_weight="1"
-        app:srcCompat="@android:drawable/ic_menu_report_image" />
+        <ImageView
+            android:id="@+id/ivImageURL"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            app:srcCompat="@android:drawable/ic_menu_report_image" />
 
-    <ImageView
-        android:id="@+id/ivTransparency"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="150dp"
-        android:background="#aa000000" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/ivImageURL"
+            android:layout_alignParentEnd="true"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:background="#aa000000" />
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="268dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="155dp"
-        android:text="Title"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+        <ImageView
+            android:id="@+id/favoriteButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_below="@id/tvTitle"
+            android:adjustViewBounds="false"
+            android:onClick="onClickFavorites"
+            android:src="@drawable/new_heart" />
 
-
-    <ImageView
-        android:id="@+id/favoriteButton"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@id/tvTitle"
-        android:adjustViewBounds="false"
-        android:onClick="onClickFavorites"
-        android:src="@drawable/new_heart" />
-
-    <TextView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_below="@id/tvTitle"
-        android:layout_toRightOf="@id/favoriteButton"
-        android:id="@+id/tvNumFavorites"
-        android:textSize= "30dp"
-        android:paddingTop = "15dp"
-        android:paddingLeft = "15dp"/>
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_below="@id/tvTitle"
+            android:layout_toRightOf="@id/favoriteButton"
+            android:id="@+id/tvNumFavorites"
+            android:textSize= "30dp"
+            android:paddingTop = "15dp"
+            android:paddingLeft = "15dp"/>
 
 
-    <TextView
-        android:id="@+id/staticIngredients"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/favoriteButton"
-        android:text="Ingredients"
-        android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
-        android:paddingLeft="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/ivImageURL"
-        tools:layout_editor_absoluteX="0dp" />
+        <TextView
+            android:id="@+id/staticIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvTitle"
+            android:layout_marginTop="65dp"
+            android:text="Ingredients"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            tools:layout_editor_absoluteX="0dp" />
 
-    <TextView
-        android:id="@+id/staticInstructions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/tvCookingIngredients"
-        android:layout_marginTop="11dp"
-        android:paddingLeft="10dp"
-        android:text="Instructions"
-        android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
-        app:layout_constraintTop_toBottomOf="@+id/tvCookingIngredients"
-        tools:layout_editor_absoluteX="0dp" />
+        <TextView
+            android:id="@+id/staticInstructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvCookingIngredients"
+            android:layout_marginTop="11dp"
+            android:text="Instructions"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            app:layout_constraintTop_toBottomOf="@+id/tvCookingIngredients"
+            tools:layout_editor_absoluteX="0dp" />
 
-    <TextView
-        android:id="@+id/tvCookingIngredients"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/staticIngredients"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/colorAccent"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/staticIngredients"
-        tools:layout_editor_absoluteX="0dp" />
+        <TextView
+            android:id="@+id/tvCookingIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/staticIngredients"
+            android:layout_marginTop="11dp"
+            android:text="@string/cookingIngredients"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/staticIngredients"
+            tools:layout_editor_absoluteX="0dp" />
 
-    <TextView
-        android:id="@+id/tvCookingInstructions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/tvCookingIngredients"
-        android:layout_below="@+id/staticInstructions"
-        android:layout_marginTop="19dp"
-        android:layout_marginLeft="10dp"
-        android:text="@string/cookingInstructions"
-        android:textColor="@color/colorAccent"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/staticInstructions"
-        tools:layout_editor_absoluteX="0dp" />
+        <TextView
+            android:id="@+id/tvCookingInstructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/staticInstructions"
+            android:layout_marginTop="13dp"
+            android:text="@string/cookingInstructions"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/staticInstructions"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/staticComments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvCookingInstructions"
+            android:layout_marginTop="12dp"
+            android:text="Comments"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            app:layout_constraintTop_toBottomOf="@+id/tvCookingInstructions"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <EditText
+            android:id="@+id/etNewComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/staticComments"
+            android:hint="Enter a comment"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/staticComments"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/tvComments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/etNewComment"
+            android:layout_marginTop="13dp"
+            android:text="@string/Comments"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/etNewComment"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <ImageButton
+            android:id="@+id/btAddComment"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_above="@+id/tvComments"
+            android:layout_alignParentEnd="true"
+            android:onClick="addComment"
+            app:srcCompat="@drawable/ic_add" />
+
+
     </RelativeLayout>
 </ScrollView>
 
