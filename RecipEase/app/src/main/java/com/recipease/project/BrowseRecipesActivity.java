@@ -94,18 +94,12 @@ public class BrowseRecipesActivity extends DrawerActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
+                    if (recipe == null) {
+                        return;
+                    }
                     recipeList.add(recipe); //breaks here
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
-
-                    //Set results TextView
-                    TextView resultText = findViewById(R.id.resultText);
-                    if (recipeList.size() == 1) {
-                        resultText.setText(String.format("%d Result", recipeList.size()));
-                    }
-                    else {
-                        resultText.setText(String.format("%d Results", recipeList.size()));
-                    }
                 }
 
                 @Override
@@ -113,6 +107,14 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
                 }
             });
+            //Set results TextView
+            TextView resultText = findViewById(R.id.resultText);
+            if (recipeList.size() == 1) {
+                resultText.setText(String.format("%d Result", recipeList.size()));
+            }
+            else {
+                resultText.setText(String.format("%d Results", recipeList.size()));
+            }
         }
     }
 

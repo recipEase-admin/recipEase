@@ -102,18 +102,12 @@ public class BrowseFavoritesActivity extends DrawerActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
+                                if (recipe == null) {
+                                    return;
+                                }
                                 favoriteRecipeList.add(recipe); //breaks here
                                 //Asynchronous so have to use this to notify adapter when finished
                                 recipeAdapter.notifyDataSetChanged();
-
-                                //Set results TextView
-
-                                TextView resultText = findViewById(R.id.favoritesPageResults);
-                                if (favoriteRecipeList.size() == 1) {
-                                    resultText.setText(String.format("%d Favorite", favoriteRecipeList.size()));
-                                } else {
-                                    resultText.setText(String.format("%d Favorites", favoriteRecipeList.size()));
-                                }
 
                             }
 
@@ -123,6 +117,16 @@ public class BrowseFavoritesActivity extends DrawerActivity {
                             }
                         });
                     }
+
+                    //Set results TextView
+
+                    TextView resultText = findViewById(R.id.favoritesPageResults);
+                    if (favoriteRecipeList.size() == 1) {
+                        resultText.setText(String.format("%d Favorite", favoriteRecipeList.size()));
+                    } else {
+                        resultText.setText(String.format("%d Favorites", favoriteRecipeList.size()));
+                    }
+
                 }
             }
 

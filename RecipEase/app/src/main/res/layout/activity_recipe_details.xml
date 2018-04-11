@@ -148,6 +148,15 @@
             android:onClick="addComment"
             app:srcCompat="@drawable/ic_add" />
 
+        <ImageView
+            android:id="@+id/btDeleteTrash"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/ivImageURL"
+            android:adjustViewBounds="true"
+            android:onClick="deleteRecipe" />
+
 
     </RelativeLayout>
 </ScrollView>

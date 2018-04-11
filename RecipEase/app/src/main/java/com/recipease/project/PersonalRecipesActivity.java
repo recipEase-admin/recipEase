@@ -89,7 +89,7 @@ public class PersonalRecipesActivity extends DrawerActivity {
             public void onDataChange(DataSnapshot the_user) {
                 User user = the_user.getValue(User.class);
                 List<String> recipesOwned = user.getRecipesOwned();
-                if (recipesOwned == null) {
+                if (recipesOwned == null || recipesOwned.size() == 0) {
                     TextView resultText = findViewById(R.id.favoritesPageResults);
                     resultText.setText(String.format("You didn't make any recipes yet!", recipeList.size()));
                     return;
