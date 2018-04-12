@@ -109,6 +109,15 @@ public class BrowseFavoritesActivity extends DrawerActivity {
                                 //Asynchronous so have to use this to notify adapter when finished
                                 recipeAdapter.notifyDataSetChanged();
 
+                                //Set results TextView
+
+                                TextView resultText = findViewById(R.id.favoritesPageResults);
+                                if (favoriteRecipeList.size() == 1) {
+                                    resultText.setText(String.format("%d Favorite", favoriteRecipeList.size()));
+                                } else {
+                                    resultText.setText(String.format("%d Favorites", favoriteRecipeList.size()));
+                                }
+
                             }
 
                             @Override
@@ -116,15 +125,6 @@ public class BrowseFavoritesActivity extends DrawerActivity {
 
                             }
                         });
-                    }
-
-                    //Set results TextView
-
-                    TextView resultText = findViewById(R.id.favoritesPageResults);
-                    if (favoriteRecipeList.size() == 1) {
-                        resultText.setText(String.format("%d Favorite", favoriteRecipeList.size()));
-                    } else {
-                        resultText.setText(String.format("%d Favorites", favoriteRecipeList.size()));
                     }
 
                 }

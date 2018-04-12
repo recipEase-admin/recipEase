@@ -198,14 +198,14 @@ public class RecipeDetailsActivity extends DrawerActivity {
             @Override
             public void onDataChange(DataSnapshot the_user) {
                 User user = the_user.getValue(User.class);
-
-                if (user.getRecipesOwned().contains(rID)) {
-                    trash.setClickable(true);
-                    trash.setImageResource(R.drawable.ic_trash);
+                if (user.getRecipesOwned() != null) {
+                    if (user.getRecipesOwned().contains(rID)) {
+                        trash.setClickable(true);
+                        trash.setImageResource(R.drawable.ic_trash);
+                    }
 
                 }
-
-                }
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
