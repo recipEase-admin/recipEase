@@ -20,40 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="161dp"
-        android:layout_height="88dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Akira, Andrew, Archit, Bobby, Joe, Lily, and Robert"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="129dp"
-        android:layout_height="34dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Created By"
-        android:textAlignment="center"
-        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView11"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView14"
-        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -65,15 +31,15 @@
     <TextView
         android:id="@+id/textView3"
         android:layout_width="369dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
-        android:text="Meet Recipease, the app that help your find recipes with ease."
+        android:layout_height="72dp"
+        android:layout_marginTop="24dp"
+        android:padding="20sp"
+        android:text="Meet Recipease, the app that helps your find recipes with ease."
         android:textAlignment="viewStart"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoText" />
 
@@ -82,8 +48,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text='Want to get started? Select "find recipes"  from the navbar, enter a recipe name, or select some ingredients and get ready to start cooking.'
+        android:text='Want to get started? Select "find recipes" from the navbar and enter some ingredients, then get ready to start cooking.'
         android:textAlignment="viewStart"
+        android:padding="20sp"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,38 +67,26 @@
         android:textAlignment="viewStart"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
+        android:padding="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <TextView
-        android:id="@+id/textView13"
-        android:layout_width="360dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="8dp"
-        android:text="With Recipease your creativity in the kitchen is the limit."
-        android:textAlignment="viewStart"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-    <TextView
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
-        android:layout_height="33dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="73dp"
+        android:background="#08f"
+        android:padding="20sp"
         android:text="Any comments, questions, or concerns please email contact@recipease.com!"
         android:textAlignment="viewStart"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#fff"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
