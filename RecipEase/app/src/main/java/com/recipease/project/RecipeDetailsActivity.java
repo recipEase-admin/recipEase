@@ -174,6 +174,14 @@ public class RecipeDetailsActivity extends DrawerActivity {
         TextView tvCookingIngredients = (TextView) findViewById(R.id.tvCookingIngredients);
         tvCookingIngredients.setText(TextUtils.join("\n\n", cookingIngredients));
 
+
+        //modify ArrayList of Strings and then set TextView
+        String number;
+        for(int i  = 0 ; i < cookingInstructions.size(); i++ ){
+            number = String.format("%d)  ", i);
+            cookingInstructions.set(i, String.format(number + cookingInstructions.get(i)));
+        }
+
         TextView tvCookingInstructions = (TextView) findViewById(R.id.tvCookingInstructions);
         tvCookingInstructions.setText(TextUtils.join("\n\n", cookingInstructions));
 
