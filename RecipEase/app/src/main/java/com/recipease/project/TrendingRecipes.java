@@ -79,32 +79,32 @@ public class TrendingRecipes extends DrawerActivity {
     //Returns a list of all recipes
     public void retrieveRecipes(final FavoriteRecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
 
-
-        database_reference.child("recipes").orderByChild("numFavorites").limitToLast(10).addChildEventListener(new ChildEventListener() {
+        database_reference.child("trending").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Recipe r = dataSnapshot.getValue(Recipe.class);
-                recipeList.add(r);
-                recipeAdapter.notifyDataSetChanged();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> temp = (ArrayList<String>)dataSnapshot.getValue();
+                for(int i=29; i>0; i--){
+                    System.out.println(temp.get(i));
+                    database_reference.child("recipes").child(temp.get(i)).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Recipe r = dataSnapshot.getValue(Recipe.class);
+                            recipeList.add(r);
+                            recipeAdapter.notifyDataSetChanged();
 
-                if(recipeList.size()>=1){
-                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                            if(recipeList.size()>=1){
+                                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
@@ -112,6 +112,7 @@ public class TrendingRecipes extends DrawerActivity {
 
             }
         });
+
 
 
     }
