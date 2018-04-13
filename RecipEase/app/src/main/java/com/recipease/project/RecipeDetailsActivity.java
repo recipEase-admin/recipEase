@@ -177,7 +177,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
         //modify ArrayList of Strings and then set TextView
         String number;
-        for(int i  = 0 ; i < cookingInstructions.size(); i++ ){
+        for(int i  = 1 ; i < cookingInstructions.size(); i++ ){
             number = String.format("%d)  ", i);
             cookingInstructions.set(i, String.format(number + cookingInstructions.get(i)));
         }
