@@ -10,10 +10,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:screenOrientation="portrait"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,35 +24,56 @@
         </activity>
         <activity
             android:name=".BrowseRecipesActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_browse_recipes" />
         <activity
             android:name=".RecipeDetailsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_recipe_details" />
         <activity
             android:name=".HomeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_home" />
         <activity
             android:name=".RegisterActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_register" />
         <activity
             android:name=".IngredientSelector"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_ingredient_selector" />
         <activity
             android:name=".AboutActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_about" />
         <activity
             android:name=".CreateRecipeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_create_recipe" />
         <activity
             android:name=".ProfileActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_profile" />
         <activity
             android:name=".PersonalRecipesActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_personal_recipes" />
         <activity
+            android:name=".BrowseFavoritesActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_favorite_recipes" />
+        <activity android:name=".TrendingRecipes"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_trending"/>
+        <activity android:name=".SearchRecipesActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_search_recipes"/>
+        <activity
             android:name=".AnimationActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_animation" />
         <activity android:name=".DrawerActivity" />
+
     </application>
 
 </manifest>

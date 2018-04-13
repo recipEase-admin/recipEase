@@ -37,6 +37,11 @@ public class HomeActivity extends DrawerActivity {
         tvLogo.setTypeface(font);
     }
 
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
     public void goToFindRecipesPage( View v ) {
         Intent i = new Intent(HomeActivity.this, IngredientSelector.class);
         startActivity(i);

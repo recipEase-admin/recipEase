@@ -94,9 +94,21 @@ public class DrawerActivity extends AppCompatActivity {
                                 Intent intentb = new Intent(DrawerActivity.this, CreateRecipeActivity.class);
                                 startActivity(intentb);
                                 break;
+                            case R.id.trending:
+                                Intent intentTrending=new Intent(DrawerActivity.this,TrendingRecipes.class);
+                                startActivity(intentTrending);
+                                break;
                             case R.id.personal_recipes:
                                 Intent intentB = new Intent(DrawerActivity.this, PersonalRecipesActivity.class);
                                 startActivity(intentB);
+                                break;
+                            case R.id.favorites:
+                                Intent intentFavorites  = new Intent(DrawerActivity.this, BrowseFavoritesActivity.class);
+                                startActivity(intentFavorites);
+                                break;
+                            case R.id.search_recipe:
+                                Intent intentSearch = new Intent(DrawerActivity.this, SearchRecipesActivity.class);
+                                startActivity(intentSearch);
                                 break;
                             case R.id.find_recipe:
                                 Intent intentc = new Intent(DrawerActivity.this, IngredientSelector.class);
@@ -112,7 +124,6 @@ public class DrawerActivity extends AppCompatActivity {
                                 Intent i = new Intent(DrawerActivity.this, MainActivity.class);
                                 startActivity(i);
                                 break;
-
 
                         }
                         return true;

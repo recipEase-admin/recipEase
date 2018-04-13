@@ -2,6 +2,8 @@ package com.recipease.project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +14,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,21 +33,23 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class BrowseRecipesActivity extends DrawerActivity {
+public class SearchRecipesActivity extends DrawerActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference database_reference;
 
     private RecyclerView recyclerView;
     private ArrayList<Recipe> recipeList;
-    RecipeAdapter recipeAdapter;
+    FavoriteRecipeAdapter recipeAdapter;
+
+    private EditText etRecipeSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View contentView = inflater.inflate(R.layout.activity_recipe_list, null, false);
+        View contentView = inflater.inflate(R.layout.activity_search_recipe, null, false);
         mDrawerLayout.addView(contentView, 0);
 
         TextView tvLogo = (TextView) findViewById(R.id.logoText);
@@ -57,9 +64,18 @@ public class BrowseRecipesActivity extends DrawerActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recipeList = new ArrayList<>();
 
-        Bundle extras = getIntent().getExtras();
-        int numIngredients = (int) extras.getInt("numIngredients");
-        recipeAdapter = new RecipeAdapter(this, recipeList, numIngredients);
+        etRecipeSearch = findViewById(R.id.etRecipeSearch);
+        etRecipeSearch.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        etRecipeSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    retrieveRecipes(recipeAdapter, recipeList);
+                }
+                return false;
+            }
+        });
+        recipeAdapter = new FavoriteRecipeAdapter(this, recipeList);
         recyclerView.setAdapter(recipeAdapter);
 
         retrieveRecipes(recipeAdapter, recipeList);
@@ -73,41 +89,44 @@ public class BrowseRecipesActivity extends DrawerActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-
-        recipeList.clear();
-        retrieveRecipes(recipeAdapter, recipeList);
-
     }
 
     public void onEditSearch(View view){
         finish();
     }
 
+    public void searchForRecipe(View view) {
+        retrieveRecipes(recipeAdapter, recipeList);
+    }
     //Returns a list of all recipes
-    public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
-        // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
-        Intent intent = getIntent();
-        final ArrayList<String> recipe_ids = (ArrayList<String>) intent.getSerializableExtra("recipe_ids");
-        int size = recipe_ids.size();
-        for (int i = 0; i < size; i++) {
-            database_reference.child("recipes").child(recipe_ids.get(i)).addValueEventListener(new ValueEventListener() {
+    public void retrieveRecipes(final FavoriteRecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
+        recipeList.clear();
+        findViewById(R.id.searchLoadingPanel).setVisibility(View.VISIBLE);
+        final String search = etRecipeSearch.getText().toString();
+        hideKeyboard();
+            database_reference.child("recipes").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
-                    if (recipe == null) {
-                        return;
+                    for (DataSnapshot children : dataSnapshot.getChildren()) {
+                        Recipe recipe = children.getValue(Recipe.class);
+                        if (recipe == null) {
+                            return;
+                        }
+                        if (recipe.getTitle().contains(search)) {
+                            recipeList.add(recipe); //breaks here
+                        }
+                        //Set results TextView
+                        TextView resultText = findViewById(R.id.resultText);
+                        if (recipeList.size() == 1) {
+                            resultText.setText(String.format("%d Result", recipeList.size()));
+                        }
+                        else {
+                            resultText.setText(String.format("%d Results", recipeList.size()));
+                        }
                     }
-                    recipeList.add(recipe); //breaks here
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
-                    //Set results TextView
-                    TextView resultText = findViewById(R.id.resultText);
-                    if (recipeList.size() == 1) {
-                        resultText.setText(String.format("%d Result", recipeList.size()));
-                    }
-                    else {
-                        resultText.setText(String.format("%d Results", recipeList.size()));
-                    }
+                    findViewById(R.id.searchLoadingPanel).setVisibility(View.GONE);
                 }
 
                 @Override
@@ -117,11 +136,19 @@ public class BrowseRecipesActivity extends DrawerActivity {
             });
 
         }
-    }
 
     public void goBackToIngredientSelector(View view) {
         this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
         this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
         return;
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

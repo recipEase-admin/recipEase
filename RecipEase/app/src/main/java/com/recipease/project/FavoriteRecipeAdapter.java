@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,35 +22,30 @@ import java.util.List;
 
 import static android.support.v4.content.ContextCompat.startActivity;
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
+public class FavoriteRecipeAdapter extends RecyclerView.Adapter<FavoriteRecipeAdapter.ViewHolder> {
+
 
     private FirebaseDatabase database;
     private ArrayList<Recipe> recipeList;
     private Context context;
-    private int numIngredients;
     private DatabaseReference database_reference;
     int nFavorites;
-   // private DatabaseReference favorites_reference;
+    // private DatabaseReference favorites_reference;
 
-    RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
+
+
+    FavoriteRecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
         this.recipeList = recipeList;
         this.context = context;
     }
 
-
-    RecipeAdapter(Context context, ArrayList<Recipe> recipeList, int numIngredients) {
-        this.recipeList = recipeList;
-        this.context = context;
-        this.numIngredients = numIngredients;
+    @Override
+    public FavoriteRecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.favorites_item_card, parent, false));
     }
 
     @Override
-    public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_recipe, parent, false));
-    }
-
-    @Override
-    public void onBindViewHolder(RecipeAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(FavoriteRecipeAdapter.ViewHolder holder, int position) {
         Recipe currentRecipe = recipeList.get(position);
         holder.bindTo(currentRecipe);
         if (currentRecipe.getImageURL().equals("")) {
@@ -96,10 +93,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             titleText.setText(currentRecipe.getTitle());
             numFavoritesText.setText(String.format("%d", currentRecipe.getNumFavorites()));
 
-            if(numIngredients!=0) {
-                int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
-                missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
-            }
         }
 
     }
@@ -111,14 +104,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         int numFavorites = recipe_to_bring.getNumFavorites();
         List<String> cookingIngredients = recipe_to_bring.getCookingIngredients();
         List<String> cookingInstructions = recipe_to_bring.getCookingInstructions();
-        List<String> comments = recipe_to_bring.getComments();
         intent.putExtra("TITLE", title);
         intent.putExtra("UNIQUE ID", recipeID);
         intent.putExtra("IMAGE URL", imageURL);
         intent.putExtra("NUM FAVORITES", numFavorites);
         intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
         intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);
-        intent.putStringArrayListExtra("COMMENTS", (ArrayList) comments);
     }
+
 
 }

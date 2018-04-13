@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
     public void btnLogin_Click(View v) {
 
         if( etUsername.getText().toString().equals("") || etPassword.getText().toString().equals("") ) {
