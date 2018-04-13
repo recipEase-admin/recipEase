@@ -26,6 +26,10 @@
             android:icon="@drawable/ic_001_tray"
             android:title="favorites"/>
         <item
+            android:id="@+id/search_recipe"
+            android:icon="@drawable/ic_action_action_search"
+            android:title="search for recipe" />
+        <item
             android:id="@+id/find_recipe"
             android:icon="@drawable/ic_001_tray"
             android:title="find recipes" />

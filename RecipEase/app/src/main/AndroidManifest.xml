@@ -65,6 +65,9 @@
         <activity android:name=".TrendingRecipes"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_trending"/>
+        <activity android:name=".SearchRecipesActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_search_recipes"/>
         <activity
             android:name=".AnimationActivity"
             android:screenOrientation="portrait"

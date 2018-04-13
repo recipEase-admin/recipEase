@@ -24,6 +24,7 @@
     <string name="title_activity_animation"></string>
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_recipe_details">Recipe Details</string>
+    <string name="title_activity_search_recipes">Search for Recipe</string>
 
     <string name="textLogo">RecipEase&lt;</string>
 </resources>
