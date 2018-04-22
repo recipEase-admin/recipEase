@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,7 +57,6 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Painter.ttf");
         tvLogo.setTypeface(font);
-
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
         recyclerView = findViewById(R.id.recyclerView);
@@ -115,6 +115,10 @@ public class BrowseRecipesActivity extends DrawerActivity {
         // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
         Intent intent = getIntent();
         final HashMap<String, Integer> recipe_ids = (HashMap<String, Integer>) intent.getSerializableExtra("recipe_ids");
+        if(recipe_ids.size() == 0){
+            Toast.makeText(BrowseRecipesActivity.this, "No Recipes Found! Please try a different ingredient.", Toast.LENGTH_LONG).show();
+            return;
+        }
         HashMap<String, Integer> recipes_id_map = sortByValues(recipe_ids);
         int size = recipes_id_map.size();
         Iterator ite = recipes_id_map.entrySet().iterator();

@@ -155,6 +155,7 @@ public class IngredientSelector extends DrawerActivity {
             Toast.makeText(IngredientSelector.this, "Select at least one ingredient", Toast.LENGTH_LONG).show();
         }
         else {
+            System.out.println("1");
             HashMap<String, Integer> recipe_ids_map = convertToRecipeIDs();
             Intent intent = new Intent(this, BrowseRecipesActivity.class);
             // Put as Serializable
@@ -167,7 +168,7 @@ public class IngredientSelector extends DrawerActivity {
         HashMap<String, Integer> recipe_map = new HashMap<String, Integer>();
         for(int i = 0; i < checked_ingredients.size(); i++){
             List<String> collection = checked_ingredients.get(i).getRecipesUsing();
-            
+            System.out.println("Collection size of recipesUsing: " + collection.size());
             for(int j = 0; j < collection.size(); j++){
                 if(recipe_map.containsKey(collection.get(j)))
                 {

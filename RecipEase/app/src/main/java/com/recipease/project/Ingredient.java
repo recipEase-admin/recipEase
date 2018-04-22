@@ -30,6 +30,9 @@ public class Ingredient {
     }
 
     public List<String> getRecipesUsing() {
+        if(recipesUsing == null){
+            recipesUsing = new ArrayList<String>();
+        }
         return recipesUsing;
     }
 
