@@ -59,7 +59,6 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
-
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recipeList = new ArrayList<>();
@@ -98,10 +97,15 @@ public class BrowseRecipesActivity extends DrawerActivity {
         });
         // Here I am copying the sorted list in HashMap
         // using LinkedHashMap to preserve the insertion order
+        int numAdded = 0;
         HashMap sortedHashMap = new LinkedHashMap();
         for (Iterator it = list.iterator(); it.hasNext();) {
             HashMap.Entry entry = (HashMap.Entry) it.next();
             sortedHashMap.put(entry.getKey(), entry.getValue());
+            numAdded++;
+            if(numAdded >= 100){
+                break;
+            }
         }
         return sortedHashMap;
     }
@@ -112,7 +116,6 @@ public class BrowseRecipesActivity extends DrawerActivity {
         Intent intent = getIntent();
         final HashMap<String, Integer> recipe_ids = (HashMap<String, Integer>) intent.getSerializableExtra("recipe_ids");
         HashMap<String, Integer> recipes_id_map = sortByValues(recipe_ids);
-
         int size = recipes_id_map.size();
         Iterator ite = recipes_id_map.entrySet().iterator();
         while (ite.hasNext()) {
@@ -122,12 +125,13 @@ public class BrowseRecipesActivity extends DrawerActivity {
             database_reference.child("recipes").child((String) pair.getKey()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
+                    Recipe recipe = dataSnapshot.getValue(Recipe.class);
                     if (recipe == null) {
                         return;
                     }
-                    recipeList.add(recipe); //breaks here
+                    recipeList.add(recipe);
                     numIngredientsList.add(val);
+
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
                     //Set results TextView
@@ -145,6 +149,7 @@ public class BrowseRecipesActivity extends DrawerActivity {
                     System.out.println("Encountered error:\n " + databaseError.getDetails() + "\n" + databaseError.getMessage());
                 }
             });
+
             ite.remove(); // avoids a ConcurrentModificationException
         }
 

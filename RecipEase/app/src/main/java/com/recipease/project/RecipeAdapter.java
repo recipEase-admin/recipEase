@@ -96,7 +96,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
             if(currentNumIngredientsPresent > 0) {
                 int missingIngredients = Math.abs(currentRecipe.getCookingIngredients().size()-currentNumIngredientsPresent);
-                missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
+                missingIngredientsText.setText("Number of Matched Ingredients: " + currentNumIngredientsPresent + "/" + currentRecipe.getCookingIngredients().size());
             }
         }
 
