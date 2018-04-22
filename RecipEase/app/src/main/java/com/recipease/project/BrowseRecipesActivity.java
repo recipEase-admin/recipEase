@@ -41,6 +41,7 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
     private RecyclerView recyclerView;
     private ArrayList<Recipe> recipeList;
+    private ArrayList<Integer> numIngredientsList;
     RecipeAdapter recipeAdapter;
 
     @Override
@@ -62,10 +63,8 @@ public class BrowseRecipesActivity extends DrawerActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recipeList = new ArrayList<>();
-
-        Bundle extras = getIntent().getExtras();
-        //int numIngredients = (int) extras.getInt("numIngredients");
-        recipeAdapter = new RecipeAdapter(this, recipeList);
+        numIngredientsList = new ArrayList<>();
+        recipeAdapter = new RecipeAdapter(this, recipeList, numIngredientsList);
         recyclerView.setAdapter(recipeAdapter);
 
         retrieveRecipes(recipeAdapter, recipeList);
@@ -79,7 +78,6 @@ public class BrowseRecipesActivity extends DrawerActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-        retrieveRecipes(recipeAdapter, recipeList);
 
     }
 
@@ -87,6 +85,7 @@ public class BrowseRecipesActivity extends DrawerActivity {
         finish();
     }
 
+    //used to sort hashmap in descending order by num of correct ingredients
     private static HashMap<String, Integer> sortByValues(HashMap map) {
         List list = new LinkedList(map.entrySet());
         // Defined Custom Comparator here
@@ -116,7 +115,9 @@ public class BrowseRecipesActivity extends DrawerActivity {
         int size = recipes_id_map.size();
         Iterator ite = recipes_id_map.entrySet().iterator();
         while (ite.hasNext()) {
+
             HashMap.Entry pair = (HashMap.Entry) ite.next();
+            final int val = (Integer) pair.getValue();
             database_reference.child("recipes").child((String) pair.getKey()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -125,6 +126,7 @@ public class BrowseRecipesActivity extends DrawerActivity {
                         return;
                     }
                     recipeList.add(recipe); //breaks here
+                    numIngredientsList.add(val);
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
                     //Set results TextView

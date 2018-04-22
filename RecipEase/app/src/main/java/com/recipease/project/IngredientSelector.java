@@ -167,6 +167,7 @@ public class IngredientSelector extends DrawerActivity {
         HashMap<String, Integer> recipe_map = new HashMap<String, Integer>();
         for(int i = 0; i < checked_ingredients.size(); i++){
             List<String> collection = checked_ingredients.get(i).getRecipesUsing();
+            if(recipe_map.size() >= 100) break;
             for(int j = 0; j < collection.size(); j++){
                 if(recipe_map.containsKey(collection.get(j)))
                 {

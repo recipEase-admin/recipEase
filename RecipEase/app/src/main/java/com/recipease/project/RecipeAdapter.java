@@ -24,6 +24,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     private FirebaseDatabase database;
     private ArrayList<Recipe> recipeList;
+    private ArrayList<Integer> numIngredientsList;
     private Context context;
     private DatabaseReference database_reference;
     int nFavorites;
@@ -31,6 +32,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
         this.recipeList = recipeList;
         this.context = context;
+    }
+    RecipeAdapter(Context context, ArrayList<Recipe> recipeList, ArrayList<Integer> numIngredientsList) {
+        this.recipeList = recipeList;
+        this.context = context;
+        this.numIngredientsList = numIngredientsList;
     }
 
     @Override
@@ -41,7 +47,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(RecipeAdapter.ViewHolder holder, int position) {
         Recipe currentRecipe = recipeList.get(position);
-        holder.bindTo(currentRecipe);
+        Integer currentNumIngredientsPresent = numIngredientsList.get(position);
+        holder.bindTo(currentRecipe, currentNumIngredientsPresent);
         if (currentRecipe.getImageURL().equals("")) {
             Glide.with(context).load(R.drawable.no_image).into(holder.recipeImage);
         }
@@ -82,13 +89,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             });
         }
 
-        void bindTo(Recipe currentRecipe) {
+        void bindTo(Recipe currentRecipe, Integer currentNumIngredientsPresent) {
             //Populate the textviews with data
             titleText.setText(currentRecipe.getTitle());
             numFavoritesText.setText(String.format("%d", currentRecipe.getNumFavorites()));
 
-            if(true) {
-                int missingIngredients = currentRecipe.getCookingIngredients().size();
+            if(currentNumIngredientsPresent > 0) {
+                int missingIngredients = Math.abs(currentRecipe.getCookingIngredients().size()-currentNumIngredientsPresent);
                 missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
             }
         }
