@@ -25,21 +25,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private FirebaseDatabase database;
     private ArrayList<Recipe> recipeList;
     private Context context;
-    private int numIngredients;
     private DatabaseReference database_reference;
     int nFavorites;
-   // private DatabaseReference favorites_reference;
 
     RecipeAdapter(Context context, ArrayList<Recipe> recipeList) {
         this.recipeList = recipeList;
         this.context = context;
-    }
-
-
-    RecipeAdapter(Context context, ArrayList<Recipe> recipeList, int numIngredients) {
-        this.recipeList = recipeList;
-        this.context = context;
-        this.numIngredients = numIngredients;
     }
 
     @Override
@@ -96,8 +87,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             titleText.setText(currentRecipe.getTitle());
             numFavoritesText.setText(String.format("%d", currentRecipe.getNumFavorites()));
 
-            if(numIngredients!=0) {
-                int missingIngredients = currentRecipe.getCookingIngredients().size() - numIngredients;
+            if(true) {
+                int missingIngredients = currentRecipe.getCookingIngredients().size();
                 missingIngredientsText.setText(String.format("Number of Missing Ingredients: %d", missingIngredients));
             }
         }

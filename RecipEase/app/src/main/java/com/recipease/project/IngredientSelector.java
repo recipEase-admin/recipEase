@@ -2,6 +2,8 @@ package com.recipease.project;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 
 import android.content.Context;
@@ -35,6 +37,12 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import static android.content.ContentValues.TAG;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class IngredientSelector extends DrawerActivity {
@@ -94,8 +102,8 @@ public class IngredientSelector extends DrawerActivity {
     public void addItem(View view) {
         TextView lbl = (TextView) view;
         String selection = lbl.getText().toString();
-        System.out.println(selection);
-        for (int i = 0; i < ingredientList.size(); i++) {
+
+        for (int i = 0; i < ingredientList.size(); i++){
             if (ingredientList.get(i).getName().equals(selection)) {
                 checked_ingredients.add(ingredientList.get(i));
                 ingredientAdapter.notifyItemInserted(checked_ingredients.size() - 1);
@@ -135,7 +143,7 @@ public class IngredientSelector extends DrawerActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "onCancelled", databaseError.toException());
+                Log.i(TAG, "Could not populate ingredientList", databaseError.toException());
             }
         });
 
@@ -147,49 +155,51 @@ public class IngredientSelector extends DrawerActivity {
             Toast.makeText(IngredientSelector.this, "Select at least one ingredient", Toast.LENGTH_LONG).show();
         }
         else {
-            ArrayList<String> recipe_ids_intersection = convertToRecipeIDs();
-            int numIngredients = checked_ingredients.size();
+            HashMap<String, Integer> recipe_ids_map = convertToRecipeIDs();
             Intent intent = new Intent(this, BrowseRecipesActivity.class);
             // Put as Serializable
-            intent.putExtra("recipe_ids", recipe_ids_intersection);
-            intent.putExtra("numIngredients", numIngredients);
+            intent.putExtra("recipe_ids", recipe_ids_map);
             startActivity(intent);
         }
     }
 
-    //Narrows down the recipe ids to send by using intersect operations
-    public ArrayList<String> convertToRecipeIDs() {
-        ArrayList<Collection<String>> recipe_ids = new ArrayList<>();
-        for (int i = 0; i < checked_ingredients.size(); i+=2) {
-            //If odd number of ingredients selected and are on the last loop, add last one to the list
-            if ((checked_ingredients.size() - i) == 1) {
-                Collection<String> collection = checked_ingredients.get(i).getRecipesUsing();
-                recipe_ids.add(collection);
-                break;
+    private static HashMap<String, Integer> sortByValues(HashMap map) {
+        List list = new LinkedList(map.entrySet());
+        // Defined Custom Comparator here
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((HashMap.Entry) (o2)).getValue())
+                        .compareTo(((HashMap.Entry) (o1)).getValue());
             }
-            else {
-                Collection<String> collection1 = checked_ingredients.get(i).getRecipesUsing();
-                Collection<String> collection2 = checked_ingredients.get(i + 1).getRecipesUsing();
-                Collection<String> intersection = CollectionUtils.intersection(collection1, collection2);
-                recipe_ids.add(intersection);
+        });
+        // Here I am copying the sorted list in HashMap
+        // using LinkedHashMap to preserve the insertion order
+        HashMap sortedHashMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            HashMap.Entry entry = (HashMap.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedHashMap;
+    }
+
+    public HashMap<String, Integer> convertToRecipeIDs() {
+        HashMap<String, Integer> recipe_map = new HashMap<String, Integer>();
+        for(int i = 0; i < checked_ingredients.size(); i++){
+            List<String> collection = checked_ingredients.get(i).getRecipesUsing();
+            for(int j = 0; j < collection.size(); j++){
+                if(recipe_map.containsKey(collection.get(j)))
+                {
+                    int val = recipe_map.get(collection.get(j));
+                    recipe_map.put(collection.get(j),val+1);
+                }
+                else
+                {
+                    recipe_map.put(collection.get(j),1);
+                }
             }
         }
-        //Now we have an Arraylist of Collection of recipe_ids
-        while (recipe_ids.size() > 1) {
-            Collection<String> collection1 = recipe_ids.get(0);
-            System.out.println(collection1);
-            Collection<String> collection2 = recipe_ids.get(1);
-            System.out.println(collection2);
-            Collection<String> intersection = CollectionUtils.intersection(collection1, collection2);
-            System.out.println(intersection);
-            //Add this intersection
-            recipe_ids.add(0, intersection);
-            //Remove the former two collections
-            recipe_ids.remove(1);
-            recipe_ids.remove(1);
-        }
-        //Final intersection has been formed
-        return (ArrayList<String>) recipe_ids.get(0);
+        HashMap<String, Integer> recipes_map = sortByValues(recipe_map);
+        return recipes_map;
     }
 
     private void hideKeyboard() {

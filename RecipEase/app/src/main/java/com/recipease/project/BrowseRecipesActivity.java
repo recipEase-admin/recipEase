@@ -24,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -58,8 +60,8 @@ public class BrowseRecipesActivity extends DrawerActivity {
         recipeList = new ArrayList<>();
 
         Bundle extras = getIntent().getExtras();
-        int numIngredients = (int) extras.getInt("numIngredients");
-        recipeAdapter = new RecipeAdapter(this, recipeList, numIngredients);
+        //int numIngredients = (int) extras.getInt("numIngredients");
+        recipeAdapter = new RecipeAdapter(this, recipeList);
         recyclerView.setAdapter(recipeAdapter);
 
         retrieveRecipes(recipeAdapter, recipeList);
@@ -73,8 +75,11 @@ public class BrowseRecipesActivity extends DrawerActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-
         recipeList.clear();
+        recyclerView.getRecycledViewPool().clear();
+        recipeAdapter.notifyDataSetChanged();
+        System.out.println("printing recipeList");
+        
         retrieveRecipes(recipeAdapter, recipeList);
 
     }
@@ -87,10 +92,13 @@ public class BrowseRecipesActivity extends DrawerActivity {
     public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
         Intent intent = getIntent();
-        final ArrayList<String> recipe_ids = (ArrayList<String>) intent.getSerializableExtra("recipe_ids");
+        final HashMap<String, Integer> recipe_ids = (HashMap<String, Integer>) intent.getSerializableExtra("recipe_ids");
         int size = recipe_ids.size();
-        for (int i = 0; i < size; i++) {
-            database_reference.child("recipes").child(recipe_ids.get(i)).addValueEventListener(new ValueEventListener() {
+        Iterator ite = recipe_ids.entrySet().iterator();
+        while (ite.hasNext()) {
+            HashMap.Entry pair = (HashMap.Entry) ite.next();
+            System.out.println("Attempting to addValueEventListener to " + pair.getKey().toString());
+            database_reference.child("recipes").child((String) pair.getKey()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
@@ -98,10 +106,11 @@ public class BrowseRecipesActivity extends DrawerActivity {
                         return;
                     }
                     recipeList.add(recipe); //breaks here
+                    System.out.println("added recipe: " + recipe.getTitle() + " to recipeList");
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
                     //Set results TextView
-                    TextView resultText = findViewById(R.id.resultText);
+                    TextView resultText = (TextView) findViewById(R.id.resultText);
                     if (recipeList.size() == 1) {
                         resultText.setText(String.format("%d Result", recipeList.size()));
                     }
@@ -112,11 +121,12 @@ public class BrowseRecipesActivity extends DrawerActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    System.out.println("Encountered error:\n " + databaseError.getDetails() + "\n" + databaseError.getMessage());
                 }
             });
-
+            ite.remove(); // avoids a ConcurrentModificationException
         }
+
     }
 
     public void goBackToIngredientSelector(View view) {
