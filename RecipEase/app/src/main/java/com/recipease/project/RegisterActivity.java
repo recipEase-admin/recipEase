@@ -53,9 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
 
-        etPassword.setTransformationMethod(new PasswordMethod());
-
-
         etBio = (EditText) findViewById(R.id.etBio);
         etDisplayName = (EditText) findViewById(R.id.etDisplayName);
         ivProfilePicture = (ImageView) findViewById(R.id.ivProfilePicture);
@@ -68,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         password = etPassword.getText().toString();
         bio = etBio.getText().toString();
         displayName = etDisplayName.getText().toString();
-        String[] input = {email, password, bio, displayName};
+        String[] input = {email, bio, displayName};
 
         if (allFieldsFilled()) {
             for (String s : input) {

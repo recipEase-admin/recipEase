@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,7 +54,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
     //variables for recipesFavorited in user object
     private FirebaseAuth firebaseAuth;
     private String userID = "";
-    public  FirebaseUser user;
+    public FirebaseUser user;
     private DatabaseReference user_reference;
     //ArrayList<String> recipesFavorited = new ArrayList<String>();
 
@@ -177,8 +178,8 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
         //modify ArrayList of Strings and then set TextView
         String number;
-        for(int i  = 1 ; i < cookingInstructions.size(); i++ ){
-            number = String.format("%d)  ", i);
+        for(int i  = 0 ; i < cookingInstructions.size(); i++ ){
+            number = String.format("%d)  ", i+1);
             cookingInstructions.set(i, String.format(number + cookingInstructions.get(i)));
         }
 
@@ -221,44 +222,109 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
         });
 
+        database_reference.child("recipes").child(recipeID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot the_recipe) {
+                Recipe recipe = the_recipe.getValue(Recipe.class);
+                if (recipe.getSourceURL() != null) {
+                    TextView tvSource = (TextView) findViewById(R.id.tvSource);
+                    String temp = "Source: \n" + recipe.getSourceURL();
+                    tvSource.setText(temp);
+                }
+                if (recipe.getOwnerID() != null) {
+                    String ownerID = recipe.getOwnerID();
+                    database_reference.child("users").child(ownerID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot the_user) {
+                            User user = the_user.getValue(User.class);
+                            if (user.getDisplayName() != null) {
+                                TextView tvCreator = (TextView) findViewById(R.id.tvCreator);
+                                String temp = "Created by: " + user.getDisplayName();
+                                tvCreator.setText(temp);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
+
     }
 
     public void addComment(View view) {
-        Filter inputFilter = new Filter();
-        EditText etNewComment = (EditText) findViewById(R.id.etNewComment);
-        String comment = etNewComment.getText().toString();
 
-        if(inputFilter.containsProfanity(comment)) {
-            showAlert("Your comment contains profanity, please remove the profanity.", "I'll Handle It");
-        }
-        else if(comment.equals("")) {
-            showAlert("Please enter a comment first", "I'm On It");
-        }
-        else {
-            if (rComments == null) {
-                rComments = new ArrayList<String>();
-            }
-            rComments.add(comment);
+
             database = FirebaseDatabase.getInstance();
             database_reference = database.getReference();
 
-            comments_reference = database_reference.child("recipes").child(rID);
-            Map<String, Object>  comments_update = new HashMap<>();
-            comments_update.put("comments", rComments);
-            comments_reference.updateChildren(comments_update);
+            database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
 
-            Toast.makeText(RecipeDetailsActivity.this, "Comment posted!", Toast.LENGTH_SHORT).show();
+                String displayName;
 
-            TextView tvComments = (TextView) findViewById(R.id.tvComments);
-            if (rComments == null || rComments.isEmpty()) {
-                tvComments.setText("There are no comments - be the first!");
-            }
-            else {
-                tvComments.setText(TextUtils.join("\n\n", rComments));
-            }
+                @Override
+                public void onDataChange(DataSnapshot the_user) {
+                    User user = the_user.getValue(User.class);
+                    if (user != null) {
+                        displayName = user.getDisplayName();
+                    }
 
-            etNewComment.setText("");
-        }
+                    Filter inputFilter = new Filter();
+                    EditText etNewComment = (EditText) findViewById(R.id.etNewComment);
+                    String pureComment = etNewComment.getText().toString();
+                    String comment = displayName + ": " + pureComment;
+
+                    if(inputFilter.containsProfanity(comment)) {
+                        showAlert("Your comment contains profanity, please remove the profanity.", "I'll Handle It");
+                    }
+                    else if(comment.equals("")) {
+                        showAlert("Please enter a comment first", "I'm On It");
+                    }
+                    else {
+                        if (rComments == null) {
+                            rComments = new ArrayList<String>();
+                        }
+                        rComments.add(comment);
+                        database = FirebaseDatabase.getInstance();
+                        database_reference = database.getReference();
+
+                        comments_reference = database_reference.child("recipes").child(rID);
+                        Map<String, Object>  comments_update = new HashMap<>();
+                        comments_update.put("comments", rComments);
+                        comments_reference.updateChildren(comments_update);
+
+                        Toast.makeText(RecipeDetailsActivity.this, "Comment posted!", Toast.LENGTH_SHORT).show();
+                        hideKeyboard();
+
+                        TextView tvComments = (TextView) findViewById(R.id.tvComments);
+                        if (rComments == null || rComments.isEmpty()) {
+                            tvComments.setText("There are no comments - be the first!");
+                        }
+                        else {
+                            tvComments.setText(TextUtils.join("\n\n", rComments));
+                        }
+
+                        etNewComment.setText("");
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i(TAG, "Could not add recipe to favorites", databaseError.toException());
+                }
+
+            });
+
+
     }
 
     public void deleteRecipe(View view) {
@@ -319,6 +385,16 @@ public class RecipeDetailsActivity extends DrawerActivity {
         });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
 }

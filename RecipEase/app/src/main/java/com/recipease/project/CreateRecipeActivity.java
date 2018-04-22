@@ -113,6 +113,9 @@ public class CreateRecipeActivity extends DrawerActivity{
         View contentView = inflater.inflate(R.layout.activity_create_recipe, null, false);
         mDrawerLayout.addView(contentView, 0);
 
+        findViewById(R.id.uploadLoadingPanel).setVisibility(View.GONE);
+
+
         //Used to connect to the firebase database
         database = FirebaseDatabase.getInstance();
         //References the root of the database
@@ -282,6 +285,7 @@ public class CreateRecipeActivity extends DrawerActivity{
     }
 
     private void storeRecipeInDatabase() {
+        findViewById(R.id.uploadLoadingPanel).setVisibility(View.VISIBLE);
         createImageURL();
     }
 

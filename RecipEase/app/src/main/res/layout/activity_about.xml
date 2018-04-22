@@ -34,7 +34,7 @@
         android:layout_height="72dp"
         android:layout_marginTop="24dp"
         android:padding="20sp"
-        android:text="Meet Recipease, the app that helps your find recipes with ease."
+        android:text="Meet RecipEase, the app that helps you find recipes with ease."
         android:textAlignment="viewStart"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
@@ -63,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text='Want to add your personal touch to the Recipease community? Select "create a recipe" from the navbar.'
+        android:text='Want to add your personal touch to the RecipEase community? Select "create a recipe" from the navbar.'
         android:textAlignment="viewStart"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
@@ -79,7 +79,9 @@
         android:layout_height="73dp"
         android:background="#08f"
         android:padding="20sp"
-        android:text="Any comments, questions, or concerns please email contact@recipease.com!"
+        android:text="Any comments, questions, or concerns? Please email contact@recipease.com!"
+        android:autoLink="email"
+        android:textColorLink="@color/colorWhite"
         android:textAlignment="viewStart"
         android:textColor="#fff"
         android:textStyle="bold"

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -130,7 +131,7 @@ public class ProfileActivity extends DrawerActivity {
             else {
                 databaseReference.child("users").child(userID).setValue(current_user);
             }
-            showAlert("Profile has been update","Righteous");
+            Toast.makeText(this, "Profile changes saved", Toast.LENGTH_LONG).show();
             Intent goHome = new Intent(ProfileActivity.this, HomeActivity.class);
             startActivity(goHome);
         }

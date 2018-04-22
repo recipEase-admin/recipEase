@@ -22,12 +22,12 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/ivImageURL"
+            android:layout_below="@id/ivImageURL"
             android:layout_alignParentEnd="true"
             android:padding="8dp"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
-            android:background="#aa000000" />
+            android:background="@color/colorAccent" />
 
         <ImageView
             android:id="@+id/favoriteButton"
@@ -47,6 +47,17 @@
             android:layout_toRightOf="@id/favoriteButton"
             android:id="@+id/tvNumFavorites"
             android:textSize= "30dp"
+            android:paddingTop = "15dp"
+            android:paddingLeft = "15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_below="@id/btDeleteTrash"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/tvCreator"
+            android:textSize= "16dp"
+            android:textColor="@color/colorPrimary"
             android:paddingTop = "15dp"
             android:paddingLeft = "15dp"/>
 
@@ -121,7 +132,7 @@
             android:textColor="#fff"
             android:textSize="24sp"
             app:layout_constraintTop_toBottomOf="@+id/tvCookingInstructions"
-            tools:layout_editor_absoluteX="0dp" />a
+            tools:layout_editor_absoluteX="0dp" />
 
         <EditText
             android:id="@+id/etNewComment"
@@ -167,9 +178,23 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/ivImageURL"
+            android:layout_below="@+id/tvTitle"
             android:adjustViewBounds="true"
             android:onClick="deleteRecipe" />
+
+        <TextView
+            android:id="@+id/tvSource"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvComments"
+            android:layout_marginTop="13dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:padding="20sp"
+            android:autoLink="web"
+            app:layout_constraintTop_toBottomOf="@+id/tvComments"
+            tools:layout_editor_absoluteX="0dp" />
 
 
     </RelativeLayout>

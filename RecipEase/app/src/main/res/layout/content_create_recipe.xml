@@ -20,9 +20,9 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Create A Recipe"
+            android:text="Create a Recipe"
             android:textColor="#08f"
-            android:textSize="35sp"
+            android:textSize="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -259,6 +259,5 @@
             tools:layout_editor_absoluteX="17dp" />
 
     </android.support.constraint.ConstraintLayout>
-
 
 </ScrollView>

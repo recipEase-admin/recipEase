@@ -44,6 +44,10 @@ public class SearchRecipesActivity extends DrawerActivity {
 
     private EditText etRecipeSearch;
 
+    private ArrayList<Recipe> allRecipes;
+
+    boolean first;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,9 @@ public class SearchRecipesActivity extends DrawerActivity {
 
         View contentView = inflater.inflate(R.layout.activity_search_recipe, null, false);
         mDrawerLayout.addView(contentView, 0);
+
+        findViewById(R.id.searchLoadingPanel).setVisibility(View.GONE);
+
 
         TextView tvLogo = (TextView) findViewById(R.id.logoText);
 
@@ -63,6 +70,9 @@ public class SearchRecipesActivity extends DrawerActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recipeList = new ArrayList<>();
+
+        allRecipes = new ArrayList<>();
+        first = true;
 
         etRecipeSearch = findViewById(R.id.etRecipeSearch);
         etRecipeSearch.getBackground().mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
@@ -78,7 +88,7 @@ public class SearchRecipesActivity extends DrawerActivity {
         recipeAdapter = new FavoriteRecipeAdapter(this, recipeList);
         recyclerView.setAdapter(recipeAdapter);
 
-        retrieveRecipes(recipeAdapter, recipeList);
+        getAllRecipes(recipeAdapter, recipeList);
     }
 
     @Override
@@ -95,47 +105,92 @@ public class SearchRecipesActivity extends DrawerActivity {
         finish();
     }
 
+    public void cacheRecipes() {
+        database_reference.child("recipes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot children : dataSnapshot.getChildren()) {
+                    Recipe recipe = children.getValue(Recipe.class);
+                    if (recipe == null) {
+                        return;
+                    }
+                    allRecipes.add(recipe); //breaks here
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     public void searchForRecipe(View view) {
         retrieveRecipes(recipeAdapter, recipeList);
     }
     //Returns a list of all recipes
     public void retrieveRecipes(final FavoriteRecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         recipeList.clear();
+        recipeAdapter.notifyDataSetChanged();
         findViewById(R.id.searchLoadingPanel).setVisibility(View.VISIBLE);
         final String search = etRecipeSearch.getText().toString();
         hideKeyboard();
-            database_reference.child("recipes").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot children : dataSnapshot.getChildren()) {
-                        Recipe recipe = children.getValue(Recipe.class);
-                        if (recipe == null) {
-                            return;
-                        }
-                        if (recipe.getTitle().contains(search)) {
-                            recipeList.add(recipe); //breaks here
-                        }
-                        //Set results TextView
-                        TextView resultText = findViewById(R.id.resultText);
-                        if (recipeList.size() == 1) {
-                            resultText.setText(String.format("%d Result", recipeList.size()));
-                        }
-                        else {
-                            resultText.setText(String.format("%d Results", recipeList.size()));
-                        }
+            int i = 0;
+            for (int j = 0; j < allRecipes.size(); j++) {
+                if (allRecipes.get(j).getTitle().contains(search)) {
+                    recipeList.add(allRecipes.get(j)); //breaks here
+                    //Asynchronous so have to use this to notify adapter when finished
+                    recipeAdapter.notifyItemInserted(i);
+                    i++;
+                    //Set results TextView
+                    TextView resultText = findViewById(R.id.resultText);
+                    if (recipeList.size() == 1) {
+                        resultText.setText(String.format("%d Result", recipeList.size()));
+                    } else {
+                        resultText.setText(String.format("%d Results", recipeList.size()));
+                    }
+                    if (i == 100) {
+                        break;
+                    }
+                }
+            }
+            findViewById(R.id.searchLoadingPanel).setVisibility(View.GONE);
+        }
+
+    //Returns a list of all recipes
+    public void getAllRecipes(final FavoriteRecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
+        recipeList.clear();
+        hideKeyboard();
+        database_reference.child("recipes").limitToFirst(100).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot children : dataSnapshot.getChildren()) {
+                    Recipe recipe = children.getValue(Recipe.class);
+                    if (recipe == null) {
+                        return;
+                    }
+                    recipeList.add(recipe); //breaks here
+                    //Set results TextView
+                    TextView resultText = findViewById(R.id.resultText);
+                    if (recipeList.size() == 1) {
+                        resultText.setText(String.format("%d Result", recipeList.size()));
+                    } else {
+                        resultText.setText(String.format("%d Results", recipeList.size()));
                     }
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
-                    findViewById(R.id.searchLoadingPanel).setVisibility(View.GONE);
                 }
+                cacheRecipes();
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+            }
+        });
 
-        }
+    }
 
     public void goBackToIngredientSelector(View view) {
         this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
