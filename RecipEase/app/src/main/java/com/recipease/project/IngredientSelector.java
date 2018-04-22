@@ -163,25 +163,6 @@ public class IngredientSelector extends DrawerActivity {
         }
     }
 
-    private static HashMap<String, Integer> sortByValues(HashMap map) {
-        List list = new LinkedList(map.entrySet());
-        // Defined Custom Comparator here
-        Collections.sort(list, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                return ((Comparable) ((HashMap.Entry) (o2)).getValue())
-                        .compareTo(((HashMap.Entry) (o1)).getValue());
-            }
-        });
-        // Here I am copying the sorted list in HashMap
-        // using LinkedHashMap to preserve the insertion order
-        HashMap sortedHashMap = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            HashMap.Entry entry = (HashMap.Entry) it.next();
-            sortedHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return sortedHashMap;
-    }
-
     public HashMap<String, Integer> convertToRecipeIDs() {
         HashMap<String, Integer> recipe_map = new HashMap<String, Integer>();
         for(int i = 0; i < checked_ingredients.size(); i++){
@@ -198,8 +179,7 @@ public class IngredientSelector extends DrawerActivity {
                 }
             }
         }
-        HashMap<String, Integer> recipes_map = sortByValues(recipe_map);
-        return recipes_map;
+        return recipe_map;
     }
 
     private void hideKeyboard() {

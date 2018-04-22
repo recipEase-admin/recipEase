@@ -24,8 +24,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -75,11 +79,6 @@ public class BrowseRecipesActivity extends DrawerActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-        recipeList.clear();
-        recyclerView.getRecycledViewPool().clear();
-        recipeAdapter.notifyDataSetChanged();
-        System.out.println("printing recipeList");
-        
         retrieveRecipes(recipeAdapter, recipeList);
 
     }
@@ -88,16 +87,36 @@ public class BrowseRecipesActivity extends DrawerActivity {
         finish();
     }
 
+    private static HashMap<String, Integer> sortByValues(HashMap map) {
+        List list = new LinkedList(map.entrySet());
+        // Defined Custom Comparator here
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((HashMap.Entry) (o2)).getValue())
+                        .compareTo(((HashMap.Entry) (o1)).getValue());
+            }
+        });
+        // Here I am copying the sorted list in HashMap
+        // using LinkedHashMap to preserve the insertion order
+        HashMap sortedHashMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            HashMap.Entry entry = (HashMap.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedHashMap;
+    }
+
     //Returns a list of all recipes
     public void retrieveRecipes(final RecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
         // Unfortunately you'll get an unsafe cast warning here, but it's safe to use
         Intent intent = getIntent();
         final HashMap<String, Integer> recipe_ids = (HashMap<String, Integer>) intent.getSerializableExtra("recipe_ids");
-        int size = recipe_ids.size();
-        Iterator ite = recipe_ids.entrySet().iterator();
+        HashMap<String, Integer> recipes_id_map = sortByValues(recipe_ids);
+
+        int size = recipes_id_map.size();
+        Iterator ite = recipes_id_map.entrySet().iterator();
         while (ite.hasNext()) {
             HashMap.Entry pair = (HashMap.Entry) ite.next();
-            System.out.println("Attempting to addValueEventListener to " + pair.getKey().toString());
             database_reference.child("recipes").child((String) pair.getKey()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -106,7 +125,6 @@ public class BrowseRecipesActivity extends DrawerActivity {
                         return;
                     }
                     recipeList.add(recipe); //breaks here
-                    System.out.println("added recipe: " + recipe.getTitle() + " to recipeList");
                     //Asynchronous so have to use this to notify adapter when finished
                     recipeAdapter.notifyDataSetChanged();
                     //Set results TextView
