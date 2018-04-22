@@ -78,7 +78,8 @@ public class BrowseRecipesActivity extends DrawerActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-
+        recipeList.clear();
+        retrieveRecipes(recipeAdapter, recipeList);
     }
 
     public void onEditSearch(View view){
