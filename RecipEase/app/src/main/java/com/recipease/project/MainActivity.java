@@ -58,9 +58,22 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             Uri uri = intent.getData();
-            String recipeID = uri.getQueryParameter("id");
+            final String recipeID = uri.getQueryParameter("id");
             if (firebaseAuth.getCurrentUser() == null) {
-                Toast.makeText(MainActivity.this, "You must be logged in to open link", Toast.LENGTH_LONG).show();
+                (firebaseAuth.signInAnonymously())
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(MainActivity.this, "Logging in as guest", Toast.LENGTH_SHORT).show();
+                                    viewRecipeFromRedirect(recipeID);                                    Intent i = new Intent(MainActivity.this, HomeActivity.class);
+                                } else {
+                                    Log.e("ERROR", task.getException().toString());
+                                    Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        });
             }
             else {
                 viewRecipeFromRedirect(recipeID);
@@ -72,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(FirebaseAuth authData) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    if (user.isAnonymous()) {
+                        Toast.makeText(MainActivity.this, "Logging in as guest", Toast.LENGTH_SHORT).show();
+                    }
                     // user is logged in
                     Intent i = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(i);
@@ -103,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             alertDialog.show();
         }
         else {
-            final ProgressDialog progressDialog = ProgressDialog.show(MainActivity.this, "Please wait...", "Proccessing...", true);
+            final ProgressDialog progressDialog = ProgressDialog.show(MainActivity.this, "Please wait...", "Processing...", true);
 
             (firebaseAuth.signInWithEmailAndPassword(etUsername.getText().toString(), etPassword.getText().toString()))
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -112,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                             progressDialog.dismiss();
 
                             if (task.isSuccessful()) {
+                                System.out.println("The current user: " + firebaseAuth.getCurrentUser().getUid());
                                 Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(i);

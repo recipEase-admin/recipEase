@@ -314,10 +314,10 @@ public class CreateRecipeActivity extends DrawerActivity{
 
     private Recipe uploadRecipe() {
         final Recipe newRecipe = new Recipe();
-        newRecipe.setCookingInstructions( recipeInstructions );
-        newRecipe.setCookingIngredients( recipeIngredients );
-        newRecipe.setTitle( recipeTitle );
-        newRecipe.setImageURL( imageURL );
+        newRecipe.setCookingInstructions(recipeInstructions);
+        newRecipe.setCookingIngredients(recipeIngredients);
+        newRecipe.setTitle(recipeTitle);
+        newRecipe.setImageURL(imageURL);
         newRecipe.generateRecipeID();
         newRecipe.setNumFavorites(0);
         newRecipe.setOwnerID(userID);
@@ -329,28 +329,33 @@ public class CreateRecipeActivity extends DrawerActivity{
         //Add the new recipe to the database
         database_reference.child("recipes").child(newRecipe.getRecipeID()).setValue(newRecipe);
         //Give the owner (creator) of the new recipe the recipeID
-        database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot the_user) {
-                User user = the_user.getValue(User.class);
-                ArrayList<String> recipesOwned;
-                if (user.getRecipesOwned() == null) {
-                    recipesOwned = new ArrayList<String>();
+        if (user.isAnonymous()) {
+            return null;
+        } else {
+            database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot the_user) {
+                    User user = the_user.getValue(User.class);
+                    if (user != null) {
+                        ArrayList<String> recipesOwned;
+                        if (user.getRecipesOwned() == null) {
+                            recipesOwned = new ArrayList<String>();
+                        } else {
+                            recipesOwned = new ArrayList(user.getRecipesOwned());
+                        }
+                        recipesOwned.add(newRecipe.getRecipeID());
+                        user.setRecipesOwned(recipesOwned);
+                        the_user.getRef().setValue(user);
+                    }
                 }
-                else {
-                    recipesOwned = new ArrayList(user.getRecipesOwned());
-                }
-                recipesOwned.add(newRecipe.getRecipeID());
-                user.setRecipesOwned(recipesOwned);
-                the_user.getRef().setValue(user);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "onCancelled", databaseError.toException());
-            }
-        });
-        return newRecipe;
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i(TAG, "onCancelled", databaseError.toException());
+                }
+            });
+            return newRecipe;
+        }
     }
 
     //Called when imageView is clicked

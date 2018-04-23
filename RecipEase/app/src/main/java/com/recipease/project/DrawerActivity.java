@@ -16,11 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class DrawerActivity extends AppCompatActivity {
 
     protected DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+
+    private FirebaseAuth firebaseAuth;
+    public FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,9 @@ public class DrawerActivity extends AppCompatActivity {
 
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Painter.ttf");
         tvLogo.setTypeface(font);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
 
 
 
@@ -83,28 +91,48 @@ public class DrawerActivity extends AppCompatActivity {
 
                         switch(menuItem.getItemId()){
                             case R.id.profile:
-                                Intent intent=new Intent(DrawerActivity.this,ProfileActivity.class);
-                                startActivity(intent);
+                                if(user.isAnonymous() == true) {
+                                    Toast.makeText(DrawerActivity.this, "You must login or create an account to access this page", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent intent = new Intent(DrawerActivity.this, ProfileActivity.class);
+                                    startActivity(intent);
+                                }
                                 break;
                             case R.id.home:
                                 Intent intentA=new Intent(DrawerActivity.this,HomeActivity.class);
                                 startActivity(intentA);
                                 break;
                             case R.id.create_recipe:
-                                Intent intentb = new Intent(DrawerActivity.this, CreateRecipeActivity.class);
-                                startActivity(intentb);
+                                if(user.isAnonymous() == true) {
+                                    Toast.makeText(DrawerActivity.this, "You must login or create an account to access this page", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent intentb = new Intent(DrawerActivity.this, CreateRecipeActivity.class);
+                                    startActivity(intentb);
+                                }
                                 break;
                             case R.id.trending:
                                 Intent intentTrending=new Intent(DrawerActivity.this,TrendingRecipes.class);
                                 startActivity(intentTrending);
                                 break;
                             case R.id.personal_recipes:
-                                Intent intentB = new Intent(DrawerActivity.this, PersonalRecipesActivity.class);
-                                startActivity(intentB);
+                                if(user.isAnonymous() == true) {
+                                    Toast.makeText(DrawerActivity.this, "You must login or create an account to access this page", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent intentB = new Intent(DrawerActivity.this, PersonalRecipesActivity.class);
+                                    startActivity(intentB);
+                                }
                                 break;
                             case R.id.favorites:
-                                Intent intentFavorites  = new Intent(DrawerActivity.this, BrowseFavoritesActivity.class);
-                                startActivity(intentFavorites);
+                                if(user.isAnonymous() == true) {
+                                    Toast.makeText(DrawerActivity.this, "You must login or create an account to access this page", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Intent intentFavorites = new Intent(DrawerActivity.this, BrowseFavoritesActivity.class);
+                                    startActivity(intentFavorites);
+                                }
                                 break;
                             case R.id.search_recipe:
                                 Intent intentSearch = new Intent(DrawerActivity.this, SearchRecipesActivity.class);
@@ -120,7 +148,7 @@ public class DrawerActivity extends AppCompatActivity {
                                 break;
                             case R.id.logout:
                                 FirebaseAuth.getInstance().signOut();
-                                Toast.makeText(DrawerActivity.this, "Succesfully logged out", Toast.LENGTH_LONG).show();
+                                Toast.makeText(DrawerActivity.this, "Successfully logged out", Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(DrawerActivity.this, MainActivity.class);
                                 startActivity(i);
                                 break;

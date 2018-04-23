@@ -71,7 +71,9 @@ public class RecipeDetailsActivity extends DrawerActivity {
         mDrawerLayout.addView(contentView, 0);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
-        userID = user.getUid();
+        if(user.isAnonymous() == false) {
+            userID = user.getUid();
+        }
         trash = findViewById(R.id.btDeleteTrash);
         trash.setClickable(false);
 
@@ -107,48 +109,20 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
+        if (user.isAnonymous()) {
+            showAlert("You must login or create an account to favorite recipes.", "Ok");
+        }
+        else {
+            database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot the_user) {
+                    User user = the_user.getValue(User.class);
+                    if (user != null) {
 
-        database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot the_user) {
-                User user = the_user.getValue(User.class);
-
-                    if (user.getRecipesFavorited() == null) {
-                        recipesFavorited = new ArrayList<String>();
-                        //call function to favorite
-                        //favoriteRecipe();
-
-                        recipesFavorited.add(rID);
-                        user.setRecipesFavorited(recipesFavorited);
-                        the_user.getRef().setValue(user);
-
-                        ++numFavorites;
-                        favorites_reference = database_reference.child("recipes").child(rID);
-                        Map<String, Object> favorites_update = new HashMap<>();
-                        favorites_update.put("numFavorites", numFavorites);
-                        favorites_reference.updateChildren(favorites_update);
-                        tvNumFavorites.setText(String.format("%d", numFavorites));
-
-
-                    }else{
-                        recipesFavorited = new ArrayList(user.getRecipesFavorited());
-                        //unfavoriteRecipe();
-
-                        if(recipesFavorited.contains(rID)){
-
-                            recipesFavorited.remove(rID);
-                            user.setRecipesFavorited(recipesFavorited);
-                            the_user.getRef().setValue(user);
-
-                            --numFavorites;
-                            favorites_reference = database_reference.child("recipes").child(rID);
-                            Map<String, Object> favorites_update = new HashMap<>();
-                            favorites_update.put("numFavorites", numFavorites);
-                            favorites_reference.updateChildren(favorites_update);
-                            tvNumFavorites.setText(String.format("%d", numFavorites));
-
-
-                        }else{
+                        if (user.getRecipesFavorited() == null) {
+                            recipesFavorited = new ArrayList<String>();
+                            //call function to favorite
+                            //favoriteRecipe();
 
                             recipesFavorited.add(rID);
                             user.setRecipesFavorited(recipesFavorited);
@@ -161,18 +135,51 @@ public class RecipeDetailsActivity extends DrawerActivity {
                             favorites_reference.updateChildren(favorites_update);
                             tvNumFavorites.setText(String.format("%d", numFavorites));
 
+
+                        } else {
+                            recipesFavorited = new ArrayList(user.getRecipesFavorited());
+                            //unfavoriteRecipe();
+
+                            if (recipesFavorited.contains(rID)) {
+
+                                recipesFavorited.remove(rID);
+                                user.setRecipesFavorited(recipesFavorited);
+                                the_user.getRef().setValue(user);
+
+                                --numFavorites;
+                                favorites_reference = database_reference.child("recipes").child(rID);
+                                Map<String, Object> favorites_update = new HashMap<>();
+                                favorites_update.put("numFavorites", numFavorites);
+                                favorites_reference.updateChildren(favorites_update);
+                                tvNumFavorites.setText(String.format("%d", numFavorites));
+
+
+                            } else {
+
+                                recipesFavorited.add(rID);
+                                user.setRecipesFavorited(recipesFavorited);
+                                the_user.getRef().setValue(user);
+
+                                ++numFavorites;
+                                favorites_reference = database_reference.child("recipes").child(rID);
+                                Map<String, Object> favorites_update = new HashMap<>();
+                                favorites_update.put("numFavorites", numFavorites);
+                                favorites_reference.updateChildren(favorites_update);
+                                tvNumFavorites.setText(String.format("%d", numFavorites));
+
+                            }
+
                         }
-
                     }
-            }
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "Could not add recipe to favorites", databaseError.toException());
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i(TAG, "Could not add recipe to favorites", databaseError.toException());
+                }
 
-        });
-
+            });
+        }
     }
 
     private void receiveRecipe() {
@@ -228,25 +235,28 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
         database = FirebaseDatabase.getInstance();
         database_reference = database.getReference();
-
-        database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot the_user) {
-                User user = the_user.getValue(User.class);
-                if (user.getRecipesOwned() != null) {
-                    if (user.getRecipesOwned().contains(rID)) {
-                        trash.setClickable(true);
-                        trash.setImageResource(R.drawable.ic_trash);
+        if (user.isAnonymous() == false) {
+            database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot the_user) {
+                    User user = the_user.getValue(User.class);
+                    if (user != null) {
+                    if (user.getRecipesOwned() != null) {
+                        if (user.getRecipesOwned().contains(rID)) {
+                            trash.setClickable(true);
+                            trash.setImageResource(R.drawable.ic_trash);
+                        }
                     }
 
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
 
-        });
+            });
+        }
 
         database_reference.child("recipes").child(recipeID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -263,10 +273,12 @@ public class RecipeDetailsActivity extends DrawerActivity {
                         @Override
                         public void onDataChange(DataSnapshot the_user) {
                             User user = the_user.getValue(User.class);
-                            if (user.getDisplayName() != null) {
-                                TextView tvCreator = (TextView) findViewById(R.id.tvCreator);
-                                String temp = "Created by: " + user.getDisplayName();
-                                tvCreator.setText(temp);
+                            if (user != null) {
+                                if (user.getDisplayName() != null) {
+                                    TextView tvCreator = (TextView) findViewById(R.id.tvCreator);
+                                    String temp = "Created by: " + user.getDisplayName();
+                                    tvCreator.setText(temp);
+                                }
                             }
                         }
 
@@ -292,63 +304,68 @@ public class RecipeDetailsActivity extends DrawerActivity {
             database = FirebaseDatabase.getInstance();
             database_reference = database.getReference();
 
-            database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            if (user.isAnonymous()) {
+                showAlert("You must login or create an account to post a comment.", "Ok");
+                EditText etNewComment = (EditText) findViewById(R.id.etNewComment);
+                hideKeyboard();
+                etNewComment.setText("");
+            }
+            else {
+                database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                String displayName;
+                    String displayName;
 
-                @Override
-                public void onDataChange(DataSnapshot the_user) {
-                    User user = the_user.getValue(User.class);
-                    if (user != null) {
-                        displayName = user.getDisplayName();
-                    }
-
-                    Filter inputFilter = new Filter();
-                    EditText etNewComment = (EditText) findViewById(R.id.etNewComment);
-                    String pureComment = etNewComment.getText().toString();
-                    String comment = displayName + ": " + pureComment;
-
-                    if(inputFilter.containsProfanity(comment)) {
-                        showAlert("Your comment contains profanity, please remove the profanity.", "I'll Handle It");
-                    }
-                    else if(comment.equals("")) {
-                        showAlert("Please enter a comment first", "I'm On It");
-                    }
-                    else {
-                        if (rComments == null) {
-                            rComments = new ArrayList<String>();
-                        }
-                        rComments.add(comment);
-                        database = FirebaseDatabase.getInstance();
-                        database_reference = database.getReference();
-
-                        comments_reference = database_reference.child("recipes").child(rID);
-                        Map<String, Object>  comments_update = new HashMap<>();
-                        comments_update.put("comments", rComments);
-                        comments_reference.updateChildren(comments_update);
-
-                        Toast.makeText(RecipeDetailsActivity.this, "Comment posted!", Toast.LENGTH_SHORT).show();
-                        hideKeyboard();
-
-                        TextView tvComments = (TextView) findViewById(R.id.tvComments);
-                        if (rComments == null || rComments.isEmpty()) {
-                            tvComments.setText("There are no comments - be the first!");
-                        }
-                        else {
-                            tvComments.setText(TextUtils.join("\n\n", rComments));
+                    @Override
+                    public void onDataChange(DataSnapshot the_user) {
+                        User user = the_user.getValue(User.class);
+                        if (user != null) {
+                            displayName = user.getDisplayName();
                         }
 
-                        etNewComment.setText("");
+                        Filter inputFilter = new Filter();
+                        EditText etNewComment = (EditText) findViewById(R.id.etNewComment);
+                        String pureComment = etNewComment.getText().toString();
+                        String comment = displayName + ": " + pureComment;
+
+                        if (inputFilter.containsProfanity(comment)) {
+                            showAlert("Your comment contains profanity, please remove the profanity.", "I'll Handle It");
+                        } else if (comment.equals("")) {
+                            showAlert("Please enter a comment first", "I'm On It");
+                        } else {
+                            if (rComments == null) {
+                                rComments = new ArrayList<String>();
+                            }
+                            rComments.add(comment);
+                            database = FirebaseDatabase.getInstance();
+                            database_reference = database.getReference();
+
+                            comments_reference = database_reference.child("recipes").child(rID);
+                            Map<String, Object> comments_update = new HashMap<>();
+                            comments_update.put("comments", rComments);
+                            comments_reference.updateChildren(comments_update);
+
+                            Toast.makeText(RecipeDetailsActivity.this, "Comment posted!", Toast.LENGTH_SHORT).show();
+                            hideKeyboard();
+
+                            TextView tvComments = (TextView) findViewById(R.id.tvComments);
+                            if (rComments == null || rComments.isEmpty()) {
+                                tvComments.setText("There are no comments - be the first!");
+                            } else {
+                                tvComments.setText(TextUtils.join("\n\n", rComments));
+                            }
+
+                            etNewComment.setText("");
+                        }
+
                     }
 
-                }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "Could not add recipe to favorites", databaseError.toException());
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.i(TAG, "Could not add recipe to favorites", databaseError.toException());
-                }
-
-            });
+                });
+            }
 
 
     }
@@ -379,28 +396,35 @@ public class RecipeDetailsActivity extends DrawerActivity {
                     public void onClick(DialogInterface arg0, int arg1) {
                         database = FirebaseDatabase.getInstance();
                         database_reference = database.getReference();
+                        if (user.isAnonymous()) {
 
-                        database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-                             @Override
-                             public void onDataChange(DataSnapshot the_user) {
-                                 User user = the_user.getValue(User.class);
-                                 List<String> recipesOwned = user.getRecipesOwned();
-                                 for (int i = 0; i < recipesOwned.size(); i++) {
-                                     if (recipesOwned.get(i).equals(rID)) {
-                                         database_reference.child("users").child(userID).child("recipesOwned").child(Integer.toString(i)).removeValue();
-                                         break;
-                                     }
-                                 }
-                             }
-                             @Override
-                            public void onCancelled(DatabaseError error) {
+                        }
+                        else {
+                            database_reference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot the_user) {
+                                    User user = the_user.getValue(User.class);
+                                    if (user != null) {
+                                        List<String> recipesOwned = user.getRecipesOwned();
+                                        for (int i = 0; i < recipesOwned.size(); i++) {
+                                            if (recipesOwned.get(i).equals(rID)) {
+                                                database_reference.child("users").child(userID).child("recipesOwned").child(Integer.toString(i)).removeValue();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
 
-                             }
-                         });
-                        database_reference.child("recipes").child(rID).removeValue();
-                        Intent i = new Intent(RecipeDetailsActivity.this, HomeActivity.class);
-                        Toast.makeText(RecipeDetailsActivity.this, "Recipe deleted", Toast.LENGTH_LONG).show();
-                        startActivity(i);
+                                @Override
+                                public void onCancelled(DatabaseError error) {
+
+                                }
+                            });
+                            database_reference.child("recipes").child(rID).removeValue();
+                            Intent i = new Intent(RecipeDetailsActivity.this, HomeActivity.class);
+                            Toast.makeText(RecipeDetailsActivity.this, "Recipe deleted", Toast.LENGTH_LONG).show();
+                            startActivity(i);
+                        }
                     }
                 });
         alertDialogBuilder.setNegativeButton(cancelText, new DialogInterface.OnClickListener() {

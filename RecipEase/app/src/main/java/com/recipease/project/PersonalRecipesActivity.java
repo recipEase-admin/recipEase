@@ -83,48 +83,54 @@ public class PersonalRecipesActivity extends DrawerActivity {
     }
     //Returns a list of all recipes
     public void retrieveRecipes(final FavoriteRecipeAdapter recipeAdapter, final ArrayList<Recipe> recipeList) {
-        // Read recipes in from the database and convert them to an ArrayList of Recipe objects
-        database_reference.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot the_user) {
-                User user = the_user.getValue(User.class);
-                List<String> recipesOwned = user.getRecipesOwned();
-                if (recipesOwned == null || recipesOwned.size() == 0) {
-                    TextView resultText = findViewById(R.id.favoritesPageResults);
-                    resultText.setText(String.format("You didn't make any recipes yet!", recipeList.size()));
-                    return;
-                }
-                for (int i = 0; i < recipesOwned.size(); i++) {
-                    database_reference.child("recipes").child(recipesOwned.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot the_recipe) {
-                            Recipe recipe = the_recipe.getValue(Recipe.class);
-                            recipeList.add(recipe);
-                            //Asynchronous so have to use this to notify adapter when finished
-                            recipeAdapter.notifyDataSetChanged();
-                            //Set results TextView
+        if (user.isAnonymous()) {
+
+        }
+        else {
+            // Read recipes in from the database and convert them to an ArrayList of Recipe objects
+            database_reference.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot the_user) {
+                    User user = the_user.getValue(User.class);
+                    if (user != null) {
+                        List<String> recipesOwned = user.getRecipesOwned();
+                        if (recipesOwned == null || recipesOwned.size() == 0) {
                             TextView resultText = findViewById(R.id.favoritesPageResults);
-                            if (recipeList.size() == 1) {
-                                resultText.setText(String.format("%d Created Recipe", recipeList.size()));
-                            }
-                            else {
-                                resultText.setText(String.format("%d Created Recipes", recipeList.size()));
-                            }
+                            resultText.setText(String.format("You didn't make any recipes yet!", recipeList.size()));
+                            return;
                         }
+                        for (int i = 0; i < recipesOwned.size(); i++) {
+                            database_reference.child("recipes").child(recipesOwned.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot the_recipe) {
+                                    Recipe recipe = the_recipe.getValue(Recipe.class);
+                                    recipeList.add(recipe);
+                                    //Asynchronous so have to use this to notify adapter when finished
+                                    recipeAdapter.notifyDataSetChanged();
+                                    //Set results TextView
+                                    TextView resultText = findViewById(R.id.favoritesPageResults);
+                                    if (recipeList.size() == 1) {
+                                        resultText.setText(String.format("%d Created Recipe", recipeList.size()));
+                                    } else {
+                                        resultText.setText(String.format("%d Created Recipes", recipeList.size()));
+                                    }
+                                }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
+                                }
+                            });
                         }
-                    });
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
+                }
 
-        });
+            });
+        }
     }
 }

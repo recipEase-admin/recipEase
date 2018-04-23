@@ -81,31 +81,36 @@ public class ProfileActivity extends DrawerActivity {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
-        databaseReference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot the_user) {
-                current_user = the_user.getValue(User.class);
-                displayName = current_user.getDisplayName();
-                bio = current_user.getBio();
-                imageURL = current_user.getImageURL();
-                if (current_user.getRecipesOwned() == null) {
-                    recipesOwned = new ArrayList<Long>();
-                }
-                else {
-                    recipesOwned = new ArrayList(current_user.getRecipesOwned());
-                }
-                // Set GUI fields to current user's information
-                etDisplayName.setText(displayName);
-                etBio.setText(bio);
-                Glide.with(ProfileActivity.this).load(imageURL).centerCrop().into(ivProfilePic);
+        if (user.isAnonymous()) {
 
-            }
+        } else {
+            databaseReference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot the_user) {
+                    current_user = the_user.getValue(User.class);
+                    if (current_user != null) {
+                        displayName = current_user.getDisplayName();
+                        bio = current_user.getBio();
+                        imageURL = current_user.getImageURL();
+                        if (current_user.getRecipesOwned() == null) {
+                            recipesOwned = new ArrayList<Long>();
+                        } else {
+                            recipesOwned = new ArrayList(current_user.getRecipesOwned());
+                        }
+                        // Set GUI fields to current user's information
+                        etDisplayName.setText(displayName);
+                        etBio.setText(bio);
+                        Glide.with(ProfileActivity.this).load(imageURL).centerCrop().into(ivProfilePic);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "onCancelled", databaseError.toException());
-            }
-        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i(TAG, "onCancelled", databaseError.toException());
+                }
+            });
+        }
     }
 
     private void showAlert(String messageToSay, String buttonText) {
@@ -122,18 +127,22 @@ public class ProfileActivity extends DrawerActivity {
     }
 
     public void saveChanges(View v) {
-        if (current_user != null) {
-            current_user.setDisplayName(etDisplayName.getText().toString());
-            current_user.setBio(etBio.getText().toString());
-            if (pictureModified == true) {
-                changeProfilePicture();
+        if (user.isAnonymous()) {
+
+        }
+        else {
+            if (current_user != null) {
+                current_user.setDisplayName(etDisplayName.getText().toString());
+                current_user.setBio(etBio.getText().toString());
+                if (pictureModified == true) {
+                    changeProfilePicture();
+                } else {
+                    databaseReference.child("users").child(userID).setValue(current_user);
+                }
+                Toast.makeText(this, "Profile changes saved", Toast.LENGTH_LONG).show();
+                Intent goHome = new Intent(ProfileActivity.this, HomeActivity.class);
+                startActivity(goHome);
             }
-            else {
-                databaseReference.child("users").child(userID).setValue(current_user);
-            }
-            Toast.makeText(this, "Profile changes saved", Toast.LENGTH_LONG).show();
-            Intent goHome = new Intent(ProfileActivity.this, HomeActivity.class);
-            startActivity(goHome);
         }
 
     }

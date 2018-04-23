@@ -82,59 +82,66 @@ public class BrowseFavoritesActivity extends DrawerActivity {
 
     public void retrieveFavorites() {
 
-        database_reference.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot the_user) {
-                User user = the_user.getValue(User.class);
-                if (user.getRecipesFavorited() == null) {
-                    TextView resultText = findViewById(R.id.favoritesPageResults);
-                    resultText.setText(String.format("No favorites yet!"));
+        if (user.isAnonymous()) {
+            //showAlert("You must login or create an account to post a comment.", "Ok");
+        }
+        else {
+            database_reference.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot the_user) {
+                    User user = the_user.getValue(User.class);
+                    if (user != null) {
+                        if (user.getRecipesFavorited() == null) {
+                            TextView resultText = findViewById(R.id.favoritesPageResults);
+                            resultText.setText(String.format("No favorites yet!"));
 
 
-                } else {
-                    recipesFavorited = new ArrayList(user.getRecipesFavorited());
-                    noRecipes = false;
-                    int size = recipesFavorited.size();
+                        } else {
+                            recipesFavorited = new ArrayList(user.getRecipesFavorited());
+                            noRecipes = false;
+                            int size = recipesFavorited.size();
 
-                    for (int i = 0; i < size; i++) {
-                        database_reference.child("recipes").child(recipesFavorited.get(i)).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
-                                if (recipe == null) {
-                                    return;
-                                }
-                                favoriteRecipeList.add(recipe); //breaks here
-                                //Asynchronous so have to use this to notify adapter when finished
-                                recipeAdapter.notifyDataSetChanged();
+                            for (int i = 0; i < size; i++) {
+                                database_reference.child("recipes").child(recipesFavorited.get(i)).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Recipe recipe = dataSnapshot.getValue(Recipe.class); //cannot get value of class
+                                        if (recipe == null) {
+                                            return;
+                                        }
+                                        favoriteRecipeList.add(recipe); //breaks here
+                                        //Asynchronous so have to use this to notify adapter when finished
+                                        recipeAdapter.notifyDataSetChanged();
 
-                                //Set results TextView
+                                        //Set results TextView
 
-                                TextView resultText = findViewById(R.id.favoritesPageResults);
-                                if (favoriteRecipeList.size() == 1) {
-                                    resultText.setText(String.format("%d Favorite", favoriteRecipeList.size()));
-                                } else {
-                                    resultText.setText(String.format("%d Favorites", favoriteRecipeList.size()));
-                                }
+                                        TextView resultText = findViewById(R.id.favoritesPageResults);
+                                        if (favoriteRecipeList.size() == 1) {
+                                            resultText.setText(String.format("%d Favorite", favoriteRecipeList.size()));
+                                        } else {
+                                            resultText.setText(String.format("%d Favorites", favoriteRecipeList.size()));
+                                        }
 
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                        }
                     }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-        });
+            });
+        }
 
     }
 }
