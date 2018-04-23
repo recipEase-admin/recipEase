@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +52,19 @@ public class MainActivity extends AppCompatActivity {
 
         etPassword.setTransformationMethod(new PasswordMethod());
 
+
+        //http://www.recipease.com/recipe/?id=570 is Jesse, for example
+        Intent intent = getIntent();
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            Uri uri = intent.getData();
+            String recipeID = uri.getQueryParameter("id");
+            if (firebaseAuth.getCurrentUser() == null) {
+                Toast.makeText(MainActivity.this, "You must be logged in to open link", Toast.LENGTH_LONG).show();
+            }
+            else {
+                viewRecipeFromRedirect(recipeID);
+            }
+        }
 
         firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -105,5 +127,44 @@ public class MainActivity extends AppCompatActivity {
     public void btnRegister_Click(View v) {
         Intent i = new Intent(MainActivity.this, RegisterActivity.class);
         startActivity(i);
+    }
+
+    private void viewRecipeFromRedirect(String recipeID) {
+        FirebaseDatabase database;
+        DatabaseReference database_reference;
+        database = FirebaseDatabase.getInstance();
+        database_reference = database.getReference();
+        database_reference.child("recipes").child(recipeID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Recipe recipe_to_bring = dataSnapshot.getValue(Recipe.class);
+                if (recipe_to_bring == null) {
+                    return;
+                }
+                else {
+                    String title = recipe_to_bring.getTitle();
+                    String recipeID = recipe_to_bring.getRecipeID();
+                    String imageURL = recipe_to_bring.getImageURL();
+                    int numFavorites = recipe_to_bring.getNumFavorites();
+                    List<String> cookingIngredients = recipe_to_bring.getCookingIngredients();
+                    List<String> cookingInstructions = recipe_to_bring.getCookingInstructions();
+                    List<String> comments = recipe_to_bring.getComments();
+                    Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
+                    intent.putExtra("TITLE", title);
+                    intent.putExtra("UNIQUE ID", recipeID);
+                    intent.putExtra("IMAGE URL", imageURL);
+                    intent.putExtra("NUM FAVORITES", numFavorites);
+                    intent.putStringArrayListExtra("INGREDIENTS LIST", (ArrayList) cookingIngredients);
+                    intent.putStringArrayListExtra("INSTRUCTIONS LIST", (ArrayList) cookingInstructions);
+                    intent.putStringArrayListExtra("COMMENTS", (ArrayList) comments);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

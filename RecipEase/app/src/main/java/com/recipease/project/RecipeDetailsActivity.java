@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -74,7 +76,30 @@ public class RecipeDetailsActivity extends DrawerActivity {
         trash.setClickable(false);
 
         receiveRecipe();
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_recipe_details, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.btShare:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                String shareLink = "Check out this cool recipe: http://www.recipease.com/recipe/?id=" + rID;
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "RecipEase");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
+                startActivity(Intent.createChooser(shareIntent, "Share Recipe Using!"));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     public void onClickFavorites(View view){
