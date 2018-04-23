@@ -91,7 +91,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 //String shareLink = "Check out this cool recipe: http://www.recipease.com/recipe/?id=" + rID;
-                String shareLink = "Check out this cool recipe: http://drv.tw/~ar4757@gmail.com/gd/RecipEase/?id=" + rID;
+                String shareLink = "Check out this cool recipe: https://f1xgsqmynnpnthilnfi7aq-on.drv.tw/RecipEase/?id=" + rID;
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "RecipEase");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
                 startActivity(Intent.createChooser(shareIntent, "Share Recipe Using"));

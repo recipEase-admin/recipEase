@@ -25,9 +25,9 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="http"
-                    android:host="drv.tw"
-                    android:pathPrefix="/~ar4757@gmail.com/gd/RecipEase"/>
+                <data android:scheme="https"
+                    android:host="f1xgsqmynnpnthilnfi7aq-on.drv.tw"
+                    android:pathPrefix="/RecipEase"/>
             </intent-filter>
         </activity>
         <activity

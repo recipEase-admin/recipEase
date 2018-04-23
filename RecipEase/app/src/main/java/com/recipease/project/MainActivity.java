@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         etPassword.setTransformationMethod(new PasswordMethod());
 
 
-        //http://www.recipease.com/recipe/?id=570 is Jesse, for example
+        //http://www.recipease.com/recipe/?id=570 is Jesse, for example - not anymore
+        //https://f1xgsqmynnpnthilnfi7aq-on.drv.tw/RecipEase/?id=570 now equals Jesse if user has app, else download page
         Intent intent = getIntent();
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             Uri uri = intent.getData();
