@@ -90,10 +90,11 @@ public class RecipeDetailsActivity extends DrawerActivity {
             case R.id.btShare:
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
-                String shareLink = "Check out this cool recipe: http://www.recipease.com/recipe/?id=" + rID;
+                //String shareLink = "Check out this cool recipe: http://www.recipease.com/recipe/?id=" + rID;
+                String shareLink = "Check out this cool recipe: http://drv.tw/~ar4757@gmail.com/gd/RecipEase/?id=" + rID;
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "RecipEase");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
-                startActivity(Intent.createChooser(shareIntent, "Share Recipe Using!"));
+                startActivity(Intent.createChooser(shareIntent, "Share Recipe Using"));
                 return true;
 
             default:

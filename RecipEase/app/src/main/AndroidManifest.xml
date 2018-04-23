@@ -26,8 +26,8 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="http"
-                    android:host="www.recipease.com"
-                    android:pathPrefix="/recipe"/>
+                    android:host="drv.tw"
+                    android:pathPrefix="/~ar4757@gmail.com/gd/RecipEase"/>
             </intent-filter>
         </activity>
         <activity
