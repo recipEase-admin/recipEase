@@ -26,8 +26,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,8 +42,61 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Branch branch = Branch.getInstance();
+
+        // Branch init
+        branch.initSession(new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
+                    // params will be empty if no data found
+                    // ... insert custom logic here ...
+                    Log.i("BRANCH SDK", referringParams.toString());
+                    final String recipeID = referringParams.optString("recipeid");
+                    if (recipeID != "" && recipeID != null) {
+                        System.out.println("Recipeid is: " + recipeID);
+                        if (firebaseAuth.getCurrentUser() == null) {
+                            (firebaseAuth.signInAnonymously())
+                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(MainActivity.this, "Logging in as guest", Toast.LENGTH_SHORT).show();
+                                                viewRecipeFromRedirect(recipeID);
+                                                Intent i = new Intent(MainActivity.this, HomeActivity.class);
+                                            } else {
+                                                Log.e("ERROR", task.getException().toString());
+                                                Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        }
+                                    });
+                        } else {
+                            viewRecipeFromRedirect(recipeID);
+                        }
+                    }
+                } else {
+                    Log.i("BRANCH SDK", error.getMessage());
+                }
+            }
+        }, this.getIntent().getData(), this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        this.setIntent(intent);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize the Branch object
+        Branch.getAutoInstance(this);
+
         setContentView(R.layout.activity_authentication);
 
         TextView tvLogo = (TextView) findViewById(R.id.logoText);
@@ -55,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         //http://www.recipease.com/recipe/?id=570 is Jesse, for example - not anymore
         //https://f1xgsqmynnpnthilnfi7aq-on.drv.tw/RecipEase/?id=570 now equals Jesse if user has app, else download page
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             Uri uri = intent.getData();
             final String recipeID = uri.getQueryParameter("id");
@@ -78,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             else {
                 viewRecipeFromRedirect(recipeID);
             }
-        }
+        }*/
 
         firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override

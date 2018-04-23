@@ -34,6 +34,12 @@ import java.util.List;
 import java.util.Map;
 
 
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.util.ContentMetadata;
+import io.branch.referral.util.LinkProperties;
+
 import static android.content.ContentValues.TAG;
 
 
@@ -48,6 +54,8 @@ public class RecipeDetailsActivity extends DrawerActivity {
     private TextView tvNumFavorites;
     private int numFavorites;
     private String rID;
+    private String title;
+    private String imageURL;
     private ArrayList<String> recipesFavorited  = new ArrayList<String>();
     private boolean favoritesExecute;
 
@@ -90,13 +98,33 @@ public class RecipeDetailsActivity extends DrawerActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btShare:
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                //String shareLink = "Check out this cool recipe: http://www.recipease.com/recipe/?id=" + rID;
-                String shareLink = "Check out this cool recipe: https://f1xgsqmynnpnthilnfi7aq-on.drv.tw/RecipEase/?id=" + rID;
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "RecipEase");
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
-                startActivity(Intent.createChooser(shareIntent, "Share Recipe Using"));
+                BranchUniversalObject buo = new BranchUniversalObject()
+                .setCanonicalIdentifier("recipe/" + rID)
+                .setTitle(title)
+                .setContentImageUrl(imageURL)
+                .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .setLocalIndexMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .setContentMetadata(new ContentMetadata().addCustomMetadata("recipeid", rID));
+
+                LinkProperties lp = new LinkProperties()
+                        .setFeature("sharing");
+
+                buo.generateShortUrl(this, lp, new Branch.BranchLinkCreateListener() {
+                    @Override
+                    public void onLinkCreate(String url, BranchError error) {
+                        if (error == null) {
+                            Log.i("BRANCH SDK", "got my Branch link to share: " + url);
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            //String shareLink = "Check out this cool recipe: http://www.recipease.com/recipe/?id=" + rID;
+                            String shareLink = "Check out this cool recipe: " + url;
+                            //String shareLink = Branch.
+                            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "RecipEase");
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
+                            startActivity(Intent.createChooser(shareIntent, "Share Recipe Using"));
+                        }
+                    }
+                });
                 return true;
 
             default:
@@ -184,11 +212,11 @@ public class RecipeDetailsActivity extends DrawerActivity {
 
     private void receiveRecipe() {
         Intent intent = getIntent();
-        String title = intent.getStringExtra("TITLE");
+        title = intent.getStringExtra("TITLE");
         String recipeID = intent.getStringExtra("UNIQUE ID");
 
         numFavorites = intent.getIntExtra("NUM FAVORITES", 0);
-        String imageURL = intent.getStringExtra("IMAGE URL");
+        imageURL = intent.getStringExtra("IMAGE URL");
         ArrayList<String> cookingIngredients = intent.getStringArrayListExtra("INGREDIENTS LIST");
         ArrayList<String> cookingInstructions = intent.getStringArrayListExtra("INSTRUCTIONS LIST");
         ArrayList<String> comments = intent.getStringArrayListExtra("COMMENTS");
