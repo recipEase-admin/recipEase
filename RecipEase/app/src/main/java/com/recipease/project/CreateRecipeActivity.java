@@ -160,6 +160,7 @@ public class CreateRecipeActivity extends DrawerActivity{
         inputFilter = new Filter();
 
         imageURL = "";
+        imageURI = null;
 
         etInstruction.setTextColor(Color.BLACK);
         etInstruction.getBackground().mutate().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
@@ -261,10 +262,10 @@ public class CreateRecipeActivity extends DrawerActivity{
             btCreateRecipe.setEnabled(true);
         }
         else {
-            try {
+            findViewById(R.id.uploadLoadingPanel).setVisibility(View.VISIBLE);
+            if (imageURI != null) {
                 storeRecipeInDatabase();
             }
-            catch(Exception e) {
                 Recipe uploaded = uploadRecipe();
                 addRecipeToIngredient(uploaded);
             }
@@ -285,7 +286,6 @@ public class CreateRecipeActivity extends DrawerActivity{
     }
 
     private void storeRecipeInDatabase() {
-        findViewById(R.id.uploadLoadingPanel).setVisibility(View.VISIBLE);
         createImageURL();
     }
 
