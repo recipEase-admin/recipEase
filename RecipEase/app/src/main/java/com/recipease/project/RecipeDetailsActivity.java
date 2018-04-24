@@ -415,6 +415,7 @@ public class RecipeDetailsActivity extends DrawerActivity {
         alertDialog.show();
     }
 
+    //Delete recipe
     public void showAlertRequireResponse(String message, String actionText, String cancelText) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage(message);

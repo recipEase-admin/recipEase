@@ -83,7 +83,8 @@ public class ProfileActivity extends DrawerActivity {
         databaseReference = firebaseDatabase.getReference();
         if (user.isAnonymous()) {
 
-        } else {
+        }
+        else {
             databaseReference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot the_user) {
@@ -100,7 +101,11 @@ public class ProfileActivity extends DrawerActivity {
                         // Set GUI fields to current user's information
                         etDisplayName.setText(displayName);
                         etBio.setText(bio);
-                        Glide.with(ProfileActivity.this).load(imageURL).centerCrop().into(ivProfilePic);
+                        if (imageURL == "" || imageURL == null) {
+                        }
+                        else {
+                            Glide.with(ProfileActivity.this).load(imageURL).centerCrop().into(ivProfilePic);
+                        }
 
                     }
                 }
