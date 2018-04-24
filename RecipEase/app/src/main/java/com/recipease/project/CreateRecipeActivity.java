@@ -266,6 +266,7 @@ public class CreateRecipeActivity extends DrawerActivity{
             if (imageURI != null) {
                 storeRecipeInDatabase();
             }
+            else {
                 Recipe uploaded = uploadRecipe();
                 addRecipeToIngredient(uploaded);
             }
