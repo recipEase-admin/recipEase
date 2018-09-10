@@ -91,19 +91,7 @@ public class CreateRecipeActivity extends DrawerActivity{
 
 
     @Override
-
-    // TODO: 3/16/2018 Check ingredient/image fields are filled
-
-    // TODO: 3/16/2018 Add upload image functionality
-
-    // TODO: 3/16/2018 Add inserting ingredient functionality
-
-    // TODO: 3/16/2018 Add database functionality
-
-    // TODO: Add remove ingredients ability
-
-
-
+    
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
